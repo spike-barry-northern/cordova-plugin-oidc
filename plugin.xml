@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+ Copyright (c) Spike Global Ltd.  All Rights Reserved.
+ Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+-->
+<plugin id="cordova-plugin-ms-adal" version="0.10.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>OIDC for Cordova</name>
+    <description>Provides OpenID Connect Authentication for cordova.</description>
+
+    <license>Apache 2.0</license>
+    <keywords>cordova, oidc</keywords>
+    <repo>https://github.com/spike-global/cordova-plugin-oidc</repo>
+    <issue>https://github.com/spike-global/cordova-plugin-oidc/issues</issue>
+
+    <!-- <dependency id="cordova-plugin-compat" version="^1.0.0" /> -->
+
+    <engines>
+        <!-- Required gradle functionality support -->
+        <engine name="cordova-android" version=">=4.1.0" />
+        <!-- Cordova 5.4.0 and Windows 4.1.0 are required for framework.target-dir support -->
+        <engine name="cordova" version=">=5.4.0" />
+    </engines>
+
+    <js-module name="utility" src="www/utility.js">
+        <runs />
+    </js-module>
+
+    <js-module name="AuthenticationContext" src="www/AuthenticationContext.js">
+        <clobbers target="Cordova.OIDC.AuthenticationContext" />
+    </js-module>
+
+    <js-module name="CordovaBridge" src="www/CordovaBridge.js"/>
+    <js-module name="AuthenticationResult" src="www/AuthenticationResult.js"/>
+    <js-module name="TokenCache" src="www/TokenCache.js"/>
+    <js-module name="TokenCacheItem" src="www/TokenCacheItem.js"/>
+    <js-module name="UserInfo" src="www/UserInfo.js"/>
+    <js-module name="LogItem" src="www/LogItem.js"/>
+
+    <js-module name="AuthenticationSettings" src="www/AuthenticationSettings.js">
+        <clobbers target="Cordova.OIDC.AuthenticationSettings" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="OIDCProxy">
+                <param name="android-package" value="com.cordova.plugin.oidc.CordovaOIDCPlugin"/>
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+            <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+            <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="com.cordova.plugin.oidc.AuthenticationActivity"
+                android:configChanges="orientation|keyboardHidden|screenSize">
+            </activity>
+        </config-file>
+
+        <framework src="src/android/oidc.gradle" custom="true" type="gradleReference" />
+
+        <source-file src="src/android/CordovaOIDCPlugin.java" target-dir="src/com/corodova/plugin/oidc" />
+        <source-file src="src/android/DefaultAuthenticationCallback.java" target-dir="src/com/corodova/plugin/oidc" />
+        <source-file src="src/android/SimpleSerialization.java" target-dir="src/com/corodova/plugin/oidc" />
+
+    </platform>
+
+    
+
+    <!-- <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="OIDCProxy">
+                <param name="ios-package" value="CordovaOIDCPlugin" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/CordovaAdalPlugin.h" />
+        <source-file src="src/ios/CordovaAdalPlugin.m" />
+
+        <header-file src="src/ios/CordovaAdalUtils.h" />
+        <source-file src="src/ios/CordovaAdalUtils.m" />
+
+        <framework src="src/ios/ADAL.framework" custom="true"/>
+
+        <config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
+            <array>
+                <string>msauth</string>
+            </array>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+                <dict>
+                    <key>CFBundleTypeRole</key>
+                    <string>Editor</string>
+                    <key>CFBundleURLName</key>
+                    <string>$(CFBundleIdentifier)</string>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>x-msauth-$(CFBundleIdentifier:rfc1034identifier)</string>
+                    </array>
+                </dict>
+            </array>
+        </config-file>
+    </platform> -->
+
+</plugin>

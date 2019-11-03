@@ -1,0 +1,7 @@
+
+android {
+    packagingOptions {
+        exclude "META-INF/MSFTSIG.SF"
+        exclude "META-INF/MSFTSIG.RSA"
+    }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "cordova-plugin-oidc",
+  "version": "0.10.2",
+  "description": "Provides OpenID Connect Authentication",
+  "cordova": {
+    "id": "cordova-plugin-oidc",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "engines": {
+    "cordovaDependencies": {
+      "0.8.0": {
+        "cordova-android": ">=4.1.0",
+        "cordova": ">=5.4.0"
+      },
+      "0.8.1": {
+        "cordova-android": ">=4.1.0",
+        "cordova": ">=5.4.0"
+      },
+      "0.9.0": {
+        "cordova-android": ">=4.1.0",
+        "cordova": ">=5.4.0"
+      },
+      "0.10.0": {
+        "cordova-android": ">=4.1.0",
+        "cordova": ">=5.4.0"
+      },
+      "0.10.1": {
+        "cordova-android": ">=4.1.0",
+        "cordova": ">=5.4.0"
+      },
+      "1.0.0": {
+        "cordova": ">=100"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spike-global/cordova-plugin-oidc.git"
+  },
+  "keywords": [
+    "cordova",
+    "oidc"
+  ],
+  "author": "DmitryA",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/spike-global/cordova-plugin-oidc/issues"
+  },
+  "homepage": "https://github.com/spike-global/cordova-plugin-oidc#readme"
+}
