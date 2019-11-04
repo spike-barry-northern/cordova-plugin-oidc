@@ -62,9 +62,9 @@
 
         <framework src="src/android/oidc.gradle" custom="true" type="gradleReference" />
 
-        <source-file src="src/android/CordovaOIDCPlugin.java" target-dir="src/com/corodova/plugin/oidc" />
-        <source-file src="src/android/DefaultAuthenticationCallback.java" target-dir="src/com/corodova/plugin/oidc" />
-        <source-file src="src/android/SimpleSerialization.java" target-dir="src/com/corodova/plugin/oidc" />
+        <source-file src="src/android/CordovaOIDCPlugin.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/DefaultAuthenticationCallback.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/SimpleSerialization.java" target-dir="src/com/cordova/plugin/oidc" />
 
     </platform>
 
