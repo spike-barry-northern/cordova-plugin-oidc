@@ -12,7 +12,7 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.microsoft.aad.adal.SimpleSerialization.authenticationResultToJSON;
+import static com.cordova.plugin.oidc.SimpleSerialization.authenticationResultToJSON;
 
 /**
  * Class that provides implementation for passing AuthenticationResult from acquireToken* methods

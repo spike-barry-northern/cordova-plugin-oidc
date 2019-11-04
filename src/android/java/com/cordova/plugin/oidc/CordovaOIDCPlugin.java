@@ -35,7 +35,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-//import static com.microsoft.aad.adal.SimpleSerialization.tokenItemToJSON;
+import com.cordova.plugin.oidc.SimpleSerialization.tokenItemToJSON;
 
 public class CordovaOIDCPlugin extends CordovaPlugin {
 
@@ -52,8 +52,8 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
 
     public CordovaOIDCPlugin() {
 
-        // Android API < 18 does not support AndroidKeyStore so ADAL requires
-        // some extra work to crete and pass secret key to ADAL.
+        // Android API < 18 does not support AndroidKeyStore so OIDC requires
+        // some extra work to crete and pass secret key to OIDC.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             try {
                 SecretKey secretKey = this.createSecretKey(SECRET_KEY);
@@ -74,7 +74,6 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
 
             // Don't catch JSONException since it is already handled by Cordova
             String authority = args.getString(0);
-            // Due to https://github.com/AzureAD/azure-activedirectory-library-for-android/blob/master/src/src/com/microsoft/aad/adal/AuthenticationContext.java#L158
             // AuthenticationContext constructor validates authority by default
             boolean validateAuthority = args.optBoolean(1, true);
             return createAsync(authority, validateAuthority);
@@ -332,7 +331,7 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
     private boolean setLogger() {
         Logger.getInstance().setExternalLogger(new Logger.ILogger() {
             @Override
-            public void Log(String tag, String message, String additionalMessage, Logger.LogLevel level, ADALError errorCode) {
+            public void Log(String tag, String message, String additionalMessage, Logger.LogLevel level, OIDCError errorCode) {
 
                 JSONObject logItem = new JSONObject();
                 try {

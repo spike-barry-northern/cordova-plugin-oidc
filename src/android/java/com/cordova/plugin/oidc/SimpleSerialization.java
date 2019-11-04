@@ -11,7 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Class that responsible for simple serialization of ADAL primitives
+ * Class that responsible for simple serialization of OIDC primitives
  */
 class SimpleSerialization {
 
