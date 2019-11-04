@@ -3,7 +3,7 @@
  Copyright (c) Spike Global Ltd.  All Rights Reserved.
  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 -->
-<plugin id="cordova-plugin-ms-adal" version="0.10.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="cordova-plugin-oidc" version="0.10.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>OIDC for Cordova</name>
     <description>Provides OpenID Connect Authentication for cordova.</description>
 
