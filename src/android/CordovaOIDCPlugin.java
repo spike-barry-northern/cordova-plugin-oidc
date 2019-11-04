@@ -35,22 +35,22 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import static com.microsoft.aad.adal.SimpleSerialization.tokenItemToJSON;
+//import static com.microsoft.aad.adal.SimpleSerialization.tokenItemToJSON;
 
-public class CordovaAdalPlugin extends CordovaPlugin {
+public class CordovaOIDCPlugin extends CordovaPlugin {
 
     private static final PromptBehavior SHOW_PROMPT_ALWAYS = PromptBehavior.Always;
 
     private static final int GET_ACCOUNTS_PERMISSION_REQ_CODE = 0;
     private static final String PERMISSION_DENIED_ERROR =  "Permissions denied";
-    private static final String SECRET_KEY =  "com.microsoft.aad.CordovaADAL";
+    private static final String SECRET_KEY =  "com.corodva.oidc.CordovaOIDC";
 
     private final Hashtable<String, AuthenticationContext> contexts = new Hashtable<String, AuthenticationContext>();
     private AuthenticationContext currentContext;
     private CallbackContext callbackContext;
     private CallbackContext loggerCallbackContext;
 
-    public CordovaAdalPlugin() {
+    public CordovaOIDCPlugin() {
 
         // Android API < 18 does not support AndroidKeyStore so ADAL requires
         // some extra work to crete and pass secret key to ADAL.
@@ -59,7 +59,7 @@ public class CordovaAdalPlugin extends CordovaPlugin {
                 SecretKey secretKey = this.createSecretKey(SECRET_KEY);
                 AuthenticationSettings.INSTANCE.setSecretKey(secretKey.getEncoded());
             } catch (Exception e) {
-                Log.w("CordovaAdalPlugin", "Unable to create secret key: " + e.getMessage());
+                Log.w("CordovaOIDCPlugin", "Unable to create secret key: " + e.getMessage());
             }
         }
     }
