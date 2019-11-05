@@ -35,8 +35,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.cordova.plugin.oidc.SimpleSerialization.tokenItemToJSON;
-
 public class CordovaOIDCPlugin extends CordovaPlugin {
 
     private static final PromptBehavior SHOW_PROMPT_ALWAYS = PromptBehavior.Always;
@@ -397,4 +395,46 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         SecretKey secretKey = new SecretKeySpec(tempkey.getEncoded(), "AES");
         return secretKey;
     }
+
+	static JSONObject tokenItemToJSON(TokenCacheItem item) throws JSONException {
+		JSONObject result = new JSONObject();
+
+		result.put("accessToken", item.getAccessToken());
+		result.put("authority", item.getAuthority());
+		result.put("clientId", item.getClientId());
+		result.put("expiresOn", item.getExpiresOn());
+		result.put("isMultipleResourceRefreshToken", item.getIsMultiResourceRefreshToken());
+		result.put("resource", item.getResource());
+		result.put("tenantId", item.getTenantId());
+		result.put("idToken", item.getRawIdToken());
+
+		JSONObject userInfo = null;
+		try {
+			userInfo = userInfoToJSON(item.getUserInfo());
+		} catch (JSONException ignored) {}
+
+		result.put("userInfo", userInfo);
+
+		return result;
+	}
+
+	static JSONObject userInfoToJSON(UserInfo info) throws JSONException {
+
+		JSONObject userInfo = new JSONObject();
+
+		if (info == null) {
+			return userInfo;
+		}
+
+		userInfo.put("displayableId", info.getDisplayableId());
+		userInfo.put("familyName", info.getFamilyName());
+		userInfo.put("givenName", info.getGivenName());
+		userInfo.put("identityProvider", info.getIdentityProvider());
+		userInfo.put("passwordChangeUrl", info.getPasswordChangeUrl());
+		userInfo.put("passwordExpiresOn", info.getPasswordExpiresOn());
+		userInfo.put("uniqueId", info.getUserId());
+		userInfo.put("userId", info.getUserId());
+
+		return userInfo;
+	}
 }
