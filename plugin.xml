@@ -106,7 +106,7 @@
         <source-file src="src/android/lib/DefaultTokenCacheStore.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/DeserializationAuthenticationException.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/Discovery.java" target-dir="src/com/cordova/plugin/oidc" />
-        <source-file src="src/android/lib/DRSMetadata.java" target-dir="src/com/cordova/plugin/oidc" />
+        <!-- <source-file src="src/android/lib/DRSMetadata.java" target-dir="src/com/cordova/plugin/oidc" /> -->
         <source-file src="src/android/lib/DRSMetadataRequestor.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/EventStrings.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/ExceptionExtensions.java" target-dir="src/com/cordova/plugin/oidc" />
