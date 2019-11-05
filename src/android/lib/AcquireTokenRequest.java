@@ -29,7 +29,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -63,7 +63,7 @@ class AcquireTokenRequest {
      * Instance validation related calls are serviced inside Discovery as a
      * module.
      */
-    private Discovery mDiscovery = new Discovery();
+    //private Discovery mDiscovery = new Discovery();
 
     /**
      * Event Variable for the acquireToken API called. This will track whether the API succeeded or not.
@@ -171,22 +171,9 @@ class AcquireTokenRequest {
         apiEvent.setCorrelationId(authenticationRequest.getCorrelationId().toString());
         apiEvent.setRequestId(authenticationRequest.getTelemetryRequestId());
 
-        if (mAuthContext.getValidateAuthority()) {
-            try {
-                validateAuthority(authorityUrl, authenticationRequest.getUpnSuffix(), authenticationRequest.isSilent(), authenticationRequest.getCorrelationId());
-                apiEvent.setValidationStatus(EventStrings.AUTHORITY_VALIDATION_SUCCESS);
-            } catch (AuthenticationException ex) {
-                apiEvent.setValidationStatus(EventStrings.AUTHORITY_VALIDATION_FAILURE);
-                throw ex;
-            } finally {
-                Telemetry.getInstance().stopEvent(authenticationRequest.getTelemetryRequestId(), apiEvent,
-                        EventStrings.AUTHORITY_VALIDATION_EVENT);
-            }
-        } else {
-            apiEvent.setValidationStatus(EventStrings.AUTHORITY_VALIDATION_NOT_DONE);
-            Telemetry.getInstance().stopEvent(authenticationRequest.getTelemetryRequestId(), apiEvent,
-                    EventStrings.AUTHORITY_VALIDATION_EVENT);
-        }
+		apiEvent.setValidationStatus(EventStrings.AUTHORITY_VALIDATION_NOT_DONE);
+		Telemetry.getInstance().stopEvent(authenticationRequest.getTelemetryRequestId(), apiEvent,
+			EventStrings.AUTHORITY_VALIDATION_EVENT);
 
         // Verify broker redirect uri for non-silent request
         final BrokerProxy.SwitchToBroker canSwitchToBrokerFlag = mBrokerProxy.canSwitchToBroker(authenticationRequest.getAuthority());
@@ -210,32 +197,7 @@ class AcquireTokenRequest {
      * Perform authority validation.
      * True if the passed in authority is valid, false otherwise.
      */
-    private void validateAuthority(final URL authorityUrl,
-                                   @Nullable final String domain,
-                                   boolean isSilent,
-                                   final UUID correlationId) throws AuthenticationException {
-        if (mAuthContext.getIsAuthorityValidated()) {
-            return;
-        }
 
-        Logger.v(TAG, "Start validating authority");
-        mDiscovery.setCorrelationId(correlationId);
-
-        Discovery.verifyAuthorityValidInstance(authorityUrl);
-
-
-        if (!isSilent && UrlExtensions.isADFSAuthority(authorityUrl) && domain != null) {
-            mDiscovery.validateAuthorityADFS(authorityUrl, domain);
-        } else {
-            if (isSilent && UrlExtensions.isADFSAuthority(authorityUrl)) {
-                Logger.v(TAG, "Silent request. Skipping AD FS authority validation");
-            }
-            mDiscovery.validateAuthority(authorityUrl);
-        }
-
-        Logger.v(TAG, "The passed in authority is valid.");
-        mAuthContext.setIsAuthorityValidated(true);
-    }
 
     /**
      * 1. For Silent flow, we should always try to look local cache first.

@@ -66,9 +66,9 @@ class Oauth2 {
 
     private static final int MAX_RESILIENCY_ERROR_CODE = 599;
 
-    private static final String DEFAULT_AUTHORIZE_ENDPOINT = "/oauth2/authorize";
+    private static final String DEFAULT_AUTHORIZE_ENDPOINT = "/oauth2/v1/authorize";
 
-    private static final String DEFAULT_TOKEN_ENDPOINT = "/oauth2/token";
+    private static final String DEFAULT_TOKEN_ENDPOINT = "/oauth2/v1/token";
 
     Oauth2(AuthenticationRequest request) {
         mRequest = request;

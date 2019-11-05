@@ -56,10 +56,6 @@ final class HttpEvent extends DefaultEvent {
 
     void setHttpPath(final URL httpPath) {
         final String authority = httpPath.getAuthority();
-        final Discovery discovery = new Discovery();
-        if (!discovery.getValidHosts().contains(authority)) {
-            return;
-        }
 
         final String[] splitArray = httpPath.getPath().split("/");
 
