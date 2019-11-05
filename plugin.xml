@@ -77,7 +77,7 @@
         <source-file src="src/android/lib/AggregatedDispatcher.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/APIEvent.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/AuthenticationActivity.java" target-dir="src/com/cordova/plugin/oidc" />
-        <source-file src="src/android/android/android/lib/AuthenticationCallback.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationCallback.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/AuthenticationCancelError.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/AuthenticationConstants.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/AuthenticationContext.java" target-dir="src/com/cordova/plugin/oidc" />
