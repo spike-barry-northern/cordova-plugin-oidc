@@ -112,7 +112,7 @@
         <source-file src="src/android/lib/ExceptionExtensions.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/FileTokenCacheStore.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/HashMapExtensions.java" target-dir="src/com/cordova/plugin/oidc" />
-        <source-file src="src/android/lib/HttpAuthDialog.java" target-dir="src/com/cordova/plugin/oidc" />
+        <!-- <source-file src="src/android/lib/HttpAuthDialog.java" target-dir="src/com/cordova/plugin/oidc" /> -->
         <source-file src="src/android/lib/HttpEvent.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/HttpUrlConnectionFactory.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/HttpWebRequest.java" target-dir="src/com/cordova/plugin/oidc" />
@@ -158,7 +158,7 @@
         <source-file src="src/android/lib/WebRequestHandler.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/WebviewHelper.java" target-dir="src/com/cordova/plugin/oidc" />
         
-        <resource-file src="src/android/res/layout/activity_authentication.xml" target-dir="res/layout" />
+        <!-- <resource-file src="src/android/res/layout/activity_authentication.xml" target-dir="res/layout" />
         <resource-file src="src/android/res/layout/dialog_authentication.xml" target-dir="res/layout" />
         <resource-file src="src/android/res/layout/http_auth_dialog.xml" target-dir="res/layout" />
 
@@ -169,7 +169,7 @@
         <resource-file src="src/android/res/values-sw600dp/dimens.xml" target-dir="res/values-sw600dp" />
         <resource-file src="src/android/res/values-sw720dp-land/dimens.xml" target-dir="res/values-sw720dp-land" />
         <resource-file src="src/android/res/values-v11/styles.xml" target-dir="res/values-v11" />
-        <resource-file src="src/android/res/values-v14/styles.xml" target-dir="res/values-v14" />
+        <resource-file src="src/android/res/values-v14/styles.xml" target-dir="res/values-v14" /> -->
     </platform>
 
     

@@ -83,25 +83,25 @@ abstract class BasicWebViewClient extends WebViewClient {
         Logger.i(TAG, "onReceivedHttpAuthRequest for host:" + host, "");
         mUIEvent.setNTLM(true);
 
-        HttpAuthDialog authDialog = new HttpAuthDialog(mCallingContext, host, realm);
+        // HttpAuthDialog authDialog = new HttpAuthDialog(mCallingContext, host, realm);
 
-        authDialog.setOkListener(new HttpAuthDialog.OkListener() {
-            public void onOk(String host, String realm, String username, String password) {
-                Logger.i(TAG, "onReceivedHttpAuthRequest: handler proceed" + host, "");
-                handler.proceed(username, password);
-            }
-        });
+        // authDialog.setOkListener(new HttpAuthDialog.OkListener() {
+        //     public void onOk(String host, String realm, String username, String password) {
+        //         Logger.i(TAG, "onReceivedHttpAuthRequest: handler proceed" + host, "");
+        //         handler.proceed(username, password);
+        //     }
+        // });
 
-        authDialog.setCancelListener(new HttpAuthDialog.CancelListener() {
-            public void onCancel() {
-                Logger.i(TAG, "onReceivedHttpAuthRequest: handler cancelled", "");
-                handler.cancel();
-                cancelWebViewRequest();
-            }
-        });
+        // authDialog.setCancelListener(new HttpAuthDialog.CancelListener() {
+        //     public void onCancel() {
+        //         Logger.i(TAG, "onReceivedHttpAuthRequest: handler cancelled", "");
+        //         handler.cancel();
+        //         cancelWebViewRequest();
+        //     }
+        // });
 
-        Logger.i(TAG, "onReceivedHttpAuthRequest: show dialog", "");
-        authDialog.show();
+        // Logger.i(TAG, "onReceivedHttpAuthRequest: show dialog", "");
+        // authDialog.show();
     }
     
     @Override
