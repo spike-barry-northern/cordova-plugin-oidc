@@ -32,8 +32,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -60,8 +60,6 @@ public class AuthenticationContext {
     private Context mContext;
 
     private String mAuthority;
-
-    private boolean mValidateAuthority;
 
     private boolean mIsAuthorityValidated;
 
@@ -90,28 +88,13 @@ public class AuthenticationContext {
      *                          the SharedPreferences as a Default cache storage. It does not
      *                          need to be activity.
      * @param authority         Authority url to send code and token requests
-     * @param validateAuthority validate authority before sending token request
      */
-    public AuthenticationContext(Context appContext, String authority, boolean validateAuthority) {
+    public AuthenticationContext(Context appContext, String authority) {
         // Fixes are required for SDK 16-18
         // The fixes need to be applied before any use of Java Cryptography
         // Architecture primitives. Default cache uses encryption
         PRNGFixes.apply();
-        initialize(appContext, authority, new DefaultTokenCacheStore(appContext), validateAuthority, true);
-    }
-
-    /**
-     * Constructs context to use with known authority to get the token. It uses
-     * provided cache.
-     *
-     * @param appContext        {@link Context}
-     * @param authority         Authority Url
-     * @param validateAuthority true/false for validation
-     * @param tokenCacheStore   Set to null if you don't want cache.
-     */
-    public AuthenticationContext(Context appContext, String authority, boolean validateAuthority,
-                                 ITokenCacheStore tokenCacheStore) {
-        initialize(appContext, authority, tokenCacheStore, validateAuthority, false);
+        initialize(appContext, authority, new DefaultTokenCacheStore(appContext), true);
     }
 
     /**
@@ -125,11 +108,10 @@ public class AuthenticationContext {
      */
     public AuthenticationContext(Context appContext, String authority,
                                  ITokenCacheStore tokenCacheStore) {
-        initialize(appContext, authority, tokenCacheStore, true, false);
+        initialize(appContext, authority, tokenCacheStore,false);
     }
 
-    private void initialize(Context appContext, String authority, ITokenCacheStore tokenCacheStore,
-                            boolean validateAuthority, boolean defaultCache) {
+    private void initialize(Context appContext, String authority, ITokenCacheStore tokenCacheStore, boolean defaultCache) {
         if (appContext == null) {
             throw new IllegalArgumentException("appContext");
         }
@@ -142,8 +124,7 @@ public class AuthenticationContext {
         }
         mContext = appContext;
         checkInternetPermission();
-        mAuthority = extractAuthority(authority);
-        mValidateAuthority = validateAuthority;
+        mAuthority = authority;
         mTokenCacheStore = tokenCacheStore;
     }
 
@@ -184,13 +165,6 @@ public class AuthenticationContext {
      */
     public String getAuthority() {
         return mAuthority;
-    }
-
-    /**
-     * @return True If developer turn on the authority validation, false otherwise.
-     */
-    public boolean getValidateAuthority() {
-        return mValidateAuthority;
     }
 
     /**
@@ -258,8 +232,7 @@ public class AuthenticationContext {
                              @Nullable String redirectUri, @Nullable String loginHint,
                              AuthenticationCallback<AuthenticationResult> callback) {
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_1);
             apiEvent.setLoginHint(loginHint);
@@ -299,8 +272,7 @@ public class AuthenticationContext {
                              @Nullable String redirectUri, @Nullable String loginHint, @Nullable String extraQueryParameters,
                              AuthenticationCallback<AuthenticationResult> callback) {
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_2);
             apiEvent.setLoginHint(loginHint);
@@ -336,8 +308,7 @@ public class AuthenticationContext {
     public void acquireToken(Activity activity, String resource, String clientId,
                              @Nullable String redirectUri, @Nullable PromptBehavior prompt,
                              AuthenticationCallback<AuthenticationResult> callback) {
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(null, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
 
             final String requestId = Telemetry.registerNewRequest();
@@ -374,8 +345,7 @@ public class AuthenticationContext {
     public void acquireToken(Activity activity, String resource, String clientId,
                              @Nullable String redirectUri, @Nullable PromptBehavior prompt, @Nullable String extraQueryParameters,
                              AuthenticationCallback<AuthenticationResult> callback) {
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(null, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
 
             final String requestId = Telemetry.registerNewRequest();
@@ -416,8 +386,7 @@ public class AuthenticationContext {
                              @Nullable String redirectUri, @Nullable String loginHint, @Nullable PromptBehavior prompt,
                              @Nullable String extraQueryParameters, AuthenticationCallback<AuthenticationResult> callback) {
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_5);
@@ -460,8 +429,7 @@ public class AuthenticationContext {
                              @Nullable final String claims, final AuthenticationCallback<AuthenticationResult> callback) {
         throwIfClaimsInBothExtraQpAndClaimsParameter(claims, extraQueryParameters);
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_8);
@@ -500,8 +468,7 @@ public class AuthenticationContext {
                              @Nullable String redirectUri, @Nullable String loginHint, @Nullable PromptBehavior prompt,
                              @Nullable String extraQueryParameters, AuthenticationCallback<AuthenticationResult> callback) {
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_6);
@@ -543,8 +510,7 @@ public class AuthenticationContext {
                              @Nullable final String claims, final AuthenticationCallback<AuthenticationResult> callback) {
         throwIfClaimsInBothExtraQpAndClaimsParameter(claims, extraQueryParameters);
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_9);
@@ -584,8 +550,7 @@ public class AuthenticationContext {
                              @Nullable String loginHint, @Nullable PromptBehavior prompt, @Nullable String extraQueryParameters,
                              AuthenticationCallback<AuthenticationResult> callback) {
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_7);
@@ -629,8 +594,7 @@ public class AuthenticationContext {
                              @Nullable final String claims, final AuthenticationCallback<AuthenticationResult> callback) {
         throwIfClaimsInBothExtraQpAndClaimsParameter(claims, extraQueryParameters);
 
-        if (checkPreRequirements(resource, clientId, callback)
-                && checkADFSValidationRequirements(loginHint, callback)) {
+        if (checkPreRequirements(resource, clientId, callback)) {
             redirectUri = getRedirectUri(redirectUri);
             final String requestId = Telemetry.registerNewRequest();
             final APIEvent apiEvent = createApiEvent(mContext, clientId, requestId, EventStrings.ACQUIRE_TOKEN_10);
@@ -668,7 +632,6 @@ public class AuthenticationContext {
             throws AuthenticationException, InterruptedException {
 
         checkPreRequirements(resource, clientId);
-        checkADFSValidationRequirements(null);
         final AtomicReference<AuthenticationResult> authenticationResult = new AtomicReference<>();
         final AtomicReference<Exception> exception = new AtomicReference<>();
         final CountDownLatch latch = new CountDownLatch(1);
@@ -755,7 +718,6 @@ public class AuthenticationContext {
         final SettableFuture<AuthenticationResult> futureTask = new SettableFuture<>();
         try {
             checkPreRequirements(resource, clientId);
-            checkADFSValidationRequirements(null);
         } catch (final AuthenticationException e) {
             callback.onError(e);
             futureTask.setException(e);
@@ -828,7 +790,7 @@ public class AuthenticationContext {
                                         String clientId,
                                         String userId,
                                         AuthenticationCallback<AuthenticationResult> callback) {
-        if (!checkPreRequirements(resource, clientId, callback) || !checkADFSValidationRequirements(null, callback)) {
+        if (!checkPreRequirements(resource, clientId, callback)) {
             // AD FS validation cannot be perfomed, stop executing
             return;
         }
@@ -864,9 +826,6 @@ public class AuthenticationContext {
     @Deprecated
     public void acquireTokenByRefreshToken(String refreshToken, String clientId,
                                            AuthenticationCallback<AuthenticationResult> callback) {
-        if (!checkADFSValidationRequirements(null, callback)) {
-            return;
-        }
 
         if (StringExtensions.isNullOrBlank(refreshToken)) {
             throw new IllegalArgumentException("Refresh token is not provided");
@@ -915,9 +874,6 @@ public class AuthenticationContext {
     @Deprecated
     public void acquireTokenByRefreshToken(String refreshToken, String clientId, String resource,
                                            AuthenticationCallback<AuthenticationResult> callback) {
-        if (!checkADFSValidationRequirements(null, callback)) {
-            return;
-        }
 
         if (StringExtensions.isNullOrBlank(refreshToken)) {
             throw new IllegalArgumentException("Refresh token is not provided");
@@ -1118,36 +1074,6 @@ public class AuthenticationContext {
         }
     }
 
-    private boolean checkADFSValidationRequirements(@Nullable final String loginHint)
-            throws AuthenticationException {
-        final URL authorityURL = StringExtensions.getUrl(mAuthority);
-        if (mAuthority == null || authorityURL == null) {
-            throw new AuthenticationException(OIDCError.DEVELOPER_AUTHORITY_IS_NOT_VALID_URL);
-        }
-        if (UrlExtensions.isADFSAuthority(authorityURL) // is it ADFS?
-                && mValidateAuthority // should it be validated?
-                && !mIsAuthorityValidated // has it not already been validated?
-                && loginHint == null) { // did you provide insufficient info to perform the validation?
-            throw new AuthenticationException(
-                    OIDCError.DEVELOPER_AUTHORITY_CAN_NOT_BE_VALIDED,
-                    "AD FS validation requires a loginHint be provided or an "
-                            + getClass().getSimpleName()
-                            + " in which the current authority has previously been validated."
-            );
-        }
-        return true;
-    }
-
-    private boolean checkADFSValidationRequirements(
-            @Nullable final String loginHint,
-            final AuthenticationCallback<AuthenticationResult> callback) {
-        try {
-            return checkADFSValidationRequirements(loginHint);
-        } catch (AuthenticationException e) {
-            callback.onError(e);
-            return false;
-        }
-    }
 
     private String getRedirectUri(String inputRedirectUri) {
         final String redirectUri;
@@ -1162,28 +1088,6 @@ public class AuthenticationContext {
 
     private AcquireTokenRequest createAcquireTokenRequest(final APIEvent apiEvent) {
         return new AcquireTokenRequest(mContext, this, apiEvent);
-    }
-
-    private static String extractAuthority(String authority) {
-        if (!StringExtensions.isNullOrBlank(authority)) {
-
-            // excluding the starting https:// or http://
-            int thirdSlash = authority.indexOf('/', EXCLUDE_INDEX);
-
-            // third slash is not the last character
-            if (thirdSlash >= 0 && thirdSlash != (authority.length() - 1)) {
-                int fourthSlash = authority.indexOf("/", thirdSlash + 1);
-                if (fourthSlash < 0 || fourthSlash > thirdSlash + 1) {
-                    if (fourthSlash >= 0) {
-                        return authority.substring(0, fourthSlash);
-                    }
-
-                    return authority;
-                }
-            }
-        }
-
-        throw new IllegalArgumentException("authority");
     }
 
     private void checkInternetPermission() {

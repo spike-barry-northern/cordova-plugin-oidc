@@ -74,7 +74,7 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
             String authority = args.getString(0);
             // AuthenticationContext constructor validates authority by default
             boolean validateAuthority = args.optBoolean(1, true);
-            return createAsync(authority, validateAuthority);
+            return createAsync(authority);
 
         } else if (action.equals("acquireTokenAsync")) {
 
@@ -91,7 +91,6 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
                 public void run() {
                     acquireTokenAsync(
                             authority,
-                            validateAuthority,
                             resourceUrl,
                             clientId,
                             redirectUrl,
@@ -117,7 +116,6 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
                 public void run() {
                     acquireTokenSilentAsync(
                             authority,
-                            validateAuthority,
                             resourceUrl, clientId, userId);
                 }
             });
@@ -128,13 +126,13 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
 
             String authority = args.getString(0);
             boolean validateAuthority = args.optBoolean(1, true);
-            return clearTokenCache(authority, validateAuthority);
+            return clearTokenCache(authority);
 
         } else if (action.equals("tokenCacheReadItems")){
 
             String authority = args.getString(0);
             boolean validateAuthority = args.optBoolean(1, true);
-            return readTokenCacheItems(authority, validateAuthority);
+            return readTokenCacheItems(authority);
 
         } else if (action.equals("tokenCacheDeleteItem")){
 
@@ -147,7 +145,7 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
             String userId = args.getString(5);
             boolean isMultipleResourceRefreshToken = args.getBoolean(6);
 
-            return deleteTokenCacheItem(authority, validateAuthority, itemAuthority, resource, clientId, userId, isMultipleResourceRefreshToken);
+            return deleteTokenCacheItem(authority, itemAuthority, resource, clientId, userId, isMultipleResourceRefreshToken);
         } else if (action.equals("setUseBroker")) {
 
             boolean useBroker = args.getBoolean(0);
@@ -163,10 +161,10 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         return false;
     }
 
-    private boolean createAsync(String authority, boolean validateAuthority) {
+    private boolean createAsync(String authority) {
 
         try {
-            getOrCreateContext(authority, validateAuthority);
+            getOrCreateContext(authority);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -176,11 +174,11 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         return true;
     }
 
-    private void acquireTokenAsync(String authority, boolean validateAuthority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams) {
+    private void acquireTokenAsync(String authority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams) {
 
         final AuthenticationContext authContext;
         try{
-            authContext = getOrCreateContext(authority, validateAuthority);
+            authContext = getOrCreateContext(authority);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return;
@@ -209,11 +207,11 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
                 new DefaultAuthenticationCallback(callbackContext));
     }
 
-    private void acquireTokenSilentAsync(String authority, boolean validateAuthority, String resourceUrl, String clientId, String userId) {
+    private void acquireTokenSilentAsync(String authority, String resourceUrl, String clientId, String userId) {
 
         final AuthenticationContext authContext;
         try{
-            authContext = getOrCreateContext(authority, validateAuthority);
+            authContext = getOrCreateContext(authority);
 
             //  We should retrieve userId from broker cache since local is always empty
             boolean useBroker = AuthenticationSettings.INSTANCE.getUseBroker();
@@ -239,11 +237,11 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         authContext.acquireTokenSilentAsync(resourceUrl, clientId, userId, new DefaultAuthenticationCallback(callbackContext));
     }
 
-    private boolean readTokenCacheItems(String authority, boolean validateAuthority) throws JSONException {
+    private boolean readTokenCacheItems(String authority) throws JSONException {
 
         final AuthenticationContext authContext;
         try{
-            authContext = getOrCreateContext(authority, validateAuthority);
+            authContext = getOrCreateContext(authority);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -266,12 +264,12 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         return true;
     }
 
-    private boolean deleteTokenCacheItem(String authority, boolean validateAuthority, String itemAuthority,  String resource,
+    private boolean deleteTokenCacheItem(String authority, String itemAuthority,  String resource,
                                          String clientId, String userId, boolean isMultipleResourceRefreshToken) {
 
         final AuthenticationContext authContext;
         try{
-            authContext = getOrCreateContext(authority, validateAuthority);
+            authContext = getOrCreateContext(authority);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -284,10 +282,10 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         return true;
     }
 
-    private boolean clearTokenCache(String authority, boolean validateAuthority) {
+    private boolean clearTokenCache(String authority) {
         final AuthenticationContext authContext;
         try{
-            authContext = getOrCreateContext(authority, validateAuthority);
+            authContext = getOrCreateContext(authority);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -375,11 +373,11 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         callbackContext.success();
     }
 
-    private AuthenticationContext getOrCreateContext (String authority, boolean validateAuthority) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    private AuthenticationContext getOrCreateContext (String authority) throws NoSuchPaddingException, NoSuchAlgorithmException {
 
         AuthenticationContext result;
         if (!contexts.containsKey(authority)) {
-            result = new AuthenticationContext(this.cordova.getActivity(), authority, validateAuthority);
+            result = new AuthenticationContext(this.cordova.getActivity(), authority);
             this.contexts.put(authority, result);
         } else {
             result = contexts.get(authority);
