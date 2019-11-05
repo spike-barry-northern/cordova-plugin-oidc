@@ -66,6 +66,112 @@
         <source-file src="src/android/DefaultAuthenticationCallback.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/SimpleSerialization.java" target-dir="src/com/cordova/plugin/oidc" />
 
+        <source-file src="src/android/lib/IBrokerAccountService.aidl" target-dir="src/com/cordova/plugin/oidc" />
+        
+        <source-file src="src/android/lib/AbstractMetadataRequestor.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AcquireTokenInteractiveRequest.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AcquireTokenRequest.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AcquireTokenSilentHandler.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AcquireTokenWithBrokerRequest.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ADFSWebFingerValidator.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AggregatedDispatcher.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/APIEvent.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationActivity.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/android/android/lib/AuthenticationCallback.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationCancelError.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationConstants.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationContext.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationDialog.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationException.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationParameters.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationRequest.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationRequestState.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationResult.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationServerProtocolException.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/AuthenticationSettings.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/BasicWebViewClient.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/BrokerAccountServiceHandler.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/BrokerEvent.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/BrokerProxy.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/CacheEvent.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/CacheKey.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/Callback.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/CallbackExecutor.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ChallengeResponseBuilder.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ClientMetrics.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DateTimeAdapter.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DefaultConnectionService.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DefaultDispatcher.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DefaultEvent.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DefaultTokenCacheStore.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DeserializationAuthenticationException.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/Discovery.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DRSMetadata.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/DRSMetadataRequestor.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/EventStrings.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ExceptionExtensions.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/FileTokenCacheStore.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/HashMapExtensions.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/HttpAuthDialog.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/HttpEvent.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/HttpUrlConnectionFactory.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/HttpWebRequest.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/HttpWebResponse.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IBrokerProxy.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IConnectionService.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IdentityProviderService.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IDeviceCertificate.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IDispatcher.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IdToken.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IEvents.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IJWSBuilder.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ITokenCacheStore.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ITokenStoreQuery.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IWebRequestHandler.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IWindowComponent.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/JWSBuilder.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/Link.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/Logger.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/MemoryTokenCacheStore.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/Oauth2.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/OIDCError.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/PackageHelper.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/PRNGFixes.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/PromptBehavior.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ResourceAuthenticationChallengeException.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/ServerRespondingWithRetryableException.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/SSOStateSerializer.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/StorageHelper.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/StringExtensions.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/Telemetry.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/TokenCacheAccessor.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/TokenCacheItem.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/TokenCacheItemSerializationAdapater.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/UIEvent.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/UrlExtensions.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/UsageAuthenticationException.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/UserInfo.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/Utility.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/WebFingerMetadata.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/WebFingerMetadataRequestor.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/WebFingerMetadataRequestParameters.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/WebRequestHandler.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/WebviewHelper.java" target-dir="src/com/cordova/plugin/oidc" />
+
+        <source-file src="src/res/layout/xxxxxx.java" target-dir="src/com/cordova/plugin/oidc" />
+        
+        <resource-file src="src/android/res/layout/activity_authentication.xml" target-dir="res/layout" />
+        <resource-file src="src/android/res/layout/dialog_authentication.xml" target-dir="res/layout" />
+        <resource-file src="src/android/res/layout/http_auth_dialog.xml" target-dir="res/layout" />
+
+        <resource-file src="src/android/res/values/dimens.xml" target-dir="res/values" />
+        <resource-file src="src/android/res/values/strings.xml" target-dir="res/values" />
+        <resource-file src="src/android/res/values/styles.xml" target-dir="res/values" />
+
+        <resource-file src="src/android/res/values-sw600dp/dimens.xml" target-dir="res/values-sw600dp" />
+        <resource-file src="src/android/res/values-sw720dp-land/dimens.xml" target-dir="res/values-sw720dp-land" />
+        <resource-file src="src/android/res/values-v11/styles.xml" target-dir="res/values-v11" />
+        <resource-file src="src/android/res/values-v14/styles.xml" target-dir="res/values-v14" />
     </platform>
 
     
