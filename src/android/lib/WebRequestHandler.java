@@ -79,13 +79,13 @@ public class WebRequestHandler implements IWebRequestHandler {
     private Map<String, String> updateHeaders(final Map<String, String> headers) {
 
         if (mRequestCorrelationId != null) {
-            headers.put(AuthenticationConstants.AAD.CLIENT_REQUEST_ID, mRequestCorrelationId.toString());
+            headers.put(AuthenticationConstants.OIDC.CLIENT_REQUEST_ID, mRequestCorrelationId.toString());
         }
 
-        headers.put(AuthenticationConstants.AAD.ADAL_ID_PLATFORM, "Android");
-        headers.put(AuthenticationConstants.AAD.ADAL_ID_VERSION, AuthenticationContext.getVersionName());
-        headers.put(AuthenticationConstants.AAD.ADAL_ID_OS_VER, "" + Build.VERSION.SDK_INT);
-        headers.put(AuthenticationConstants.AAD.ADAL_ID_DM, android.os.Build.MODEL);
+        headers.put(AuthenticationConstants.OIDC.ADAL_ID_PLATFORM, "Android");
+        headers.put(AuthenticationConstants.OIDC.ADAL_ID_VERSION, AuthenticationContext.getVersionName());
+        headers.put(AuthenticationConstants.OIDC.ADAL_ID_OS_VER, "" + Build.VERSION.SDK_INT);
+        headers.put(AuthenticationConstants.OIDC.ADAL_ID_DM, android.os.Build.MODEL);
 
         return headers;
     }

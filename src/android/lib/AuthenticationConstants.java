@@ -53,34 +53,34 @@ public final class AuthenticationConstants {
     public static final class Browser {
 
         /** Represents the request object used to construst request sent to authorize endpoint. */
-        public static final String REQUEST_MESSAGE = "com.microsoft.aad.adal:BrowserRequestMessage";
+        public static final String REQUEST_MESSAGE = "com.cordova.plugin.oidc:BrowserRequestMessage";
 
         /** Represents the request object returned from webview. */
-        public static final String RESPONSE_REQUEST_INFO = "com.microsoft.aad.adal:BrowserRequestInfo";
+        public static final String RESPONSE_REQUEST_INFO = "com.cordova.plugin.oidc:BrowserRequestInfo";
 
         /** Represents the error code returned from webview. */
-        public static final String RESPONSE_ERROR_CODE = "com.microsoft.aad.adal:BrowserErrorCode";
+        public static final String RESPONSE_ERROR_CODE = "com.cordova.plugin.oidc:BrowserErrorCode";
 
         /** Represents the error message returned from webview. */
-        public static final String RESPONSE_ERROR_MESSAGE = "com.microsoft.aad.adal:BrowserErrorMessage";
+        public static final String RESPONSE_ERROR_MESSAGE = "com.cordova.plugin.oidc:BrowserErrorMessage";
 
         /** Represents the exception returned from webview. */
-        public static final String RESPONSE_AUTHENTICATION_EXCEPTION = "com.microsoft.aad.adal:AuthenticationException";
+        public static final String RESPONSE_AUTHENTICATION_EXCEPTION = "com.cordova.plugin.oidc:AuthenticationException";
 
         /** Represents the final url that webview receives. */
-        public static final String RESPONSE_FINAL_URL = "com.microsoft.aad.adal:BrowserFinalUrl";
+        public static final String RESPONSE_FINAL_URL = "com.cordova.plugin.oidc:BrowserFinalUrl";
 
         /** Represents the response returned from broker. */
-        public static final String RESPONSE = "com.microsoft.aad.adal:BrokerResponse";
+        public static final String RESPONSE = "com.cordova.plugin.oidc:BrokerResponse";
 
         /** Represent the error code of invalid request returned from webview. */
         public static final String WEBVIEW_INVALID_REQUEST = "Invalid request";
 
         /** Used by LocalBroadcastReceivers to filter the intent string of request cancellation. */
-        public static final String ACTION_CANCEL = "com.microsoft.aad.adal:BrowserCancel";
+        public static final String ACTION_CANCEL = "com.cordova.plugin.oidc:BrowserCancel";
 
         /** Used as the key to send back request id. */
-        public static final String REQUEST_ID = "com.microsoft.aad.adal:RequestId";
+        public static final String REQUEST_ID = "com.cordova.plugin.oidc:RequestId";
     }
 
     /**
@@ -222,7 +222,7 @@ public final class AuthenticationConstants {
     /**
      * Represents the constants value for Active Directory.
      */
-    public static final class AAD {
+    public static final class OIDC {
 
         /** AAD OAuth2 extension strings. */
         public static final String RESOURCE = "resource";

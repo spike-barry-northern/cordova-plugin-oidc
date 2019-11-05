@@ -104,7 +104,7 @@ class Oauth2 {
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
                         URLEncoder.encode(mRequest.getClientId(),
                                 AuthenticationConstants.ENCODING_UTF8))
-                .appendQueryParameter(AuthenticationConstants.AAD.RESOURCE,
+                .appendQueryParameter(AuthenticationConstants.OIDC.RESOURCE,
                         URLEncoder.encode(mRequest.getResource(),
                                 AuthenticationConstants.ENCODING_UTF8))
                 .appendQueryParameter(AuthenticationConstants.OAuth2.REDIRECT_URI,
@@ -113,26 +113,26 @@ class Oauth2 {
                 .appendQueryParameter(AuthenticationConstants.OAuth2.STATE, encodeProtocolState());
 
         if (!StringExtensions.isNullOrBlank(mRequest.getLoginHint())) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.AAD.LOGIN_HINT,
+            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.LOGIN_HINT,
                     URLEncoder.encode(mRequest.getLoginHint(),
                             AuthenticationConstants.ENCODING_UTF8));
         }
 
         // append device and platform info in the query parameters
-        queryParameter.appendQueryParameter(AuthenticationConstants.AAD.ADAL_ID_PLATFORM,
-                        AuthenticationConstants.AAD.ADAL_ID_PLATFORM_VALUE)
-                .appendQueryParameter(AuthenticationConstants.AAD.ADAL_ID_VERSION,
+        queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_PLATFORM,
+                        AuthenticationConstants.OIDC.ADAL_ID_PLATFORM_VALUE)
+                .appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_VERSION,
                         URLEncoder.encode(AuthenticationContext.getVersionName(),
                                 AuthenticationConstants.ENCODING_UTF8))
-                .appendQueryParameter(AuthenticationConstants.AAD.ADAL_ID_OS_VER,
+                .appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_OS_VER,
                         URLEncoder.encode(String.valueOf(Build.VERSION.SDK_INT),
                                 AuthenticationConstants.ENCODING_UTF8))
-                .appendQueryParameter(AuthenticationConstants.AAD.ADAL_ID_DM,
+                .appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_DM,
                         URLEncoder.encode(android.os.Build.MODEL,
                                 AuthenticationConstants.ENCODING_UTF8));
 
         if (mRequest.getCorrelationId() != null) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.AAD.CLIENT_REQUEST_ID,
+            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.CLIENT_REQUEST_ID,
                     URLEncoder.encode(mRequest.getCorrelationId().toString(),
                             AuthenticationConstants.ENCODING_UTF8));
         }
@@ -140,13 +140,13 @@ class Oauth2 {
         // Setting prompt behavior to always will skip the cookies for webview.
         // It is added to authorization url.
         if (mRequest.getPrompt() == PromptBehavior.Always) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.AAD.QUERY_PROMPT,
-                    URLEncoder.encode(AuthenticationConstants.AAD.QUERY_PROMPT_VALUE,
+            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.QUERY_PROMPT,
+                    URLEncoder.encode(AuthenticationConstants.OIDC.QUERY_PROMPT_VALUE,
                             AuthenticationConstants.ENCODING_UTF8));
         } else if (mRequest.getPrompt() == PromptBehavior.REFRESH_SESSION) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.AAD.QUERY_PROMPT,
+            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.QUERY_PROMPT,
                     URLEncoder.encode(
-                            AuthenticationConstants.AAD.QUERY_PROMPT_REFRESH_SESSION_VALUE,
+                            AuthenticationConstants.OIDC.QUERY_PROMPT_REFRESH_SESSION_VALUE,
                             AuthenticationConstants.ENCODING_UTF8));
         }
 
@@ -212,7 +212,7 @@ class Oauth2 {
                 StringExtensions.urlFormEncode(mRequest.getClientId()));
 
         if (!StringExtensions.isNullOrBlank(mRequest.getResource())) {
-            message = String.format("%s&%s=%s", message, AuthenticationConstants.AAD.RESOURCE,
+            message = String.format("%s&%s=%s", message, AuthenticationConstants.OIDC.RESOURCE,
                     StringExtensions.urlFormEncode(mRequest.getResource()));
         }
 
@@ -228,7 +228,7 @@ class Oauth2 {
             // Error response from the server
             // CorrelationID will be same as in request headers. This is
             // retrieved in result in case it was not set.
-            String correlationInResponse = response.get(AuthenticationConstants.AAD.CORRELATION_ID);
+            String correlationInResponse = response.get(AuthenticationConstants.OIDC.CORRELATION_ID);
             if (!StringExtensions.isNullOrBlank(correlationInResponse)) {
                 try {
                     final UUID correlationId = UUID.fromString(correlationInResponse);
@@ -264,7 +264,7 @@ class Oauth2 {
                             : Integer.parseInt(expiresIn));
 
             final String refreshToken = response.get(AuthenticationConstants.OAuth2.REFRESH_TOKEN);
-            if (response.containsKey(AuthenticationConstants.AAD.RESOURCE)
+            if (response.containsKey(AuthenticationConstants.OIDC.RESOURCE)
                     && !StringExtensions.isNullOrBlank(refreshToken)) {
                 isMultiResourceToken = true;
             }
@@ -616,19 +616,19 @@ class Oauth2 {
         String correlationIdInHeader = null;
         if (webResponse.getResponseHeaders() != null) {
             if (webResponse.getResponseHeaders().containsKey(
-                    AuthenticationConstants.AAD.CLIENT_REQUEST_ID)) {
+                    AuthenticationConstants.OIDC.CLIENT_REQUEST_ID)) {
                 // headers are returning as a list
                 List<String> listOfHeaders = webResponse.getResponseHeaders().get(
-                        AuthenticationConstants.AAD.CLIENT_REQUEST_ID);
+                        AuthenticationConstants.OIDC.CLIENT_REQUEST_ID);
                 if (listOfHeaders != null && listOfHeaders.size() > 0) {
                     correlationIdInHeader = listOfHeaders.get(0);
                 }
             }
 
-            if (webResponse.getResponseHeaders().containsKey(AuthenticationConstants.AAD.REQUEST_ID_HEADER)) {
+            if (webResponse.getResponseHeaders().containsKey(AuthenticationConstants.OIDC.REQUEST_ID_HEADER)) {
                 // headers are returning as a list
                 List<String> listOfHeaders = webResponse.getResponseHeaders().get(
-                        AuthenticationConstants.AAD.REQUEST_ID_HEADER);
+                        AuthenticationConstants.OIDC.REQUEST_ID_HEADER);
                 if (listOfHeaders != null && listOfHeaders.size() > 0) {
                     Logger.v(TAG, "x-ms-request-id: " + listOfHeaders.get(0));
                     httpEvent.setRequestIdHeader(listOfHeaders.get(0));

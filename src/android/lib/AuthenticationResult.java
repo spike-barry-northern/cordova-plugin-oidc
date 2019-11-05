@@ -172,7 +172,7 @@ public class AuthenticationResult implements Serializable {
      * @return AuthorizationHeader
      */
     public String createAuthorizationHeader() {
-        return AuthenticationConstants.AAD.BEARER + " " + getAccessToken();
+        return AuthenticationConstants.OIDC.BEARER + " " + getAccessToken();
     }
 
     /**

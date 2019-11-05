@@ -124,7 +124,7 @@ final class DRSMetadataRequestor extends AbstractMetadataRequestor<DRSMetadata, 
         final Map<String, String> headers = new HashMap<>();
         headers.put(ACCEPT, APPLICATION_JSON);
         if (null != getCorrelationId()) {
-            headers.put(AuthenticationConstants.AAD.CLIENT_REQUEST_ID, getCorrelationId().toString());
+            headers.put(AuthenticationConstants.OIDC.CLIENT_REQUEST_ID, getCorrelationId().toString());
         }
 
         final DRSMetadata metadata;
