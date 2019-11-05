@@ -157,8 +157,6 @@
         <source-file src="src/android/lib/WebFingerMetadataRequestParameters.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/WebRequestHandler.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/WebviewHelper.java" target-dir="src/com/cordova/plugin/oidc" />
-
-        <source-file src="src/res/layout/xxxxxx.java" target-dir="src/com/cordova/plugin/oidc" />
         
         <resource-file src="src/android/res/layout/activity_authentication.xml" target-dir="res/layout" />
         <resource-file src="src/android/res/layout/dialog_authentication.xml" target-dir="res/layout" />
