@@ -59,6 +59,8 @@ class IdToken {
 
     private long mPasswordExpiration;
 
+	private int mExpireation;
+
     private String mPasswordChangeUrl;
 
     public IdToken(String idtoken) throws AuthenticationException {
@@ -79,6 +81,11 @@ class IdToken {
             if (!StringExtensions.isNullOrBlank(expiration)) {
                 this.mPasswordExpiration = Long.parseLong(expiration);
             }
+
+			final String tokenExpiration = responseItems.get(AuthenticationConstants.OAuth2.ID_TOKEN_EXPIRATION);
+			if (!StringExtensions.isNullOrBlank(tokenExpiration)) {
+				this.mExpireation = Integer.parseInt(tokenExpiration);
+			}
 
             this.mPasswordChangeUrl = responseItems.get(AuthenticationConstants.OAuth2.ID_TOKEN_PASSWORD_CHANGE_URL);
         }
@@ -123,6 +130,10 @@ class IdToken {
     public String getPasswordChangeUrl() {
         return mPasswordChangeUrl;
     }
+
+	public int getExpiration() {
+		return mExpireation;
+	}
 
     private Map<String, String> parseJWT(final String idtoken) throws AuthenticationException {
         final String idbody = extractJWTBody(idtoken);

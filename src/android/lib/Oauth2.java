@@ -100,63 +100,24 @@ class Oauth2 {
     public String getAuthorizationEndpointQueryParameters() throws UnsupportedEncodingException {
         final Uri.Builder queryParameter = new Uri.Builder();
         queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE,
-                        AuthenticationConstants.OAuth2.CODE)
+                        AuthenticationConstants.OAuth2.ID_TOKEN)
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
                         URLEncoder.encode(mRequest.getClientId(),
-                                AuthenticationConstants.ENCODING_UTF8))
-                .appendQueryParameter(AuthenticationConstants.OIDC.RESOURCE,
-                        URLEncoder.encode(mRequest.getResource(),
                                 AuthenticationConstants.ENCODING_UTF8))
                 .appendQueryParameter(AuthenticationConstants.OAuth2.REDIRECT_URI,
                         URLEncoder.encode(mRequest.getRedirectUri(),
                                 AuthenticationConstants.ENCODING_UTF8))
-                .appendQueryParameter(AuthenticationConstants.OAuth2.STATE, encodeProtocolState());
+                .appendQueryParameter(AuthenticationConstants.OAuth2.STATE, encodeProtocolState())
+			.appendQueryParameter(AuthenticationConstants.OAuth2.NONCE, UUID.randomUUID().toString());
 
-        if (!StringExtensions.isNullOrBlank(mRequest.getLoginHint())) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.LOGIN_HINT,
-                    URLEncoder.encode(mRequest.getLoginHint(),
-                            AuthenticationConstants.ENCODING_UTF8));
-        }
-
-        // append device and platform info in the query parameters
-        queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_PLATFORM,
-                        AuthenticationConstants.OIDC.ADAL_ID_PLATFORM_VALUE)
-                .appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_VERSION,
-                        URLEncoder.encode(AuthenticationContext.getVersionName(),
-                                AuthenticationConstants.ENCODING_UTF8))
-                .appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_OS_VER,
-                        URLEncoder.encode(String.valueOf(Build.VERSION.SDK_INT),
-                                AuthenticationConstants.ENCODING_UTF8))
-                .appendQueryParameter(AuthenticationConstants.OIDC.ADAL_ID_DM,
-                        URLEncoder.encode(android.os.Build.MODEL,
-                                AuthenticationConstants.ENCODING_UTF8));
-
-        if (mRequest.getCorrelationId() != null) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.CLIENT_REQUEST_ID,
-                    URLEncoder.encode(mRequest.getCorrelationId().toString(),
-                            AuthenticationConstants.ENCODING_UTF8));
-        }
-
-        // Setting prompt behavior to always will skip the cookies for webview.
-        // It is added to authorization url.
-        if (mRequest.getPrompt() == PromptBehavior.Always) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.QUERY_PROMPT,
-                    URLEncoder.encode(AuthenticationConstants.OIDC.QUERY_PROMPT_VALUE,
-                            AuthenticationConstants.ENCODING_UTF8));
-        } else if (mRequest.getPrompt() == PromptBehavior.REFRESH_SESSION) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.OIDC.QUERY_PROMPT,
-                    URLEncoder.encode(
-                            AuthenticationConstants.OIDC.QUERY_PROMPT_REFRESH_SESSION_VALUE,
-                            AuthenticationConstants.ENCODING_UTF8));
-        }
 
         // reading extra qp supplied by developer
         final String extraQP = mRequest.getExtraQueryParamsAuthentication();
         // append haschrome=1 if developer does not pass as extra qp
-        if (StringExtensions.isNullOrBlank(extraQP)
-                || !extraQP.contains(AuthenticationConstants.OAuth2.HAS_CHROME)) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.HAS_CHROME, "1");
-        }
+//        if (StringExtensions.isNullOrBlank(extraQP)
+//                || !extraQP.contains(AuthenticationConstants.OAuth2.HAS_CHROME)) {
+//            queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.HAS_CHROME, "1");
+//        }
 
         // Claims challenge are opaque to the sdk, we're not going to do any merging if both extra qp and claims parameter
         // contain it. Also, if developer sends it in both places, server will fail it.
@@ -251,64 +212,112 @@ class Oauth2 {
 
         } else if (response.containsKey(AuthenticationConstants.OAuth2.CODE)) {
             result = new AuthenticationResult(response.get(AuthenticationConstants.OAuth2.CODE));
-        } else if (response.containsKey(AuthenticationConstants.OAuth2.ACCESS_TOKEN)) {
-            // Token response
-            boolean isMultiResourceToken = false;
-            String expiresIn = response.get(AuthenticationConstants.OAuth2.EXPIRES_IN);
-            Calendar expires = new GregorianCalendar();
+		} else if (response.containsKey(AuthenticationConstants.OAuth2.ACCESS_TOKEN)) {
+			// Token response
+			boolean isMultiResourceToken = false;
+			String expiresIn = response.get(AuthenticationConstants.OAuth2.EXPIRES_IN);
+			Calendar expires = new GregorianCalendar();
 
-            // Compute token expiration
-            expires.add(
-                    Calendar.SECOND,
-                    expiresIn == null || expiresIn.isEmpty() ? AuthenticationConstants.DEFAULT_EXPIRATION_TIME_SEC
-                            : Integer.parseInt(expiresIn));
+			// Compute token expiration
+			expires.add(
+				Calendar.SECOND,
+				expiresIn == null || expiresIn.isEmpty() ? AuthenticationConstants.DEFAULT_EXPIRATION_TIME_SEC
+					: Integer.parseInt(expiresIn));
 
-            final String refreshToken = response.get(AuthenticationConstants.OAuth2.REFRESH_TOKEN);
-            if (response.containsKey(AuthenticationConstants.OIDC.RESOURCE)
-                    && !StringExtensions.isNullOrBlank(refreshToken)) {
-                isMultiResourceToken = true;
-            }
+			final String refreshToken = response.get(AuthenticationConstants.OAuth2.REFRESH_TOKEN);
+			if (response.containsKey(AuthenticationConstants.OIDC.RESOURCE)
+				&& !StringExtensions.isNullOrBlank(refreshToken)) {
+				isMultiResourceToken = true;
+			}
 
-            UserInfo userinfo = null;
-            String tenantId = null;
-            String rawIdToken = null;
-            if (response.containsKey(AuthenticationConstants.OAuth2.ID_TOKEN)) {
-                // IDtoken is related to Azure AD and returned with token
-                // response. ADFS does not return that.
-                rawIdToken = response.get(AuthenticationConstants.OAuth2.ID_TOKEN);
-                if (!StringExtensions.isNullOrBlank(rawIdToken)) {
-                    Logger.v(TAG, "Id token was returned, parsing id token.");
-                    IdToken tokenParsed = new IdToken(rawIdToken);
-                    tenantId = tokenParsed.getTenantId();
-                    userinfo = new UserInfo(tokenParsed);
-                } else {
-                    Logger.v(TAG, "IdToken was not returned from token request.");
-                }
-            }
+			UserInfo userinfo = null;
+			String tenantId = null;
+			String rawIdToken = null;
+			if (response.containsKey(AuthenticationConstants.OAuth2.ID_TOKEN)) {
+				// IDtoken is related to Azure AD and returned with token
+				// response. ADFS does not return that.
+				rawIdToken = response.get(AuthenticationConstants.OAuth2.ID_TOKEN);
+				if (!StringExtensions.isNullOrBlank(rawIdToken)) {
+					Logger.v(TAG, "Id token was returned, parsing id token.");
+					IdToken tokenParsed = new IdToken(rawIdToken);
+					tenantId = tokenParsed.getTenantId();
+					userinfo = new UserInfo(tokenParsed);
+				} else {
+					Logger.v(TAG, "IdToken was not returned from token request.");
+				}
+			}
 
-            String familyClientId = null;
-            if (response.containsKey(AuthenticationConstants.OAuth2.ADAL_CLIENT_FAMILY_ID)) {
-                familyClientId = response.get(AuthenticationConstants.OAuth2.ADAL_CLIENT_FAMILY_ID);
-            }
+			String familyClientId = null;
 
-            result = new AuthenticationResult(
-                    response.get(AuthenticationConstants.OAuth2.ACCESS_TOKEN), refreshToken, expires.getTime(),
-                    isMultiResourceToken, userinfo, tenantId, rawIdToken, null);
+			result = new AuthenticationResult(
+				response.get(AuthenticationConstants.OAuth2.ACCESS_TOKEN), refreshToken, expires.getTime(),
+				isMultiResourceToken, userinfo, tenantId, rawIdToken, null);
 
-            if (response.containsKey(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN)) {
-                final String extendedExpiresIn = response.get(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN);
-                final Calendar extendedExpires = new GregorianCalendar();
-                // Compute extended token expiration
-                extendedExpires.add(
-                        Calendar.SECOND,
-                        StringExtensions.isNullOrBlank(extendedExpiresIn) ? AuthenticationConstants.DEFAULT_EXPIRATION_TIME_SEC
-                                : Integer.parseInt(extendedExpiresIn));
-                result.setExtendedExpiresOn(extendedExpires.getTime());
-            }
+			if (response.containsKey(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN)) {
+				final String extendedExpiresIn = response.get(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN);
+				final Calendar extendedExpires = new GregorianCalendar();
+				// Compute extended token expiration
+				extendedExpires.add(
+					Calendar.SECOND,
+					StringExtensions.isNullOrBlank(extendedExpiresIn) ? AuthenticationConstants.DEFAULT_EXPIRATION_TIME_SEC
+						: Integer.parseInt(extendedExpiresIn));
+				result.setExtendedExpiresOn(extendedExpires.getTime());
+			}
 
-            //Set family client id on authentication result for TokenCacheItem to pick up
-            result.setFamilyClientId(familyClientId);
-        } else {
+			//Set family client id on authentication result for TokenCacheItem to pick up
+			result.setFamilyClientId(familyClientId);
+		} else if (response.containsKey(AuthenticationConstants.OAuth2.ID_TOKEN)) {
+			// Token response
+
+			Calendar expires = new GregorianCalendar();
+
+			// Compute token expiration
+
+
+
+			UserInfo userinfo = null;
+			String tenantId = null;
+			String rawIdToken = null;
+			// IDtoken is related to Azure AD and returned with token
+			// response. ADFS does not return that.
+			rawIdToken = response.get(AuthenticationConstants.OAuth2.ID_TOKEN);
+			if (!StringExtensions.isNullOrBlank(rawIdToken)) {
+				Logger.v(TAG, "Id token was returned, parsing id token.");
+				IdToken tokenParsed = new IdToken(rawIdToken);
+				tenantId = tokenParsed.getTenantId();
+				userinfo = new UserInfo(tokenParsed);
+
+				int expiresIn = tokenParsed.getExpiration();
+
+				expires.add(
+					Calendar.SECOND,
+					expiresIn > 0 ? expiresIn : AuthenticationConstants.DEFAULT_EXPIRATION_TIME_SEC);
+
+			} else {
+				Logger.v(TAG, "IdToken was not returned from token request.");
+			}
+
+			String familyClientId = null;
+
+			result = new AuthenticationResult(
+				response.get(AuthenticationConstants.OAuth2.ID_TOKEN), null, expires.getTime(),
+				false, userinfo, tenantId, rawIdToken, null);
+
+			if (response.containsKey(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN)) {
+				final String extendedExpiresIn = response.get(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN);
+				final Calendar extendedExpires = new GregorianCalendar();
+				// Compute extended token expiration
+				extendedExpires.add(
+					Calendar.SECOND,
+					StringExtensions.isNullOrBlank(extendedExpiresIn) ? AuthenticationConstants.DEFAULT_EXPIRATION_TIME_SEC
+						: Integer.parseInt(extendedExpiresIn));
+				result.setExtendedExpiresOn(extendedExpires.getTime());
+			}
+
+			//Set family client id on authentication result for TokenCacheItem to pick up
+			result.setFamilyClientId(familyClientId);
+		}
+        else {
             result = null;
         }
 

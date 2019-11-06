@@ -166,6 +166,8 @@ public final class AuthenticationConstants {
         /** String of scope. */
         public static final String SCOPE = "scope";
 
+		public static final String NONCE = "nonce";
+
         /** String of state. */
         public static final String STATE = "state";
 
@@ -207,6 +209,9 @@ public final class AuthenticationConstants {
 
         /** String of password change url in the id token claim. */
         static final String ID_TOKEN_PASSWORD_CHANGE_URL = "pwd_url";
+
+		/** String of expiration in the id token claim. */
+		static final String ID_TOKEN_EXPIRATION = "exp";
 
         /** String of FoCI field returnd in the JSON response from token endpoint. */
         static final String ADAL_CLIENT_FAMILY_ID = "foci";

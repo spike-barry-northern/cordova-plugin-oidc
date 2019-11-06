@@ -122,6 +122,12 @@ final class AcquireTokenInteractiveRequest {
                     mAuthRequest.getClientId(), result);
         }
 
+		if (!StringExtensions.isNullOrBlank(result.getIdToken()) && mTokenCacheAccessor != null) {
+			// Developer may pass null for the acquireToken flow.
+			mTokenCacheAccessor.updateTokenCache(mAuthRequest.getResource(),
+				mAuthRequest.getClientId(), result);
+		}
+
         return result;
     }
 
