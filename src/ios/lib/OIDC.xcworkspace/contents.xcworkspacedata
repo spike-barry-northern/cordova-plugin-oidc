@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/dmitry/repos/spike/azure-activedirectory-library-for-objc-release-2.5.2/OIDC/OIDC.xcodeproj">
+      location = "group:/Users/dmitry/repos/spike/cordova-plugin-oidc/src/ios/lib/OIDC/OIDC.xcodeproj">
    </FileRef>
 </Workspace>
