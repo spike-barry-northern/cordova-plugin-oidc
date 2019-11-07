@@ -184,7 +184,7 @@
          if (!error)
          {
              
-             if ([[[end scheme] lowercaseString] isEqualToString:@"msauth"]) {
+             if ([[[end scheme] lowercaseString] isEqualToString:@"oidcauth"]) {
 #if OIDC_BROKER
                  
                  NSString* host = [end host];
