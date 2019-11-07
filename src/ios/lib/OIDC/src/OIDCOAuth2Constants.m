@@ -94,7 +94,7 @@ NSString *const OIDC_SECURECONVERSATION_LABEL = @"OAUTH-SecureConversation";
 
 
 //application constants
-NSString* const OIDC_BROKER_SCHEME = @"msauth";
+NSString* const OIDC_BROKER_SCHEME = @"oidcauth";
 NSString* const OIDC_BROKER_APP_REDIRECT_URI = @"urn:ietf:wg:oauth:2.0:oob";
 NSString* const OIDC_BROKER_APP_BUNDLE_ID = @"com.cordovaplugin.azureauthenticator";
 

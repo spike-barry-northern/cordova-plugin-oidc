@@ -403,7 +403,7 @@
          else
          {
 #if TARGET_OS_IPHONE
-             if([code hasPrefix:@"msauth://"])
+             if([code hasPrefix:@"oidcauth://"])
              {
                  [event setAPIStatus:@"try to prompt to install broker"];
                  [[OIDCTelemetry sharedInstance] stopEvent:_requestParams.telemetryRequestId event:event];

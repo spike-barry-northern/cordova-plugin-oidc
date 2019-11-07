@@ -300,7 +300,7 @@ NSString* OIDCWebAuthWillSwitchToBrokerApp = @"OIDCWebAuthWillSwitchToBrokerApp"
     
     // Stop at the end URL.
     if ([[requestURL lowercaseString] hasPrefix:[_endURL lowercaseString]] ||
-        [[[request.URL scheme] lowercaseString] isEqualToString:@"msauth"])
+        [[[request.URL scheme] lowercaseString] isEqualToString:@"oidcauth"])
     {
         // iOS generates a 102, Frame load interrupted error from stopLoading, so we set a flag
         // here to note that it was this code that halted the frame load in order that we can ignore
@@ -308,9 +308,9 @@ NSString* OIDCWebAuthWillSwitchToBrokerApp = @"OIDCWebAuthWillSwitchToBrokerApp"
         _complete = YES;
         
 #if OIDC_BROKER
-        // If we're in the broker and we get a url with msauth that means we got an auth code back from the
+        // If we're in the broker and we get a url with oidcauth that means we got an auth code back from the
         // client cert auth flow
-        if ([[[request.URL scheme] lowercaseString] isEqualToString:@"msauth"])
+        if ([[[request.URL scheme] lowercaseString] isEqualToString:@"oidcauth"])
         {
             [self webAuthDidCompleteWithURL:request.URL];
             return NO;

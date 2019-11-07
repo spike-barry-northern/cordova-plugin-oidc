@@ -31,7 +31,7 @@ NSString* const OIDCCredentialsNeeded = @"The user credentials are needed to obt
 NSString* const OIDCInteractionNotSupportedInExtension = @"Interaction is not supported in an app extension.";
 NSString* const OIDCServerError = @"The authentication server returned an error: %@.";
 NSString* const OIDCBrokerAppIdentifier = @"com.cordovaplugin.azureadauthenticator";
-NSString* const OIDCRedirectUriInvalidError = @"Your AuthenticationContext is configured to allow brokered authentication but your redirect URI is not setup properly. Make sure your redirect URI is in the form of <app-scheme>://<bundle-id> (e.g. \"x-msauth-testapp://com.cordovaplugin.oidc.testapp\") and that the \"app-scheme\" you choose is registered in your application's info.plist.";
+NSString* const OIDCRedirectUriInvalidError = @"Your AuthenticationContext is configured to allow brokered authentication but your redirect URI is not setup properly. Make sure your redirect URI is in the form of <app-scheme>://<bundle-id> (e.g. \"x-oidcauth-testapp://com.cordovaplugin.oidc.testapp\") and that the \"app-scheme\" you choose is registered in your application's info.plist.";
 
 @implementation OIDCAuthenticationContext (Internal)
 
