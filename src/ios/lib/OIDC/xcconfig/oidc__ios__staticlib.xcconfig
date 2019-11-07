@@ -1,0 +1,5 @@
+//
+//  oidc__ios__staticlib.xcconfig
+//
+
+#include "oidc__ios__common.xcconfig"

@@ -1,0 +1,410 @@
+
+import "CordovaPlugin.Telemetry.bond"
+
+namespace CordovaPlugin.OIDC;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Schema Definition: Part A - Default Dispatcher
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+[DispatcherType("Default")]
+[Description("The OIDC telemetry event base for default dispatcher. The properties in the base event are included in all the events.")]
+struct event_base : CordovaPlugin.Telemetry.Base
+{
+   [Name("EventName")]
+   0: string CordovaPlugin.OIDC.event_name;
+   
+   [Name("EventStartTime")]
+   10: string CordovaPlugin.OIDC.start_time;
+   
+   [Name("EventStopTime")]
+   20: string CordovaPlugin.OIDC.stop_time;
+   
+   [Name("EventResponseTime")]
+   30: string CordovaPlugin.OIDC.response_time;
+   
+   [Name("DeviceId")]
+   40: string CordovaPlugin.OIDC.device_id;
+   
+   [Name("ApplicationName")]
+   50: string CordovaPlugin.OIDC.application_name;
+   
+   [Name("ApplicationVersion")]
+   60: string CordovaPlugin.OIDC.application_version;
+   
+   [Name("TokenRequestId")]
+   70: optional string CordovaPlugin.OIDC.request_id;
+   
+   [Name("RequestCorrelationId")]
+   80: string CordovaPlugin.OIDC.correlation_id;
+   
+   [Name("ClientDeviceSKU")]
+   90: string CordovaPlugin.OIDC.x_client_sku;
+   
+   [Name("ClientOIDCVersion")]
+   100: string CordovaPlugin.OIDC.x_client_Ver;
+   
+   [Name("ClientDeviceCPU")]
+   110: string CordovaPlugin.OIDC.x_client_cpu;
+   
+   [Name("DeviceOSVersion")]
+   120: string CordovaPlugin.OIDC.x_client_os;
+   
+   [Name("ClientDeviceType")]
+   130: string CordovaPlugin.OIDC.x_client_dm;
+
+   [Name("DeviceIpAddress")]
+   140: string CordovaPlugin.OIDC.device_ip_address;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC acquire token and related API event")]
+struct api_event : CordovaPlugin.OIDC.event_base
+{
+   [Name("APIId")]
+   0: string CordovaPlugin.OIDC.api_id;
+   
+   [Name("AppClientId")]
+   10: optional string CordovaPlugin.OIDC.client_id;
+   
+   // OIDC or OAUTH
+   [Name("Authority")]
+   20: string CordovaPlugin.OIDC.authority;
+   
+   [Name("AuthorityType")]
+   30: string CordovaPlugin.OIDC.authority_type;
+   
+   // Optional boolean value. When set to true/YES, the expired refresh token is returned to caller if the server is not available; otherwise error is sent back
+   [Name("ExtendedExpirationTime")]
+   40: optional string CordovaPlugin.OIDC.extended_expires_on_setting;
+   
+   [Name("PromptBehavior")]
+   50: string CordovaPlugin.OIDC.prompt_behavior;
+   
+   [Name("UserId")]
+   60: string CordovaPlugin.OIDC.user_id;
+   
+   [Name("TenantId")]
+   70: string CordovaPlugin.OIDC.tenant_id;
+   
+   [Name("ResultStatus")]
+   80: string CordovaPlugin.OIDC.status;
+   
+   // When set to true/YES, the token is stale token
+   [Platform("iOS")]
+   [Name("ExtendedLifeTimeToken")]
+   90: optional string CordovaPlugin.OIDC.is_extended_life_time_token;
+      
+   [Name("IdentityProvider")]
+   100: optional string CordovaPlugin.OIDC.idp;
+   
+   [Name("ErrorCode")]
+   110: optional string CordovaPlugin.OIDC.api_error_code;
+   
+   [Platform("iOS")]
+   [Name("ErrorDomain")]
+   120: optional string CordovaPlugin.OIDC.error_domain;
+   
+   [Platform("iOS")]
+   [Name("ErrorProtocolCode")]
+   130: optional string CordovaPlugin.OIDC.error_protocol_code;
+   
+   [Name("ActionUserCancel")]
+   140: optional string CordovaPlugin.OIDC.user_cancel;
+   
+   [Platform("Android")]
+   [Name("IsAPIDeprecated")]
+   150: optional string CordovaPlugin.OIDC.is_deprecated;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC token grant and related event")]
+struct token_grant : CordovaPlugin.OIDC.event_base
+{
+   [Platform("iOS")]
+   [Name("TokenGrantType")]
+   0: optional string CordovaPlugin.OIDC.grant_type;
+   
+   [Name("TokenGrantSuccessful")]
+   10: string CordovaPlugin.OIDC.is_successfull;
+   
+   [Name("TokenGrantStatus")]
+   20: string CordovaPlugin.OIDC.status;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC authority validation and related event")]
+struct authority_validation : CordovaPlugin.OIDC.event_base
+{
+   [Name("AuthorityValicationStatus")]
+   0: string CordovaPlugin.OIDC.authority_validation_status;
+   
+   [Name("AuthorityValidationAuthority")]
+   10: string CordovaPlugin.OIDC.authority;
+   
+   [Name("AuthorityValidationType")]
+   20: string CordovaPlugin.OIDC.authority_type;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC acquire token silent and related event")]
+struct acquire_token_silent_handler : CordovaPlugin.OIDC.event_base
+{
+   [Name("IGNORE")]
+   0: optional string PLACEHOLDER;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC authorization code and related event")]
+struct authorization_code : CordovaPlugin.OIDC.event_base
+{
+   [Platform("iOS")]
+   [Name("AuthorizationCodeApiStatus")]
+   0: optional string CordovaPlugin.OIDC.api_status;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC UI and related event")]
+struct ui_event : CordovaPlugin.OIDC.event_base
+{  
+   [Name("AuthenticationMethodNtlm")]
+   0: optional string CordovaPlugin.OIDC.ntlm;
+   
+   [Name("LoginHint")]
+   10: string CordovaPlugin.OIDC.login_hint;
+   
+   [Name("UiEventCount")]
+   20: optional uint32 CordovaPlugin.OIDC.ui_event_count;
+   
+   [Platform("Android")]
+   [Name("RedirectCount")]
+   30: optional uint32 CordovaPlugin.OIDC.redirect_count;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC http and related event")]
+struct http_event : CordovaPlugin.OIDC.event_base
+{  
+   [Name("HttpMethod")]
+   0: string CordovaPlugin.OIDC.method;
+   
+   [Name("HttpPath")]
+   10: string CordovaPlugin.OIDC.http_path;
+   
+   [Name("HttpRequestId")]
+   20: string CordovaPlugin.OIDC.x_ms_request_id;
+   
+   [Name("HttpResponseCode")]
+   30: string CordovaPlugin.OIDC.response_code;
+   
+   [Name("HttpErrorCode")]
+   40: optional string CordovaPlugin.OIDC.error_code;
+   
+   [Platform("iOS")]
+   [Name("HttpErrorDomain")]
+   50: optional string CordovaPlugin.OIDC.http_error_domain;
+   
+   [Name("OauthErrorCode")]
+   60: optional string CordovaPlugin.OIDC.oauth_error_code;
+   
+   [Platform("iOS")]
+   [Name("HttpResponseMethod")]
+   70: optional string CordovaPlugin.OIDC.response_method;
+   
+   [Name("HttpQueryParams")]
+   80: optional string CordovaPlugin.OIDC.query_params;
+   
+   [Name("HttpUserAgent")]
+   90: optional string CordovaPlugin.OIDC.user_agent;
+   
+   [Name("HttpEventCount")]
+   100: optional uint32 CordovaPlugin.OIDC.http_event_count;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC broker and related event")]
+struct broker_event : CordovaPlugin.OIDC.event_base
+{  
+   [Name("BrokerStatus")]
+   0: string CordovaPlugin.OIDC.status;
+   
+   [Name("BrokerVersion")]
+   10: string CordovaPlugin.OIDC.broker_version;
+   
+   [Platform("iOS")]
+   [Name("BrokerProtocolVersion")]
+   20: optional string CordovaPlugin.OIDC.broker_protocol_version;
+   
+   [Name("BrokerApp")]
+   30: string CordovaPlugin.OIDC.broker_app;
+   
+   [Name("BrokerAppUsed")]
+   40: string CordovaPlugin.OIDC.broker_app_used;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC token cache base event")]
+struct token_cache : CordovaPlugin.OIDC.event_base
+{  
+   [Name("TokenCacheType")]
+   0: string CordovaPlugin.OIDC.token_type;
+   
+   [Name("TokenCacheStatus")]
+   10: string CordovaPlugin.OIDC.status;
+   
+   [Name("CacheEventCount")]
+   20: optional uint32 CordovaPlugin.OIDC.cache_event_count;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC token cache lookup and related event")]
+struct token_cache_lookup : CordovaPlugin.OIDC.token_cache
+{
+   [Platform("iOS")]
+   [Name("MrrtLookupStatus")]
+   0: optional string CordovaPlugin.OIDC.token_mrrt_status;
+   
+   [Platform("iOS")]
+   [Name("RTLookupStatus")]
+   10: optional string CordovaPlugin.OIDC.token_rt_status;
+   
+   [Platform("iOS")]
+   [Name("FRTLookupStatus")]
+   20: optional string CordovaPlugin.OIDC.token_frt_status;
+   
+   [Name("IsRTToken")]
+   30: optional string CordovaPlugin.OIDC.is_rt;
+   
+   [Name("IsMRRTToken")]
+   40: optional string CordovaPlugin.OIDC.is_mrrt;
+   
+   [Name("IsFRTToken")]
+   50: optional string CordovaPlugin.OIDC.is_frt;
+   
+   [Platform("Android")]
+   [Name("TokenTypeRT")]
+   60: optional string CordovaPlugin.OIDC.rt;
+   
+   [Platform("Android")]
+   [Name("TokenTypeMRRT")]
+   70: optional string CordovaPlugin.OIDC.mrrt;
+   
+   [Platform("Android")]
+   [Name("TokenTypeFRT")]
+   80: optional string CordovaPlugin.OIDC.frt;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC token cache write and related event")]
+struct token_cache_write : CordovaPlugin.OIDC.token_cache
+{
+   [Name("IsMRRTToken")]
+   0: optional string CordovaPlugin.OIDC.is_mrrt;
+   
+   [Name("IsFRTToken")]
+   10: optional string CordovaPlugin.OIDC.is_frt;
+}
+
+[DispatcherType("Default")]
+[Description("The OIDC token cache delete and related event")]
+struct token_cache_delete : CordovaPlugin.OIDC.token_cache
+{  
+   [Name("IGNORE")]
+   0: optional string PLACEHOLDER;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Schema Definition: Part B - Aggregated Dispatcher
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+[DispatcherType("Aggregated")]
+[Description("The OIDC event that is only sent at the end of the flow with aggregated event data.")]
+struct aggregated_event : CordovaPluginTelemetry.Base
+{
+   [Name("APIId")]
+    0: string CordovaPlugin.OIDC.api_id;
+   
+   [Name("ApplicationName")]
+    10: string CordovaPlugin.OIDC.application_name;
+   
+   [Name("ApplicationVersion")]
+    20: string CordovaPlugin.OIDC.application_version;
+   
+   [Name("AuthorityType")]
+    30: string CordovaPlugin.OIDC.authority_type;
+   
+   [Name("AuthorityValicationStatus")]
+    40: string CordovaPlugin.OIDC.authority_validation_status;
+   
+   [Name("CacheEventCount")]
+    50: uint32 CordovaPlugin.OIDC.cache_event_count;
+   
+   [Name("AppClientId")]
+    60: string CordovaPlugin.OIDC.client_id;
+   
+   [Name("RequestCorrelationId")]
+    70: string CordovaPlugin.OIDC.correlation_id;
+   
+   [Name("DeviceId")]
+    80: string CordovaPlugin.OIDC.device_id;
+   
+   [Name("ErrorCode")]
+    90: string CordovaPlugin.OIDC.error_code;
+   
+   // Optional boolean value. When set to true/YES, the expired refresh token is returned to caller if the server is not available; otherwise error is sent back
+   [Name("ExtendedExpirationTime")]
+   100: string CordovaPlugin.OIDC.extended_expires_on_setting;
+   
+   [Name("HttpEventCount")]
+   110: uint32 CordovaPlugin.OIDC.http_event_count;
+   
+   [Platform("iOS")]
+   [Name("TokenGrantSuccessful")]
+   120: optional string CordovaPlugin.OIDC.is_successfull;
+   
+   [Name("LoginHint")]
+   130: string CordovaPlugin.OIDC.login_hint;
+   
+   [Name("OauthErrorCode")]
+   140: string CordovaPlugin.OIDC.oauth_error_code;
+   
+   [Name("PromptBehavior")]
+   150: string CordovaPlugin.OIDC.prompt_behavior;
+   
+   [Name("TokenRequestId")]
+   160: string CordovaPlugin.OIDC.request_id;
+   
+   [Name("EventResponseTime")]
+   170: string CordovaPlugin.OIDC.response_time;
+   
+   [Name("TokenCacheStatus")]
+   180: string CordovaPlugin.OIDC.status;
+   
+   [Name("TenantId")]
+   190: string CordovaPlugin.OIDC.tenant_id;
+   
+   [Name("UiEventCount")]
+   200: uint32 CordovaPlugin.OIDC.ui_event_count;
+   
+   [Name("UserId")]
+   210: string CordovaPlugin.OIDC.user_id;
+   
+   [Name("ClientDeviceCPU")]
+   220: string CordovaPlugin.OIDC.x_client_cpu;
+   
+   [Name("ClientDeviceType")]
+   230: string CordovaPlugin.OIDC.x_client_dm;
+   
+   [Name("DeviceOSVersion")]
+   240: string CordovaPlugin.OIDC.x_client_os;
+   
+   [Name("ClientDeviceSKU")]
+   250: string CordovaPlugin.OIDC.x_client_sku;
+   
+   [Name("ClientOIDCVersion")]
+   260: string CordovaPlugin.OIDC.x_client_ver;
+   
+   [Platform("Android")]
+   [Name("RedirectCount")]
+   270: optional uint32 CordovaPlugin.OIDC.redirect_count;
+}

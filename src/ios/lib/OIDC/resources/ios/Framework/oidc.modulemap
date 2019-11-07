@@ -1,0 +1,6 @@
+framework module OIDC {
+   umbrella header "OIDC.h"
+
+   export *
+   module * { export * }
+}

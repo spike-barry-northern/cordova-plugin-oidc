@@ -1,0 +1,14 @@
+//
+//  oidc__mac.xcconfig
+//
+
+#include "oidc__mac__common.xcconfig"
+
+DEFINES_MODULE = YES
+INFOPLIST_FILE = resources/mac/Info.plist
+INSTALL_PATH = $(LOCAL_LIBRARY_DIR)/Frameworks @rpath
+MODULEMAP_FILE = resources/mac/oidc_mac.modulemap
+PRODUCT_BUNDLE_IDENTIFIER = com.cordovaplugin.OIDC
+PRODUCT_NAME = OIDC
+SKIP_INSTALL = YES
+

@@ -1,0 +1,8 @@
+//
+//  oidc__ios__framework.xcconfig
+//
+
+#include "oidc__ios__common.xcconfig"
+
+MODULEMAP_FILE = resources/ios/Framework/oidc.modulemap
+PRODUCT_BUNDLE_IDENTIFIER = com.cordovaplugin.OIDC

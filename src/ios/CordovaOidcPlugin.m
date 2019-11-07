@@ -1,0 +1,336 @@
+/*******************************************************************************
+ * Copyright (c) Microsoft Open Technologies, Inc.
+ * All Rights Reserved
+ * See License in the project root for license information.
+ ******************************************************************************/
+
+#import "CordovaOidcPlugin.h"
+#import "CordovaOidcUtils.h"
+
+#import <OIDC.h>
+
+@implementation CordovaOidcPlugin
+
+- (void)createAsync:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try
+        {
+            NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
+            BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
+
+            [CordovaAdalPlugin getOrCreateAuthContext:authority
+                                    validateAuthority:validateAuthority];
+
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+        @catch (OIDCAuthenticationError *error)
+        {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                          messageAsDictionary:[CordovaAdalUtils OIDCAuthenticationErrorToDictionary:error]];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
+}
+
+- (void)acquireTokenAsync:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try
+        {
+            NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
+            BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
+            NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
+            NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
+            NSURL *redirectUri = [NSURL URLWithString:[command.arguments objectAtIndex:4]];
+            NSString *userId = ObjectOrNil([command.arguments objectAtIndex:5]);
+            NSString *extraQueryParameters = ObjectOrNil([command.arguments objectAtIndex:6]);
+
+            OIDCAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
+                                                                           validateAuthority:validateAuthority];
+            // `x-msauth-` redirect url prefix means we should use brokered authentication
+            // https://github.com/AzureOIDC/azure-activedirectory-library-for-objc#brokered-authentication
+            authContext.credentialsType = (redirectUri.scheme && [redirectUri.scheme hasPrefix: @"x-msauth-"]) ?
+                OIDC_CREDENTIALS_AUTO : OIDC_CREDENTIALS_EMBEDDED;
+
+            // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
+            userId = [CordovaAdalUtils mapUserIdToUserName:authContext
+                                                    userId:userId];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [authContext
+                 acquireTokenWithResource:resourceId
+                 clientId:clientId
+                 redirectUri:redirectUri
+                 promptBehavior:OIDC_PROMPT_ALWAYS
+                 userId:userId
+                 extraQueryParameters:extraQueryParameters
+                 completionBlock:^(OIDCAuthenticationResult *result) {
+
+                     NSMutableDictionary *msg = [CordovaAdalUtils OIDCAuthenticationResultToDictionary: result];
+                     CDVCommandStatus status = (OIDC_SUCCEEDED != result.status) ? CDVCommandStatus_ERROR : CDVCommandStatus_OK;
+                     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:status messageAsDictionary: msg];
+                     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+                 }];
+            });
+        }
+        @catch (OIDCAuthenticationError *error)
+        {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                          messageAsDictionary:[CordovaAdalUtils OIDCAuthenticationErrorToDictionary:error]];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
+}
+
+- (void)acquireTokenSilentAsync:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try
+        {
+            NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
+            BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
+            NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
+            NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
+            NSString *userId = ObjectOrNil([command.arguments objectAtIndex:4]);
+
+            OIDCAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
+                                                                           validateAuthority:validateAuthority];
+
+            // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
+            userId = [CordovaAdalUtils mapUserIdToUserName:authContext
+                                                    userId:userId];
+
+            [authContext acquireTokenSilentWithResource:resourceId
+                                               clientId:clientId
+                                            redirectUri:nil
+                                                 userId:userId
+                                        completionBlock:^(OIDCAuthenticationResult *result) {
+                                            NSMutableDictionary *msg = [CordovaAdalUtils OIDCAuthenticationResultToDictionary: result];
+                                            CDVCommandStatus status = (OIDC_SUCCEEDED != result.status) ? CDVCommandStatus_ERROR : CDVCommandStatus_OK;
+                                            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:status messageAsDictionary: msg];
+                                            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+                                        }];
+        }
+        @catch (OIDCAuthenticationError *error)
+        {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                          messageAsDictionary:[CordovaAdalUtils OIDCAuthenticationErrorToDictionary:error]];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
+}
+
+- (void)tokenCacheClear:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try
+        {
+            OIDCAuthenticationError *error;
+
+            OIDCKeychainTokenCache* cacheStore = [OIDCKeychainTokenCache new];
+
+            NSArray *cacheItems = [cacheStore allItems:&error];
+
+            for (int i = 0; i < cacheItems.count; i++)
+            {
+                [cacheStore removeItem: cacheItems[i] error: &error];
+            }
+
+            if (error != nil)
+            {
+                @throw(error);
+            }
+
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+        @catch (OIDCAuthenticationError *error)
+        {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                          messageAsDictionary:[CordovaAdalUtils OIDCAuthenticationErrorToDictionary:error]];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
+}
+
+- (void)tokenCacheReadItems:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try
+        {
+            OIDCAuthenticationError *error;
+
+            OIDCKeychainTokenCache* cacheStore = [OIDCKeychainTokenCache new];
+
+            //get all items from cache
+            NSArray *cacheItems = [cacheStore allItems:&error];
+
+            NSMutableArray *items = [NSMutableArray arrayWithCapacity:cacheItems.count];
+
+            if (error != nil)
+            {
+                @throw(error);
+            }
+
+            for (id obj in cacheItems)
+            {
+                [items addObject:[CordovaAdalUtils OIDCTokenCacheStoreItemToDictionary:obj]];
+            }
+
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                               messageAsArray:items];
+
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+        @catch (OIDCAuthenticationError *error)
+        {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                          messageAsDictionary:[CordovaAdalUtils OIDCAuthenticationErrorToDictionary:error]];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
+}
+- (void)tokenCacheDeleteItem:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try
+        {
+            OIDCAuthenticationError *error;
+
+            NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
+            BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
+            NSString *itemAuthority = ObjectOrNil([command.arguments objectAtIndex:2]);
+            NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:3]);
+            NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:4]);
+            NSString *userId = ObjectOrNil([command.arguments objectAtIndex:5]);
+
+            OIDCAuthenticationContext *authContext = [CordovaAdalPlugin getOrCreateAuthContext:authority
+                                                                           validateAuthority:validateAuthority];
+
+            // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
+            userId = [CordovaAdalUtils mapUserIdToUserName:authContext
+                                                    userId:userId];
+
+            OIDCKeychainTokenCache* cacheStore = [OIDCKeychainTokenCache new];
+
+            //get all items from cache
+            NSArray *cacheItems = [cacheStore allItems:&error];
+
+            if (error != nil)
+            {
+                @throw(error);
+            }
+
+            for (OIDCTokenCacheItem*  item in cacheItems)
+            {
+                NSDictionary *itemAllClaims = [[item userInformation] allClaims];
+
+                NSString * userUniqueName = (itemAllClaims && itemAllClaims[@"unique_name"]) ? itemAllClaims[@"unique_name"] : nil;
+
+                if ([itemAuthority isEqualToString:[item authority]]
+                    && ((userUniqueName != nil && [userUniqueName isEqualToString:userId])
+                        || [userId isEqualToString:[[item userInformation] userId]])
+                    && [clientId isEqualToString:[item clientId]]
+                    // resource could be nil which is fine
+                    && ((!resourceId && ![item resource]) || [resourceId isEqualToString:[item resource]])) {
+
+                    //remove item
+                    [cacheStore removeItem:item error: &error];
+
+                    if (error != nil)
+                    {
+                        @throw(error);
+                    }
+                }
+
+            }
+
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+        @catch (OIDCAuthenticationError *error)
+        {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                          messageAsDictionary:[CordovaAdalUtils OIDCAuthenticationErrorToDictionary:error]];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
+}
+
+- (void) setLogger:(CDVInvokedUrlCommand *)command
+{
+   [self.commandDelegate runInBackground:^{
+       [OIDCLogger setLogCallBack:^(OIDC_LOG_LEVEL logLevel, NSString *message, NSString *additionalInfo, NSInteger errorCode, NSDictionary *userInfo) {
+           NSMutableDictionary *logItem = [[NSMutableDictionary alloc] init];
+
+           [logItem setObject:[NSNumber numberWithInt:logLevel] forKey:@"level"];
+           [logItem setValue:message forKey:@"message"];
+           [logItem setValue:additionalInfo forKey:@"additionalInfo"];
+           [logItem setValue:[NSNumber numberWithInteger:errorCode] forKey:@"errorCode"];
+
+           CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                              messageAsDictionary:logItem];
+           [pluginResult setKeepCallbackAsBool:YES];
+           [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+       }];
+   }];
+}
+
+- (void) setLogLevel:(CDVInvokedUrlCommand *)command
+{
+   [self.commandDelegate runInBackground:^{
+       @try {
+           NSNumber *logLevel = [command.arguments objectAtIndex:0];
+           [OIDCLogger setLevel:[logLevel intValue]];
+           CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+
+           [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+       }
+
+       @catch(OIDCAuthenticationError* error) {
+           CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                         messageAsDictionary:[CordovaAdalUtils OIDCAuthenticationErrorToDictionary:error]];
+           [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+       }
+   }];
+}
+
+static NSMutableDictionary *existingContexts = nil;
+
++ (OIDCAuthenticationContext *)getOrCreateAuthContext:(NSString *)authority
+                                  validateAuthority:(BOOL)validate
+{
+    if (!existingContexts)
+    {
+        existingContexts = [NSMutableDictionary dictionaryWithCapacity:1];
+    }
+
+    OIDCAuthenticationContext *authContext = [existingContexts objectForKey:authority];
+
+    if (!authContext)
+    {
+        OIDCAuthenticationError *error;
+
+        authContext = [OIDCAuthenticationContext authenticationContextWithAuthority:authority
+                                                                validateAuthority:validate
+                                                                            error:&error];
+        if (error != nil)
+        {
+            @throw(error);
+        }
+
+        [existingContexts setObject:authContext forKey:authority];
+    }
+
+    return authContext;
+}
+
+static id ObjectOrNil(id object)
+{
+    return [object isKindOfClass:[NSNull class]] ? nil : object;
+}
+
+@end
