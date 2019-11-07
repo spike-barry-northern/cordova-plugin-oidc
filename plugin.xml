@@ -165,15 +165,15 @@
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="OIDCProxy">
-                <param name="ios-package" value="CordovaOIDCPlugin" />
+                <param name="ios-package" value="CordovaOidcPlugin" />
             </feature>
         </config-file>
 
-        <header-file src="src/ios/CordovaAdalPlugin.h" />
-        <source-file src="src/ios/CordovaAdalPlugin.m" />
+        <header-file src="src/ios/CordovaOidcPlugin.h" />
+        <source-file src="src/ios/CordovaOidcPlugin.m" />
 
-        <header-file src="src/ios/CordovaAdalUtils.h" />
-        <source-file src="src/ios/CordovaAdalUtils.m" />
+        <header-file src="src/ios/CordovaOidcUtils.h" />
+        <source-file src="src/ios/CordovaOidcUtils.m" />
         
         <header-file src="src/ios/lib/OIDC/src/OIDC.h" />
         <source-file src="src/ios/lib/OIDC/src/OIDC.m" />
@@ -246,36 +246,202 @@
         <header-file src="src/ios/lib/OIDC/src/broker/ios/OIDCBrokerNotificationManager.h" />
         <source-file src="src/ios/lib/OIDC/src/broker/ios/OIDCBrokerNotificationManager.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/OIDCKeychainTokenCache.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/OIDCKeychainTokenCache.m" />
+        <source-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCache.m" />        
         
-        <header-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.m" />
+        <header-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCache+Internal.h" />
         
-        <header-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.m" />
+        <header-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheAccessor.h" />
+        <source-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheAccessor.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.m" />
+        <header-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheDataSource.h" />
         
-        <header-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.m" />
+        <header-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheItem.h" />
+        <source-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheItem.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.m" />
+        <header-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheItem+Internal.h" />
+        <source-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheItem+Internal.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/xxxxxxx.m" />
+        <header-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheKey.h" />
+        <source-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCacheKey.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/cache/ios/xxxxxxx.h" />
-        <source-file src="src/ios/lib/OIDC/src/cache/ios/xxxxxxx.m" />
+        <header-file src="src/ios/lib/OIDC/src/cache/OIDCKeychainTokenCache.h" />
+        <source-file src="src/ios/lib/OIDC/src/cache/ios/OIDCKeychainTokenCache.m" />
         
+        <header-file src="src/ios/lib/OIDC/src/cache/ios/OIDCKeychainTokenCache+Internal.h" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCAcquireTokenSilentHandler.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCAcquireTokenSilentHandler.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+AcquireAssertion.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+AcquireAssertion.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+AcquireToken.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+AcquireToken.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+Broker.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+Broker.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+WebRequest.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCAuthenticationRequest+WebRequest.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCWebAuthRequest.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCWebAuthRequest.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCWebAuthResponse.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCWebAuthResponse.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCWebRequest.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCWebRequest.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/request/OIDCWebResponse.h" />
+        <source-file src="src/ios/lib/OIDC/src/request/OIDCWebResponse.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCAggregatedDispatcher.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCAggregatedDispatcher.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry+Internal.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry+Internal.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryAPIEvent.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryAPIEvent.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryBrokerEvent.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryBrokerEvent.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryCacheEvent.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryCacheEvent.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryCollectionRules.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryCollectionRules.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryDefaultEvent.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryDefaultEvent.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryEventInterface.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryEventInterface.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryEventStrings.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryEventStrings.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryHttpEvent.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryHttpEvent.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryUIEvent.h" />
+        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryUIEvent.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/ui/OIDCAuthenticationViewController.h" />
+        
+        <header-file src="src/ios/lib/OIDC/src/ui/OIDCNTLMUIPrompt.h" />
+        
+        <header-file src="src/ios/lib/OIDC/src/ui/OIDCWebAuthController.h" />
+        <source-file src="src/ios/lib/OIDC/src/ui/OIDCWebAuthController.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/ui/OIDCWebAuthController+Internal.h" />
+        
+        <header-file src="src/ios/lib/OIDC/src/ui/OIDCWebAuthDelegate.h" />
+        
+        <source-file src="src/ios/lib/OIDC/src/ui/ios/OIDCAuthenticationViewController.m" />
+        
+        <source-file src="src/ios/lib/OIDC/src/ui/ios/OIDCNTLMUIPrompt.m" />
+        
+        <header-file src="src/ios/lib/OIDC/src/ui/ios/UIApplication+OIDCExtensions.h" />
+        <source-file src="src/ios/lib/OIDC/src/ui/ios/UIApplication+OIDCExtensions.m" />
 
+        <header-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCCustomHeaderHandler.h" />
+        <source-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCCustomHeaderHandler.m" />
 
+        <header-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCNegotiateHandler.h" />
+        <source-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCNegotiateHandler.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCNTLMHandler.h" />
+        <source-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCNTLMHandler.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCURLProtocol.h" />
+        <source-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCURLProtocol.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCURLSessionDemux.h" />
+        <source-file src="src/ios/lib/OIDC/src/urlprotocol/OIDCURLSessionDemux.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/NSDictionary+OIDCExtensions.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/NSDictionary+OIDCExtensions.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/NSMutableDictionary+OIDCExtensions.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/NSMutableDictionary+OIDCExtensions.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/NSString+OIDCHelperMethods.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/NSString+OIDCHelperMethods.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/NSString+OIDCTelemetryExtensions.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/NSString+OIDCTelemetryExtensions.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/NSURL+OIDCExtensions.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/NSURL+OIDCExtensions.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/NSUUID+OIDCExtensions.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/NSUUID+OIDCExtensions.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/OIDCFrameworkUtils.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/OIDCFrameworkUtils.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/OIDCHelpers.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/OIDCHelpers.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/OIDCIpAddressHelper.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/OIDCIpAddressHelper.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/OIDCKeychainUtil.h" />
+
+        <header-file src="src/ios/lib/OIDC/src/utils/ios/OIDCAppExtensionUtil.h" />
+        <source-file src="src/ios/lib/OIDC/src/utils/ios/OIDCAppExtensionUtil.m" />
+
+        <source-file src="src/ios/lib/OIDC/src/utils/ios/OIDCKeychainUtil.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/validation/OIDCAuthorityCache.h" />
+        <source-file src="src/ios/lib/OIDC/src/validation/OIDCAuthorityCache.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/validation/OIDCAuthorityValidation.h" />
+        <source-file src="src/ios/lib/OIDC/src/validation/OIDCAuthorityValidation.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/validation/OIDCAuthorityValidationRequest.h" />
+        <source-file src="src/ios/lib/OIDC/src/validation/OIDCAuthorityValidationRequest.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/validation/OIDCDrsDiscoveryRequest.h" />
+        <source-file src="src/ios/lib/OIDC/src/validation/OIDCDrsDiscoveryRequest.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/validation/OIDCWebFingerRequest.h" />
+        <source-file src="src/ios/lib/OIDC/src/validation/OIDCWebFingerRequest.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCJwtHelper.h" />
+        <source-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCJwtHelper.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCPkeyAuthHelper.h" />
+        <source-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCPkeyAuthHelper.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCRegistrationInformation.h" />
+        <source-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCRegistrationInformation.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCWorkPlaceJoinConstants.h" />
+        <source-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCWorkPlaceJoinConstants.m" />
+
+        <header-file src="src/ios/lib/OIDC/src/workplacejoin/OIDCWorkPlaceJoinUtil.h" />
+
+        <source-file src="src/ios/lib/OIDC/src/workplacejoin/ios/OIDCWorkPlaceJoinUtil.m" />
 
         <config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
             <array>
-                <string>msauth</string>
+                <string>oidcauth</string>
             </array>
         </config-file>
 
@@ -288,7 +454,7 @@
                     <string>$(CFBundleIdentifier)</string>
                     <key>CFBundleURLSchemes</key>
                     <array>
-                        <string>x-msauth-$(CFBundleIdentifier:rfc1034identifier)</string>
+                        <string>x-oidcauth-$(CFBundleIdentifier:rfc1034identifier)</string>
                     </array>
                 </dict>
             </array>
