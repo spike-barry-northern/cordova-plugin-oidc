@@ -206,9 +206,6 @@
         <header-file src="src/ios/lib/OIDC/src/OIDCAuthenticationSettings.h" />
         <source-file src="src/ios/lib/OIDC/src/OIDCAuthenticationSettings.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/OIDCAuthenticationSettings.h" />
-        <source-file src="src/ios/lib/OIDC/src/OIDCAuthenticationSettings.m" />
-        
         <header-file src="src/ios/lib/OIDC/src/OIDCClientMetrics.h" />
         <source-file src="src/ios/lib/OIDC/src/OIDCClientMetrics.m" />
         
