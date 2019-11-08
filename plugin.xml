@@ -192,7 +192,7 @@
         <header-file src="src/ios/lib/OIDC/src/OIDCAuthenticationError+Internal.h" />
         
         <header-file src="src/ios/lib/OIDC/src/OIDCAuthenticationParameters.h" />
-        <source-file src="src/ios/lib/OIDC/src/xxxxxOIDCAuthenticationParametersxx.m" />
+        <source-file src="src/ios/lib/OIDC/src/OIDCAuthenticationParameters.m" />
         
         <header-file src="src/ios/lib/OIDC/src/OIDCAuthenticationParameters+Internal.h" />
         <source-file src="src/ios/lib/OIDC/src/OIDCAuthenticationParameters+Internal.m" />
