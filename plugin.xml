@@ -303,7 +303,6 @@
         <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry.m" />
         
         <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry+Internal.h" />
-        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry+Internal.m" />
         
         <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryAPIEvent.h" />
         <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetryAPIEvent.m" />
