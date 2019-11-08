@@ -299,9 +299,6 @@
         <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.h" />
         <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.h" />
-        <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCDefaultDispatcher.m" />
-        
         <header-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry.h" />
         <source-file src="src/ios/lib/OIDC/src/telemetry/OIDCTelemetry.m" />
         
