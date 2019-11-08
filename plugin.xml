@@ -209,9 +209,6 @@
         <header-file src="src/ios/lib/OIDC/src/OIDCClientMetrics.h" />
         <source-file src="src/ios/lib/OIDC/src/OIDCClientMetrics.m" />
         
-        <header-file src="src/ios/lib/OIDC/src/OIDCClientMetrics.h" />
-        <source-file src="src/ios/lib/OIDC/src/OIDCClientMetrics.m" />
-        
         <header-file src="src/ios/lib/OIDC/src/OIDCErrorCodes.h" />
         
         <header-file src="src/ios/lib/OIDC/src/OIDCLogger.h" />
