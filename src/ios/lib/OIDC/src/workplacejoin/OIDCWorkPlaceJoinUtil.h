@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import "OIDCRequestContext.h"
+#import "OIDCAuthenticationError.h"
 
 @class OIDCRegistrationInformation;
 

@@ -240,6 +240,7 @@
         <header-file src="src/ios/lib/OIDC/src/broker/ios/OIDCBrokerNotificationManager.h" />
         <source-file src="src/ios/lib/OIDC/src/broker/ios/OIDCBrokerNotificationManager.m" />
         
+        <header-file src="src/ios/lib/OIDC/src/cache/mac/OIDCTokenCache.h" />
         <source-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCache.m" />        
         
         <header-file src="src/ios/lib/OIDC/src/cache/OIDCTokenCache+Internal.h" />

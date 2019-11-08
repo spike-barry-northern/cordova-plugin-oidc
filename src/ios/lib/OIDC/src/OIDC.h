@@ -47,22 +47,22 @@ typedef WebView   WebViewType;
 /*! The completion block declaration. */
 typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
 
-#import <OIDC/OIDCAuthenticationContext.h>
-#import <OIDC/OIDCAuthenticationError.h>
-#import <OIDC/OIDCAuthenticationParameters.h>
-#import <OIDC/OIDCAuthenticationResult.h>
-#import <OIDC/OIDCAuthenticationSettings.h>
-#import <OIDC/OIDCErrorCodes.h>
-#import <OIDC/OIDCLogger.h>
-#import <OIDC/OIDCTokenCacheItem.h>
-#import <OIDC/OIDCUserIdentifier.h>
-#import <OIDC/OIDCUserInformation.h>
-#import <OIDC/OIDCWebAuthController.h>
-#import <OIDC/OIDCTelemetry.h>
+#import "OIDCAuthenticationContext.h"
+#import "OIDCAuthenticationError.h"
+#import "OIDCAuthenticationParameters.h"
+#import "OIDCAuthenticationResult.h"
+#import "OIDCAuthenticationSettings.h"
+#import "OIDCErrorCodes.h"
+#import "OIDCLogger.h"
+#import "OIDCTokenCacheItem.h"
+#import "OIDCUserIdentifier.h"
+#import "OIDCUserInformation.h"
+#import "OIDCWebAuthController.h"
+#import "OIDCTelemetry.h"
 
 #if TARGET_OS_IPHONE
-#import <OIDC/OIDCKeychainTokenCache.h>
+#import "OIDCKeychainTokenCache.h"
 #else
-#import <OIDC/OIDCTokenCache.h>
+#import "OIDCTokenCache.h"
 #endif
 

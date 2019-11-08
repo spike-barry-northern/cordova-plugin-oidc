@@ -81,7 +81,7 @@ const NSString* HeaderLastEndpoint = @"x-client-last-endpoint";
         }
         else
         {
-            OIDC_LOG_ERROR(@"unable to add client metrics.", OIDC_ERROR_UNEXPECTED, nil, nil);
+            //OIDC_LOG_ERROR(@"unable to add client metrics.", OIDC_ERROR_UNEXPECTED, nil, nil);
         }
         
         _errorToReport = nil;

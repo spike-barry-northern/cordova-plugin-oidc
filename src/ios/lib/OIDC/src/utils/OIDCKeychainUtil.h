@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import "OIDCAuthenticationError.h"
 
 @interface OIDCKeychainUtil : NSObject
 
