@@ -23,7 +23,7 @@
 
 #import "OIDCWebAuthRequest.h"
 #import "OIDCWebAuthResponse.h"
-#import "OIDCWorkplaceJoinConstants.h"
+#import "OIDCWorkPlaceJoinConstants.h"
 #import "OIDCClientMetrics.h"
 #import "NSDictionary+OIDCExtensions.h"
 #import "OIDCOAuth2Constants.h"

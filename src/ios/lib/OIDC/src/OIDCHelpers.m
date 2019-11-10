@@ -29,7 +29,7 @@
 #import <CommonCrypto/CommonHMAC.h>
 #import <CommonCrypto/CommonDigest.h>
 
-#import "OIDCOauth2Constants.h"
+#import "OIDCOAuth2Constants.h"
 #import "OIDC_Internal.h"
 
 @implementation OIDCHelpers
