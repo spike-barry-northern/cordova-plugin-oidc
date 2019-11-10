@@ -21,48 +21,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+
 #import <Foundation/Foundation.h>
+#import "OIDC_Internal.h"
+#import "OIDCRequestParameters.h"
 
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
+@class OIDCTokenCacheAccessor;
 
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
+@interface OIDCAcquireTokenSilentHandler : NSObject
+{
+    OIDCRequestParameters* _requestParams;
+    
+    OIDCTokenCacheItem* _mrrtItem;
+    OIDCTokenCacheItem* _extendedLifetimeAccessTokenItem; //store valid AT in terms of ext_expires_in (if find any)
+    
+    // We only return underlying errors from the MRRT Result, because the FRT is a
+    // "best attempt" method, which is not necessarily tied to the client ID we're
+    // trying, so the MRRT error will be more accurate.
+    OIDCAuthenticationResult* _mrrtResult;
+    
+    BOOL _attemptedFRT;
+}
 
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
++ (OIDCAcquireTokenSilentHandler *)requestWithParams:(OIDCRequestParameters*)requestParams;
 
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
+- (void)getToken:(OIDCAuthenticationCallback)completionBlock;
 
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
-#import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
-#import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
-#import "OIDCTelemetry.h"
-
-#if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
-#else
-#import "OIDCTokenCache.h"
-#endif
-
+@end

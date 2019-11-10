@@ -22,47 +22,26 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
-
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
-
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
-
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
-
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
+#import "OIDCRequestContext.h"
 #import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
-#import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
-#import "OIDCTelemetry.h"
 
-#if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
-#else
-#import "OIDCTokenCache.h"
-#endif
+@interface OIDCWebFingerRequest : NSObject
 
+/*!
+ This handles WebFinger request (https://webfinger.net/) to validate the authority.
+ 
+ @param authenticationEndpoint      Endpoint used to request the validation.
+ @param authority                   Authority to be validated.
+ @param context                     Context to be used for the internal web request
+ @param completionBlock             Completion block for this asynchronous request.
+ 
+ */
++ (void)requestWebFinger:(NSString *)authenticationEndpoint
+               authority:(NSString *)authority
+                 context:(id<OIDCRequestContext>)context
+         completionBlock:(void (^)(id result, OIDCAuthenticationError *error))completionBlock;
+
+// Fetches the corresponding URL for the request
++ (NSURL *)urlForWebFinger:(NSString *)authenticationEndpoint authority:(NSString *)authority;
+
+@end

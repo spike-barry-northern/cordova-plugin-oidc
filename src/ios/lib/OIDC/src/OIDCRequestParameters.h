@@ -23,6 +23,7 @@
 
 #import "OIDCTokenCacheDataSource.h"
 #import "OIDCRequestContext.h"
+#import "OIDCUserIdentifier.h"
 
 @class OIDCTokenCacheAccessor;
 

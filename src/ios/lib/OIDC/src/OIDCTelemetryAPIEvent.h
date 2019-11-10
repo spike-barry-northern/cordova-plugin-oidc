@@ -21,48 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
-
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
-
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
-
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
-
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
-#import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
+#import "OIDCTelemetryDefaultEvent.h"
 #import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
-#import "OIDCTelemetry.h"
+#import "OIDCAuthenticationContext.h"
 
-#if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
-#else
-#import "OIDCTokenCache.h"
-#endif
+@interface OIDCTelemetryAPIEvent : OIDCTelemetryDefaultEvent
 
+- (void)setResultStatus:(OIDCAuthenticationResultStatus)status;
+- (void)setCorrelationId:(NSUUID *)correlationId;
+- (void)setExtendedExpiresOnSetting:(NSString *)extendedExpiresOnSetting;
+- (void)setPromptBehavior:(OIDCPromptBehavior)promptBehavior;
+- (void)setUserInformation:(OIDCUserInformation *)userInfo;
+- (void)setUserId:(NSString *)userId;
+- (void)setClientId:(NSString *)clientId;
+- (void)setIsExtendedLifeTimeToken:(NSString *)isExtendedLifeToken;
+- (void)setErrorCode:(NSUInteger)errorCode;
+- (void)setProtocolCode:(NSString *)protocolCode;
+- (void)setErrorDescription:(NSString *)errorDescription;
+- (void)setErrorDomain:(NSString *)errorDomain;
+
+- (void)setAuthorityValidationStatus:(NSString *)status;
+- (void)setAuthority:(NSString *)authority;
+
+- (void)setGrantType:(NSString *)grantType;
+- (void)setAPIStatus:(NSString *)status;
+
+- (void)setApiId:(NSString *)apiId;
+
+@end

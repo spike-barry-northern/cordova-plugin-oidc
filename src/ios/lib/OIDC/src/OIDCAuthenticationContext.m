@@ -26,8 +26,9 @@
 #import "OIDCRequestParameters.h"
 #if TARGET_OS_IPHONE
 #import "OIDCKeychainTokenCache+Internal.h"
-#endif 
+#endif
 
+#import "OIDCAuthenticationContext.h"
 #import "OIDCAuthenticationContext+Internal.h"
 #import "OIDCTelemetry.h"
 #import "OIDCTelemetry+Internal.h"
@@ -35,6 +36,7 @@
 #import "OIDCTelemetryEventStrings.h"
 #import "OIDCUserIdentifier.h"
 #import "OIDCTokenCacheItem.h"
+#import "OIDCAuthenticationRequest.h"
 
 typedef void(^OIDCAuthorizationCodeCallback)(NSString*, OIDCAuthenticationError*);
 

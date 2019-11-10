@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 #import "OIDCAuthenticationError.h"
+#import "OIDCErrorCodes.h"
 
 #define AUTH_ERROR(_CODE, _DETAILS, _CORRELATION) \
     OIDCAuthenticationError* adError = \

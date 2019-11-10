@@ -21,48 +21,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+
 #import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
-
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
-
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
-
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
-
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
+#import "OIDCRequestContext.h"
 #import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
-#import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
-#import "OIDCTelemetry.h"
+/*!
+ For OAUTH authority, type can be specified to be on-prems, or cloud.
+  */
+typedef enum
+{
+    /*! The SDK will try DRS discovery service for on-prems. */
+    OIDC_OAUTH_ON_PREMS,
+    
+    /*! The SDK will try DRS discovery service for cloud. */
+    OIDC_OAUTH_CLOUD
+    
+} AdfsType;
 
-#if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
-#else
-#import "OIDCTokenCache.h"
-#endif
+@interface OIDCDrsDiscoveryRequest : NSObject
 
+/*!
+ This handles DRS discovery request to be used for OAUTH authority validation/
+ 
+ @param domain          The domain to be used. Usually this is from the UPN suffix.
+ @param type            Indicates whether the DRS is on prems or on cloud.
+ @param context         Context to be used for the internal web request
+ @param completionBlock Completion block for this asynchronous request.
+ 
+ */
++ (void)requestDrsDiscoveryForDomain:(NSString *)domain
+                            adfsType:(AdfsType)type
+                             context:(id<OIDCRequestContext>)context
+                     completionBlock:(void (^)(id result, OIDCAuthenticationError *error))completionBlock;
+
+// Fetches the corresponding URL for the request
++ (NSURL *)urlForDrsDiscoveryForDomain:(NSString *)domain adfsType:(AdfsType)type;
+
+@end

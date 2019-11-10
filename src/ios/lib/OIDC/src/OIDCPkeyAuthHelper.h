@@ -22,47 +22,24 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
-
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
-
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
-
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
-
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
+#import "OIDCRegistrationInformation.h"
 #import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
-#import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
-#import "OIDCTelemetry.h"
+#import "OIDCRequestContext.h"
 
-#if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
-#else
-#import "OIDCTokenCache.h"
-#endif
+typedef enum
+{
+    OIDC_ISSUER,
+    OIDC_THUMBPRINT,
+} OIDCChallengeType;
 
+@interface OIDCPkeyAuthHelper : NSObject
+
++ (nullable NSString*)createDeviceAuthResponse:(nonnull NSString*)authorizationServer
+                                 challengeData:(nullable NSDictionary*)challengeData
+                                       context:(nullable id<OIDCRequestContext>)context
+                                         error:(OIDCAuthenticationError * __nullable __autoreleasing * __nullable)error;
+
++ (nonnull NSString*)computeThumbprint:(nonnull NSData*)data
+                                isSha2:(BOOL)isSha2;
+
+@end

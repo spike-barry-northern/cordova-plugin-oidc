@@ -21,48 +21,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
-
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
-
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
-
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
-
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
 #import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
-#import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
-#import "OIDCTelemetry.h"
 
+@protocol OIDCWebAuthDelegate;
+
+@interface OIDCAuthenticationViewController :
 #if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
+UIViewController
 #else
-#import "OIDCTokenCache.h"
+NSWindowController
 #endif
 
+@property (weak, nonatomic) id<OIDCWebAuthDelegate>     delegate;
+#if TARGET_OS_IPHONE
+@property (nonatomic) UIWebView * webView;
+@property (weak, nonatomic) UIViewController * parentController;
+@property BOOL fullScreen;
+#else
+@property (nonatomic) WebView * webView;
+#endif
+
+- (BOOL)loadView:(OIDCAuthenticationError * __autoreleasing *)error;
+
+- (void)startRequest:(NSURLRequest *)request;
+- (void)loadRequest:(NSURLRequest *)request;
+- (void)stop:(void (^)(void))completion;
+
+- (void)startSpinner;
+- (void)stopSpinner;
+
+#if !TARGET_OS_IPHONE
+- (NSWindow *)webviewWindow;
+#endif
+
+@end

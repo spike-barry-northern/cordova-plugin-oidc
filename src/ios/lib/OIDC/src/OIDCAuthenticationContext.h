@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import "OIDC_Internal.h"
+
 
 @class OIDCAuthenticationError;
 @class OIDCAuthenticationResult;

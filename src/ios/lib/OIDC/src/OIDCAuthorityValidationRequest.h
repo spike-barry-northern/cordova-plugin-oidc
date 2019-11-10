@@ -22,47 +22,33 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
-
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
-
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
-
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
-
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
 #import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
-#import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
-#import "OIDCTelemetry.h"
+#import "OIDCRequestContext.h"
 
-#if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
-#else
-#import "OIDCTokenCache.h"
-#endif
+// TODO: Set this to 1.1 once PROD deployment goes through to allow it.
 
+#define OIDC_AUTHORITY_VALIDATION_API_VERSION "1.1"
+
+@class OIDCAuthorityValidationRequest;
+
+@interface OIDCAuthorityValidationRequest : NSObject
+
+/*!
+ This handles request for authority validation to the trusted authority.
+ 
+ @param authority                   Authority to be validated.
+ @param trustedHost                 Trusted host to ask for validation.
+ @param context                     Context to be used for the internal web request
+ @param completionBlock             Completion block for this asynchronous request.
+ 
+ */
++ (void)requestMetadataWithAuthority:(NSString *)authority
+                         trustedHost:(NSString *)trustedHost
+                             context:(id<OIDCRequestContext>)context
+                     completionBlock:(void (^)(NSDictionary *response, OIDCAuthenticationError *error))completionBlock;
+
+// Fetches the corresponding URL for the request
++ (NSURL *)urlForAuthorityValidation:(NSString *)authority trustedHost:(NSString *)trustedHost;
+
+
+@end

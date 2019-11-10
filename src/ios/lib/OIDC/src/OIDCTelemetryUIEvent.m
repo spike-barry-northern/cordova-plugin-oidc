@@ -21,48 +21,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
-
-//! Project version number for OIDCFramework.
-FOUNDATION_EXPORT double OIDCFrameworkVersionNumber;
-
-//! Project version string for OIDCFramework.
-FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
-
-#if TARGET_OS_IPHONE
-//iOS:
-typedef UIWebView WebViewType;
-#else
-//OS X:
-#   include <WebKit/WebKit.h>
-typedef WebView   WebViewType;
-#endif
-
-@class OIDCAuthenticationResult;
-
-/*! The completion block declaration. */
-typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
-
-#import "OIDCAuthenticationContext.h"
-#import "OIDCAuthenticationError.h"
-#import "OIDCAuthenticationParameters.h"
-#import "OIDCAuthenticationResult.h"
-#import "OIDCAuthenticationSettings.h"
-#import "OIDCErrorCodes.h"
-#import "OIDCLogger.h"
-#import "OIDCTokenCacheItem.h"
-#import "OIDCUserIdentifier.h"
-#import "OIDCUserInformation.h"
-#import "OIDCWebAuthController.h"
 #import "OIDCTelemetry.h"
+#import "OIDCTelemetryUIEvent.h"
+#import "OIDCTelemetryEventStrings.h"
+#import "NSString+OIDCHelperMethods.h"
 
-#if TARGET_OS_IPHONE
-#import "OIDCKeychainTokenCache.h"
-#else
-#import "OIDCTokenCache.h"
-#endif
+@implementation OIDCTelemetryUIEvent
 
+- (id)initWithName:(NSString*)eventName
+         requestId:(NSString*)requestId
+     correlationId:(NSUUID*)correlationId
+{
+    if (!(self = [super initWithName:eventName requestId:requestId correlationId:correlationId]))
+    {
+        return nil;
+    }
+    
+    [self setProperty:OIDC_TELEMETRY_KEY_USER_CANCEL value:@""];
+    [self setProperty:OIDC_TELEMETRY_KEY_NTLM_HANDLED value:@""];
+    
+    return self;
+}
+
+- (void)setLoginHint:(NSString*)hint
+{
+    [self setProperty:OIDC_TELEMETRY_KEY_LOGIN_HINT value:[hint adComputeSHA256]];
+}
+
+- (void)setNtlm:(NSString*)ntlmHandled
+{
+    [self setProperty:OIDC_TELEMETRY_KEY_NTLM_HANDLED value:ntlmHandled];
+}
+
+@end

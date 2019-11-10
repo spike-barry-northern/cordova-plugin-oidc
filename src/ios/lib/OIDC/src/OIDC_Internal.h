@@ -69,7 +69,6 @@ typedef WebView   WebViewType;
 #endif
 
 
-#import "OIDCAuthenticationRequest.h"
 
 //Helper macro to initialize a variable named __where string with place in file details:
 #define WHERE \

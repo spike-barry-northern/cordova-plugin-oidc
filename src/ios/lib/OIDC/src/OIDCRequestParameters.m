@@ -24,6 +24,7 @@
 #import "OIDCRequestParameters.h"
 #import "OIDCUserIdentifier.h"
 #import "OIDCTokenCacheAccessor.h"
+#import "NSString+OIDCHelperMethods.h"
 
 @implementation OIDCRequestParameters
 
