@@ -7,7 +7,7 @@
 #import <Foundation/Foundation.h>
 #import <Cordova/CDVPlugin.h>
 
-#import <OIDCAuthenticationContext.h>
+#import "OIDCAuthenticationContext.h"
 
 // Implements Apache Cordova plugin for Microsoft Azure OIDC
 @interface CordovaOidcPlugin : CDVPlugin

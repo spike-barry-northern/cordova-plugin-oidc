@@ -32,7 +32,7 @@
 
 + (NSMutableDictionary *)OIDCAuthenticationResultToDictionary:(OIDCAuthenticationResult *)obj
 {
-    NSMutableDictionary *dict = (obj.status == OIDC_SUCCEEDED) ? [CordovaAdalUtils OIDCTokenCacheStoreItemToDictionary:obj.tokenCacheItem] : [CordovaAdalUtils OIDCAuthenticationErrorToDictionary:obj.error];
+    NSMutableDictionary *dict = (obj.status == OIDC_SUCCEEDED) ? [CordovaOidcUtils OIDCTokenCacheStoreItemToDictionary:obj.tokenCacheItem] : [CordovaOidcUtils OIDCAuthenticationErrorToDictionary:obj.error];
 
     [dict setObject:[NSNumber numberWithInt:obj.status] forKey:@"statusCode"];
 
@@ -67,7 +67,7 @@
 
     if (obj.userInformation)
     {
-        [dict setObject:[CordovaAdalUtils OIDCUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
+        [dict setObject:[CordovaOidcUtils OIDCUserInformationToDictionary:obj.userInformation] forKey:@"userInfo"];
         [dict setObject:ObjectOrNull([obj.userInformation tenantId]) forKey:@"tenantId"];
         [dict setObject:ObjectOrNull(obj.userInformation.rawIdToken) forKey:@"idToken"];
     }

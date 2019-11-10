@@ -5,7 +5,7 @@
  ******************************************************************************/
 
 #import <Foundation/Foundation.h>
-#import <OIDC.h>
+#import "OIDC.h"
 
 // Implements helper functionality for Cordova OIDC Plugin.
 @interface CordovaOidcUtils : NSObject
