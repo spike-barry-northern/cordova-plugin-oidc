@@ -36,7 +36,7 @@ NSString* const OidcInvalidHeader = @"The authentication header '%@' for the Una
 NSString* const OidcConnectionError = @"Connection error: %@";
 NSString* const OidcInvalidResponse = @"Missing or invalid Url response.";
 NSString* const OidcUnauthorizedHTTStatusExpected = @"Unauthorized (401) HTTP status code is expected, but the actual status code is %d";
-const unichar Quote = '\"';
+const unichar OidcQuote = '\"';
 //The regular expression that matches the Bearer contents:
 NSString* const OidcRegularExpression = @"^Bearer\\s+([^,\\s=\"]+?)=\"([^\"]*?)\"\\s*(?:,\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"\\s*)*$";
 NSString* const OidcExtractionExpression = @"\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"";
