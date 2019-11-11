@@ -347,8 +347,8 @@
                                                                                 requestId:_requestParams.telemetryRequestId
                                                                             correlationId:_requestParams.correlationId];
              [event setResultStatus:[result status]];
-             [event setBrokerAppVersion:s_brokerAppVersion];
-             [event setBrokerProtocolVersion:s_brokerProtocolVersion];
+             [event setBrokerAppVersion:s_oidcBrokerAppVersion];
+             [event setBrokerProtocolVersion:s_oidcBrokerProtocolVersion];
              [[OIDCTelemetry sharedInstance] stopEvent:[self telemetryRequestId] event:event];
 
 #if !OIDC_BROKER

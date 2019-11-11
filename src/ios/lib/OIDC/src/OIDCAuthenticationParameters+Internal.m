@@ -25,21 +25,21 @@
 #import "OIDCAuthenticationParameters.h"
 #import "OIDCAuthenticationParameters+Internal.h"
 
-NSString* const OAuth2_Bearer  = @"Bearer";
-NSString* const OAuth2_Authenticate_Header = @"WWW-Authenticate";
-NSString* const OAuth2_Authorization_Uri  = @"authorization_uri";
-NSString* const OAuth2_Resource_Id = @"resource_id";
+NSString* const OidcOAuth2_Bearer  = @"Bearer";
+NSString* const OidcOAuth2_Authenticate_Header = @"WWW-Authenticate";
+NSString* const OidcOAuth2_Authorization_Uri  = @"authorization_uri";
+NSString* const OidcOAuth2_Resource_Id = @"resource_id";
 
-NSString* const MissingHeader = @"The authentication header '%@' is missing in the Unauthorized (401) response. Make sure that the resouce server supports OAuth2 protocol.";
-NSString* const MissingOrInvalidAuthority = @"The authentication header '%@' in the Unauthorized (401) response does not contain valid '%@' parameter. Make sure that the resouce server supports OAuth2 protocol.";
-NSString* const InvalidHeader = @"The authentication header '%@' for the Unauthorized (401) response cannot be parsed. Header value: %@";
-NSString* const ConnectionError = @"Connection error: %@";
-NSString* const InvalidResponse = @"Missing or invalid Url response.";
-NSString* const UnauthorizedHTTStatusExpected = @"Unauthorized (401) HTTP status code is expected, but the actual status code is %d";
+NSString* const OidcMissingHeader = @"The authentication header '%@' is missing in the Unauthorized (401) response. Make sure that the resouce server supports OAuth2 protocol.";
+NSString* const OidcMissingOrInvalidAuthority = @"The authentication header '%@' in the Unauthorized (401) response does not contain valid '%@' parameter. Make sure that the resouce server supports OAuth2 protocol.";
+NSString* const OidcInvalidHeader = @"The authentication header '%@' for the Unauthorized (401) response cannot be parsed. Header value: %@";
+NSString* const OidcConnectionError = @"Connection error: %@";
+NSString* const OidcInvalidResponse = @"Missing or invalid Url response.";
+NSString* const OidcUnauthorizedHTTStatusExpected = @"Unauthorized (401) HTTP status code is expected, but the actual status code is %d";
 const unichar Quote = '\"';
 //The regular expression that matches the Bearer contents:
-NSString* const RegularExpression = @"^Bearer\\s+([^,\\s=\"]+?)=\"([^\"]*?)\"\\s*(?:,\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"\\s*)*$";
-NSString* const ExtractionExpression = @"\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"";
+NSString* const OidcRegularExpression = @"^Bearer\\s+([^,\\s=\"]+?)=\"([^\"]*?)\"\\s*(?:,\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"\\s*)*$";
+NSString* const OidcExtractionExpression = @"\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"";
 
 @implementation OIDCAuthenticationParameters (Internal)
 
@@ -58,12 +58,12 @@ NSString* const ExtractionExpression = @"\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"";
         return nil;
     }
     
-    NSString* authority = [extractedParameters objectForKey:OAuth2_Authorization_Uri];
+    NSString* authority = [extractedParameters objectForKey:OidcOAuth2_Authorization_Uri];
     NSURL* testUrl = [NSURL URLWithString:authority];//Nil argument returns nil
     if (!testUrl)
     {
-        NSString* errorDetails = [NSString stringWithFormat:MissingOrInvalidAuthority,
-                                  OAuth2_Authenticate_Header, OAuth2_Authorization_Uri];
+        NSString* errorDetails = [NSString stringWithFormat:OidcMissingOrInvalidAuthority,
+                                  OidcOAuth2_Authenticate_Header, OidcOAuth2_Authorization_Uri];
         OIDCAuthenticationError* adError = [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_SERVER_AUTHENTICATE_HEOIDCER_BOIDC_FORMAT
                                                                                 protocolCode:nil
                                                                                 errorDetails:errorDetails
@@ -77,15 +77,15 @@ NSString* const ExtractionExpression = @"\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"";
     
     _extractedParameters = extractedParameters;
     _authority = authority;
-    _resource = [_extractedParameters objectForKey:OAuth2_Resource_Id];
+    _resource = [_extractedParameters objectForKey:OidcOAuth2_Resource_Id];
     return self;
 }
 
 //Generates and returns an error
 + (OIDCAuthenticationError *)invalidHeader:(NSString *)headerContents
 {
-    NSString* errorDetails = [NSString stringWithFormat:InvalidHeader,
-     OAuth2_Authenticate_Header, headerContents];
+    NSString* errorDetails = [NSString stringWithFormat:OidcInvalidHeader,
+     OidcOAuth2_Authenticate_Header, headerContents];
     return [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_SERVER_AUTHENTICATE_HEOIDCER_BOIDC_FORMAT
                                                   protocolCode:nil
                                                    errorDetails:errorDetails
@@ -105,7 +105,7 @@ NSString* const ExtractionExpression = @"\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"";
     else
     {
         //First check that the header conforms to the protocol:
-        NSRegularExpression* overAllRegEx = [NSRegularExpression regularExpressionWithPattern:RegularExpression
+        NSRegularExpression* overAllRegEx = [NSRegularExpression regularExpressionWithPattern:OidcRegularExpression
                                                                                       options:0
                                                                                         error:&rgError];
         if (overAllRegEx)
@@ -120,7 +120,7 @@ NSString* const ExtractionExpression = @"\\s*([^,\\s=\"]+?)=\"([^\"]*?)\"";
                 //Once we know that the header is in the right format, the regex below will extract individual
                 //name-value pairs. This regex is not as exclusive, so it relies on the previous check
                 //to guarantee correctness:
-                NSRegularExpression* extractionRegEx = [NSRegularExpression regularExpressionWithPattern:ExtractionExpression
+                NSRegularExpression* extractionRegEx = [NSRegularExpression regularExpressionWithPattern:OidcExtractionExpression
                                                                                                  options:0
                                                                                                    error:&rgError];
                 if (extractionRegEx)

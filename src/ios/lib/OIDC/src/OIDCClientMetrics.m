@@ -31,10 +31,10 @@
 @implementation OIDCClientMetrics
 
 //header keys
-const NSString* HeaderLastError = @"x-client-last-error";
-const NSString* HeaderLastRequest = @"x-client-last-request";
-const NSString* HeaderLastResponseTime = @"x-client-last-response-time";
-const NSString* HeaderLastEndpoint = @"x-client-last-endpoint";
+const NSString* OidcHeaderLastError = @"x-client-last-error";
+const NSString* OidcHeaderLastRequest = @"x-client-last-request";
+const NSString* OidcHeaderLastResponseTime = @"x-client-last-response-time";
+const NSString* OidcHeaderLastEndpoint = @"x-client-last-endpoint";
 
 //values
 @synthesize endpoint = _endpoint;
@@ -74,10 +74,10 @@ const NSString* HeaderLastEndpoint = @"x-client-last-endpoint";
         
         if (_errorToReport && _responseTime && _endpoint && _correlationId)
         {
-            [requestHeaders setObject:_errorToReport forKey:HeaderLastError];
-            [requestHeaders setObject:_responseTime forKey:HeaderLastResponseTime];
-            [requestHeaders setObject:[OIDCHelpers getEndpointName:_endpoint] forKey:HeaderLastEndpoint];
-            [requestHeaders setObject:_correlationId forKey:HeaderLastRequest];
+            [requestHeaders setObject:_errorToReport forKey:OidcHeaderLastError];
+            [requestHeaders setObject:_responseTime forKey:OidcHeaderLastResponseTime];
+            [requestHeaders setObject:[OIDCHelpers getEndpointName:_endpoint] forKey:OidcHeaderLastEndpoint];
+            [requestHeaders setObject:_correlationId forKey:OidcHeaderLastRequest];
         }
         else
         {

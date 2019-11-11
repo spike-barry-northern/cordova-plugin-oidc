@@ -48,17 +48,17 @@
 #import "OIDCKeychainUtil.h"
 #endif // TARGET_OS_IPHONE
 
-NSString* s_brokerAppVersion = nil;
-NSString* s_brokerProtocolVersion = nil;
+NSString* s_oidcBrokerAppVersion = nil;
+NSString* s_oidcBrokerProtocolVersion = nil;
 
-NSString* kAdalResumeDictionaryKey = @"oidc-broker-resume-dictionary";
+NSString* kOidcResumeDictionaryKey = @"oidc-broker-resume-dictionary";
 
 @implementation OIDCAuthenticationRequest (Broker)
 
 + (BOOL)validBrokerRedirectUri:(NSString*)url
 {
-    (void)s_brokerAppVersion;
-    (void)s_brokerProtocolVersion;
+    (void)s_oidcBrokerAppVersion;
+    (void)s_oidcBrokerProtocolVersion;
     
 #if OIDC_BROKER
     // Allow the broker app to use a special redirect URI when acquiring tokens
@@ -112,7 +112,7 @@ NSString* kAdalResumeDictionaryKey = @"oidc-broker-resume-dictionary";
                                                            error:&error];
     BOOL fReturn = YES;
     
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kAdalResumeDictionaryKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kOidcResumeDictionaryKey];
     if (!result)
     {
         result = [OIDCAuthenticationResult resultFromError:error];
@@ -163,7 +163,7 @@ NSString* kAdalResumeDictionaryKey = @"oidc-broker-resume-dictionary";
         return nil;
     }
     
-    NSDictionary* resumeDictionary = [[NSUserDefaults standardUserDefaults] objectForKey:kAdalResumeDictionaryKey];
+    NSDictionary* resumeDictionary = [[NSUserDefaults standardUserDefaults] objectForKey:kOidcResumeDictionaryKey];
     if (!resumeDictionary)
     {
         AUTH_ERROR(OIDC_ERROR_TOKENBROKER_NO_RESUME_STATE, @"No resume state found in NSUserDefaults", nil);
@@ -213,7 +213,7 @@ NSString* kAdalResumeDictionaryKey = @"oidc-broker-resume-dictionary";
     {
         protocolVersion = [msgVer integerValue];
     }
-    s_brokerProtocolVersion = msgVer;
+    s_oidcBrokerProtocolVersion = msgVer;
     
     //decrypt response first
     OIDCBrokerKeyHelper* brokerHelper = [[OIDCBrokerKeyHelper alloc] init];
@@ -243,7 +243,7 @@ NSString* kAdalResumeDictionaryKey = @"oidc-broker-resume-dictionary";
     [OIDCHelpers removeNullStringFrom:queryParamsMap];
     OIDCAuthenticationResult* result = [OIDCAuthenticationResult resultFromBrokerResponse:queryParamsMap];
     
-    s_brokerAppVersion = [queryParamsMap valueForKey:BROKER_APP_VERSION];
+    s_oidcBrokerAppVersion = [queryParamsMap valueForKey:BROKER_APP_VERSION];
     
     NSString* keychainGroup = resumeDictionary[@"keychain_group"];
     if (OIDC_SUCCEEDED == result.status && keychainGroup)
@@ -357,7 +357,7 @@ NSString* kAdalResumeDictionaryKey = @"oidc-broker-resume-dictionary";
           @"correlation_id"   : _requestParams.correlationId.UUIDString,
           };
     }
-    [[NSUserDefaults standardUserDefaults] setObject:resumeDictionary forKey:kAdalResumeDictionaryKey];
+    [[NSUserDefaults standardUserDefaults] setObject:resumeDictionary forKey:kOidcResumeDictionaryKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     NSString* query = [queryDictionary adURLFormEncode];

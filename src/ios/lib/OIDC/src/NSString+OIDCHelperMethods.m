@@ -47,7 +47,7 @@ static byte rgbDecodeTable[128] = {                         // character code
 };
 
 //Checks that all bytes inside the format are valid base64 characters:
-BOOL validBase64Characters(const byte* data, const int size)    
+BOOL oidcValidBase64Characters(const byte* data, const int size)
 {
     for (int i = 0; i < size; ++i)
     {
@@ -78,7 +78,7 @@ BOOL validBase64Characters(const byte* data, const int size)
     NSData      *encodedBytes = [encodedString dataUsingEncoding:NSUTF8StringEncoding];
     const byte  *pbEncoded    = [encodedBytes bytes];
     const int    cbEncoded    = (int)[encodedBytes length];
-    if (!validBase64Characters(pbEncoded, cbEncoded))
+    if (!oidcValidBase64Characters(pbEncoded, cbEncoded))
     {
         return nil;
     }

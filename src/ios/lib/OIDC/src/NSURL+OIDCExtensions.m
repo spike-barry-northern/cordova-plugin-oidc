@@ -25,8 +25,8 @@
 #import "NSDictionary+OIDCExtensions.h"
 #import "NSString+OIDCHelperMethods.h"
 
-const unichar fragmentSeparator = '#';
-const unichar queryStringSeparator = '?';
+//const unichar fragmentSeparator = '#';
+//const unichar queryStringSeparator = '?';
 
 @implementation NSURL (OIDC)
 

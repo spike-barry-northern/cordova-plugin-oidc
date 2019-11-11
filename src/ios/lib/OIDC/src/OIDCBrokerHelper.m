@@ -35,9 +35,9 @@ typedef BOOL (*applicationHandleOpenURLPtr)(id, SEL, UIApplication*, NSURL*);
 IMP __original_ApplicationHandleOpenURL = NULL;
 
 typedef BOOL (*applicationOpenURLPtr)(id, SEL, UIApplication*, NSURL*, NSString*, id);
-IMP __original_ApplicationOpenURL = NULL;
+IMP __oidc_original_ApplicationOpenURL = NULL;
 
-BOOL __swizzle_ApplicationOpenURL(id self, SEL _cmd, UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation)
+BOOL __oidc_swizzle_ApplicationOpenURL(id self, SEL _cmd, UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation)
 {
     if ([OIDCAuthenticationContext isResponseFromBroker:sourceApplication response:url])
     {
@@ -52,9 +52,9 @@ BOOL __swizzle_ApplicationOpenURL(id self, SEL _cmd, UIApplication* application,
     }
 
     // Fallback to original delegate if defined
-    if (__original_ApplicationOpenURL)
+    if (__oidc_original_ApplicationOpenURL)
     {
-        return ((applicationOpenURLPtr)__original_ApplicationOpenURL)(self, _cmd, application, url, sourceApplication, annotation);
+        return ((applicationOpenURLPtr)__oidc_original_ApplicationOpenURL)(self, _cmd, application, url, sourceApplication, annotation);
     }
     else if (__original_ApplicationHandleOpenURL)
     {
@@ -67,9 +67,9 @@ BOOL __swizzle_ApplicationOpenURL(id self, SEL _cmd, UIApplication* application,
 }
 
 typedef BOOL (*applicationOpenURLiOS9Ptr)(id, SEL, UIApplication*, NSURL*, NSDictionary<NSString*, id>*);
-IMP __original_ApplicationOpenURLiOS9 = NULL;
+IMP __oidc_original_ApplicationOpenURLiOS9 = NULL;
 
-BOOL __swizzle_ApplicationOpenURLiOS9(id self, SEL _cmd, UIApplication* application, NSURL* url, NSDictionary<NSString*, id>* options)
+BOOL __oidc_swizzle_ApplicationOpenURLiOS9(id self, SEL _cmd, UIApplication* application, NSURL* url, NSDictionary<NSString*, id>* options)
 {
     NSString* sourceApplication = [options objectForKey:UIApplicationOpenURLOptionsSourceApplicationKey];
 
@@ -87,9 +87,9 @@ BOOL __swizzle_ApplicationOpenURLiOS9(id self, SEL _cmd, UIApplication* applicat
     }
 
     // Fallback to original delegate if defined
-    if (__original_ApplicationOpenURLiOS9)
+    if (__oidc_original_ApplicationOpenURLiOS9)
     {
-        return ((applicationOpenURLiOS9Ptr)__original_ApplicationOpenURLiOS9)(self, _cmd, application, url, options);
+        return ((applicationOpenURLiOS9Ptr)__oidc_original_ApplicationOpenURLiOS9)(self, _cmd, application, url, options);
     }
     else if (__original_ApplicationHandleOpenURL)
     {
@@ -151,19 +151,19 @@ BOOL __swizzle_ApplicationOpenURLiOS9(id self, SEL _cmd, UIApplication* applicat
          if ([appDelegate respondsToSelector:seliOS9] && iOS9OrGreater)
          {
              Method m = class_getInstanceMethod([appDelegate class], seliOS9);
-             __original_ApplicationOpenURLiOS9 = method_getImplementation(m);
-             method_setImplementation(m, (IMP)__swizzle_ApplicationOpenURLiOS9);
+             __oidc_original_ApplicationOpenURLiOS9 = method_getImplementation(m);
+             method_setImplementation(m, (IMP)__oidc_swizzle_ApplicationOpenURLiOS9);
          }
          else if ([appDelegate respondsToSelector:sel])
          {
              Method m = class_getInstanceMethod([appDelegate class], sel);
-             __original_ApplicationOpenURL = method_getImplementation(m);
-             method_setImplementation(m, (IMP)__swizzle_ApplicationOpenURL);
+             __oidc_original_ApplicationOpenURL = method_getImplementation(m);
+             method_setImplementation(m, (IMP)__oidc_swizzle_ApplicationOpenURL);
          }
          else if (iOS9OrGreater)
          {
              NSString* typeEncoding = [NSString stringWithFormat:@"%s%s%s%s%s%s", @encode(BOOL), @encode(id), @encode(SEL), @encode(UIApplication*), @encode(NSURL*), @encode(NSDictionary<NSString*, id>*)];
-             class_addMethod([appDelegate class], seliOS9, (IMP)__swizzle_ApplicationOpenURLiOS9, [typeEncoding UTF8String]);
+             class_addMethod([appDelegate class], seliOS9, (IMP)__oidc_swizzle_ApplicationOpenURLiOS9, [typeEncoding UTF8String]);
              
              // UIApplication caches whether or not the delegate responds to certain selectors. Clearing out the delegate and resetting it gaurantees that gets updated
              [[OIDCAppExtensionUtil sharedApplication] setDelegate:nil];
@@ -174,7 +174,7 @@ BOOL __swizzle_ApplicationOpenURLiOS9(id self, SEL _cmd, UIApplication* applicat
          else
          {
              NSString* typeEncoding = [NSString stringWithFormat:@"%s%s%s%s%s%s%s", @encode(BOOL), @encode(id), @encode(SEL), @encode(UIApplication*), @encode(NSURL*), @encode(NSString*), @encode(id)];
-             class_addMethod([appDelegate class], sel, (IMP)__swizzle_ApplicationOpenURL, [typeEncoding UTF8String]);
+             class_addMethod([appDelegate class], sel, (IMP)__oidc_swizzle_ApplicationOpenURL, [typeEncoding UTF8String]);
              
              // UIApplication caches whether or not the delegate responds to certain selectors. Clearing out the delegate and resetting it gaurantees that gets updated
              [[OIDCAppExtensionUtil sharedApplication] setDelegate:nil];

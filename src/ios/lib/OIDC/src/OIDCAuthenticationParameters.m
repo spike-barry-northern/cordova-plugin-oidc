@@ -88,14 +88,14 @@
         if (error)
         {
             adError = [OIDCAuthenticationError errorFromNSError:error
-                                                 errorDetails:[NSString stringWithFormat:ConnectionError, error.description]
+                                                 errorDetails:[NSString stringWithFormat:OidcConnectionError, error.description]
                                                 correlationId:nil];
         }
         else if (HTTP_UNAUTHORIZED != response.statusCode)
         {
             adError = [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_SERVER_UNAUTHORIZED_CODE_EXPECTED
                                                              protocolCode:nil
-                                                             errorDetails:[NSString stringWithFormat:UnauthorizedHTTStatusExpected,
+                                                             errorDetails:[NSString stringWithFormat:OidcUnauthorizedHTTStatusExpected,
                                                                            response.statusCode]
                                                             correlationId:nil];
         }
@@ -113,10 +113,10 @@
                                                        error:(OIDCAuthenticationError *__autoreleasing *)error
 {
     // Handle 401 Unauthorized using the OAuth2 Implicit Profile
-    NSString  *authenticateHeader = [headers valueForKey:OAuth2_Authenticate_Header];
+    NSString  *authenticateHeader = [headers valueForKey:OidcOAuth2_Authenticate_Header];
     if ([NSString adIsStringNilOrBlank:authenticateHeader])
     {
-        NSString* details = [NSString stringWithFormat:MissingHeader, OAuth2_Authenticate_Header];
+        NSString* details = [NSString stringWithFormat:OidcMissingHeader, OidcOAuth2_Authenticate_Header];
         [self raiseErrorWithCode:OIDC_ERROR_SERVER_MISSING_AUTHENTICATE_HEOIDCER details:details error:error];
         
         return nil;

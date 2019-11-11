@@ -22,19 +22,19 @@
 // THE SOFTWARE.
 
 //Protocol constants:
-extern NSString* const OAuth2_Bearer;
-extern NSString* const OAuth2_Authenticate_Header;
+extern NSString* const OidcOAuth2_Bearer;
+extern NSString* const OidcOAuth2_Authenticate_Header;
 extern NSString* const OAuth2_Authorization;
-extern NSString* const OAuth2_Authorization_Uri;
-extern NSString* const OAuth2_Resource_Id;
+extern NSString* const OidcOAuth2_Authorization_Uri;
+extern NSString* const OidcOAuth2_Resource_Id;
 
 //Error messages:
 extern NSString* const InvalidHeader_NoBearer;
-extern NSString* const MissingHeader;
+extern NSString* const OidcMissingHeader;
 extern NSString* const MissingAuthority;
-extern NSString* const ConnectionError;
-extern NSString* const InvalidResponse;
-extern NSString* const UnauthorizedHTTStatusExpected;
+extern NSString* const OidcConnectionError;
+extern NSString* const OidcInvalidResponse;
+extern NSString* const OidcUnauthorizedHTTStatusExpected;
 
 /*! Contains non-public declarations of the OIDCAuthenticationParameters class.
  Exposed in a separate header for easier testing */

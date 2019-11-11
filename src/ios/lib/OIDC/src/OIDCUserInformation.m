@@ -26,18 +26,18 @@
 #import "OIDCOAuth2Constants.h"
 #import "NSString+OIDCHelperMethods.h"
 
-NSString* const ID_TOKEN_SUBJECT = @"sub";
-NSString* const ID_TOKEN_TENANTID = @"tid";
-NSString* const ID_TOKEN_UPN = @"upn";
-NSString* const ID_TOKEN_GIVEN_NAME = @"given_name";
-NSString* const ID_TOKEN_FAMILY_NAME = @"family_name";
-NSString* const ID_TOKEN_UNIQUE_NAME = @"unique_name";
-NSString* const ID_TOKEN_EMAIL = @"email";
-NSString* const ID_TOKEN_IDENTITY_PROVIDER = @"idp";
-NSString* const ID_TOKEN_TYPE = @"typ";
-NSString* const ID_TOKEN_JWT_TYPE = @"JWT";
-NSString* const ID_TOKEN_OBJECT_ID = @"oid";
-NSString* const ID_TOKEN_GUEST_ID = @"altsecid";
+NSString* const OIDC_ID_TOKEN_SUBJECT = @"sub";
+NSString* const OIDC_ID_TOKEN_TENANTID = @"tid";
+NSString* const OIDC_ID_TOKEN_UPN = @"upn";
+NSString* const OIDC_ID_TOKEN_GIVEN_NAME = @"given_name";
+NSString* const OIDC_ID_TOKEN_FAMILY_NAME = @"family_name";
+NSString* const OIDC_ID_TOKEN_UNIQUE_NAME = @"unique_name";
+NSString* const OIDC_ID_TOKEN_EMAIL = @"email";
+NSString* const OIDC_ID_TOKEN_IDENTITY_PROVIDER = @"idp";
+NSString* const OIDC_ID_TOKEN_TYPE = @"typ";
+NSString* const OIDC_ID_TOKEN_JWT_TYPE = @"JWT";
+NSString* const OIDC_ID_TOKEN_OBJECT_ID = @"oid";
+NSString* const OIDC_ID_TOKEN_GUEST_ID = @"altsecid";
 
 @implementation OIDCUserInformation
 
@@ -155,11 +155,11 @@ NSString* const ID_TOKEN_GUEST_ID = @"altsecid";
             NSDictionary* contents = (NSDictionary*)jsonObject;
             if (!type)
             {
-                type = [contents objectForKey:ID_TOKEN_TYPE];
+                type = [contents objectForKey:OIDC_ID_TOKEN_TYPE];
                 if (type)
                 {
                     //Type argument is passed, check if it is the expected one
-                    if (![ID_TOKEN_JWT_TYPE isEqualToString:type])
+                    if (![OIDC_ID_TOKEN_JWT_TYPE isEqualToString:type])
                     {
                         //Log it, but still try to use it as if it was a JWT token
                         OIDC_LOG_WARN(@"Incompatible id_token type.", nil, type);
@@ -231,16 +231,16 @@ NSString* const ID_TOKEN_GUEST_ID = @"altsecid";
     return [self.allClaims objectForKey:claimName]; \
 }
 
-ID_TOKEN_PROPERTY_GETTER(givenName, ID_TOKEN_GIVEN_NAME);
-ID_TOKEN_PROPERTY_GETTER(familyName, ID_TOKEN_FAMILY_NAME);
-ID_TOKEN_PROPERTY_GETTER(subject, ID_TOKEN_SUBJECT);
-ID_TOKEN_PROPERTY_GETTER(tenantId, ID_TOKEN_TENANTID);
-ID_TOKEN_PROPERTY_GETTER(upn, ID_TOKEN_UPN);
-ID_TOKEN_PROPERTY_GETTER(uniqueName, ID_TOKEN_UNIQUE_NAME);
-ID_TOKEN_PROPERTY_GETTER(eMail, ID_TOKEN_EMAIL);
-ID_TOKEN_PROPERTY_GETTER(identityProvider, ID_TOKEN_IDENTITY_PROVIDER);
-ID_TOKEN_PROPERTY_GETTER(userObjectId, ID_TOKEN_OBJECT_ID);
-ID_TOKEN_PROPERTY_GETTER(guestId, ID_TOKEN_GUEST_ID);
+ID_TOKEN_PROPERTY_GETTER(givenName, OIDC_ID_TOKEN_GIVEN_NAME);
+ID_TOKEN_PROPERTY_GETTER(familyName, OIDC_ID_TOKEN_FAMILY_NAME);
+ID_TOKEN_PROPERTY_GETTER(subject, OIDC_ID_TOKEN_SUBJECT);
+ID_TOKEN_PROPERTY_GETTER(tenantId, OIDC_ID_TOKEN_TENANTID);
+ID_TOKEN_PROPERTY_GETTER(upn, OIDC_ID_TOKEN_UPN);
+ID_TOKEN_PROPERTY_GETTER(uniqueName, OIDC_ID_TOKEN_UNIQUE_NAME);
+ID_TOKEN_PROPERTY_GETTER(eMail, OIDC_ID_TOKEN_EMAIL);
+ID_TOKEN_PROPERTY_GETTER(identityProvider, OIDC_ID_TOKEN_IDENTITY_PROVIDER);
+ID_TOKEN_PROPERTY_GETTER(userObjectId, OIDC_ID_TOKEN_OBJECT_ID);
+ID_TOKEN_PROPERTY_GETTER(guestId, OIDC_ID_TOKEN_GUEST_ID);
 
 + (OIDCUserInformation*)userInformationWithIdToken:(NSString *)idToken
                                            error:(OIDCAuthenticationError * __autoreleasing *)error

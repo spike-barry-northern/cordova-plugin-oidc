@@ -23,9 +23,9 @@
 
 typedef void(^OIDCAuthorizationCodeCallback)(NSString*, OIDCAuthenticationError*);
 
-extern NSString* kAdalResumeDictionaryKey;
-extern NSString* s_brokerAppVersion;
-extern NSString* s_brokerProtocolVersion;
+extern NSString* kOidcResumeDictionaryKey;
+extern NSString* s_oidcBrokerAppVersion;
+extern NSString* s_oidcBrokerProtocolVersion;
 
 @interface OIDCAuthenticationRequest (Broker)
 
