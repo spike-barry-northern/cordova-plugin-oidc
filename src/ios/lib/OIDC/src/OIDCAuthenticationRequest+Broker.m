@@ -274,9 +274,9 @@ NSString* kOidcResumeDictionaryKey = @"oidc-broker-resume-dictionary";
 - (NSURL *)composeBrokerRequest:(OIDCAuthenticationError* __autoreleasing *)error
 {
     ARG_RETURN_IF_NIL(_requestParams.authority, _requestParams.correlationId);
-    ARG_RETURN_IF_NIL(_requestParams.resource, _requestParams.correlationId);
+    //ARG_RETURN_IF_NIL(_requestParams.resource, _requestParams.correlationId);
     ARG_RETURN_IF_NIL(_requestParams.clientId, _requestParams.correlationId);
-    ARG_RETURN_IF_NIL(_requestParams.correlationId, _requestParams.correlationId);
+    //ARG_RETURN_IF_NIL(_requestParams.correlationId, _requestParams.correlationId);
     
     if(![OIDCAuthenticationRequest validBrokerRedirectUri:_requestParams.redirectUri])
     {
@@ -301,22 +301,25 @@ NSString* kOidcResumeDictionaryKey = @"oidc-broker-resume-dictionary";
     
     NSDictionary* queryDictionary =
     @{
-      @"authority"      : _requestParams.authority,
-      @"resource"       : _requestParams.resource,
+      //@"authority"      : _requestParams.authority,
+      @"response_type"      : @"id_token",
+      //@"resource"       : _requestParams.resource,
       @"client_id"      : _requestParams.clientId,
       @"redirect_uri"   : _requestParams.redirectUri,
-      @"username_type"  : _requestParams.identifier ? [_requestParams.identifier typeAsString] : @"",
-      @"username"       : _requestParams.identifier.userId ? _requestParams.identifier.userId : @"",
-      @"force"          : _promptBehavior == OIDC_FORCE_PROMPT ? @"YES" : @"NO",
-      @"skip_cache"     : _skipCache ? @"YES" : @"NO",
-      @"correlation_id" : _requestParams.correlationId,
+      @"nonce"   : @"ff885571-6f66-432c-93b4-6463a563d080",
+
+      //@"username_type"  : _requestParams.identifier ? [_requestParams.identifier typeAsString] : @"",
+      //@"username"       : _requestParams.identifier.userId ? _requestParams.identifier.userId : @"",
+      //@"force"          : _promptBehavior == OIDC_FORCE_PROMPT ? @"YES" : @"NO",
+      //@"skip_cache"     : _skipCache ? @"YES" : @"NO",
+      //@"correlation_id" : _requestParams.correlationId,
 #if TARGET_OS_IPHONE // Broker Message Encryption
       @"broker_key"     : base64UrlKey,
 #endif // TARGET_OS_IPHONE Broker Message Encryption
-      @"client_version" : oidcVersion,
-      BROKER_MAX_PROTOCOL_VERSION : @"2",
+      //@"client_version" : oidcVersion,
+      //BROKER_MAX_PROTOCOL_VERSION : @"2",
       @"extra_qp"       : _queryParams ? _queryParams : @"",
-      @"claims"         : _claims ? _claims : @"",
+      //@"claims"         : _claims ? _claims : @"",
       };
     
     NSDictionary<NSString *, NSString *>* resumeDictionary = nil;

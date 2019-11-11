@@ -146,12 +146,12 @@ static NSString* const s_kWebFingerError               = @"WebFinger request was
     NSString *upn = requestParams.identifier.userId;
     NSString *authority = requestParams.authority;
     
-    OIDCAuthenticationError *error = [OIDCHelpers checkAuthority:authority correlationId:requestParams.correlationId];
-    if (error)
-    {
-        completionBlock(NO, error);
-        return;
-    }
+    // OIDCAuthenticationError *error = [OIDCHelpers checkAuthority:authority correlationId:requestParams.correlationId];
+    // if (error)
+    // {
+    //     completionBlock(NO, error);
+    //     return;
+    // }
     
     NSURL *authorityURL = [NSURL URLWithString:authority.lowercaseString];
     if (!authorityURL)
@@ -273,58 +273,60 @@ static NSString* const s_kWebFingerError               = @"WebFinger request was
         completionBlock(record.validated, record.error);
         return;
     }
+    [_oidcCache addInvalidRecord:authority oauthError:nil context:requestParams];
+    completionBlock(YES, nil);
     
-    NSString *trustedHost = s_kTrustedAuthorityWorldWide;
-    NSString *authorityHost = authority.adHostWithPortIfNecessary;
-    if ([_whitelistedOIDCHosts containsObject:authorityHost])
-    {
-        trustedHost = authorityHost;
-    }
+    // NSString *trustedHost = s_kTrustedAuthorityWorldWide;
+    // NSString *authorityHost = authority.adHostWithPortIfNecessary;
+    // if ([_whitelistedOIDCHosts containsObject:authorityHost])
+    // {
+    //     trustedHost = authorityHost;
+    // }
     
-    [OIDCAuthorityValidationRequest requestMetadataWithAuthority:authority.absoluteString
-                                                   trustedHost:trustedHost
-                                                       context:requestParams
-                                               completionBlock:^(NSDictionary *response, OIDCAuthenticationError *error)
-     {
-         if (error)
-         {
-             completionBlock(NO, error);
-             return;
-         }
+    // [OIDCAuthorityValidationRequest requestMetadataWithAuthority:authority.absoluteString
+    //                                                trustedHost:trustedHost
+    //                                                    context:requestParams
+    //                                            completionBlock:^(NSDictionary *response, OIDCAuthenticationError *error)
+    //  {
+    //      if (error)
+    //      {
+    //          completionBlock(NO, error);
+    //          return;
+    //      }
          
-         NSString *oauthError = response[@"error"];
-         if (![NSString adIsStringNilOrBlank:oauthError])
-         {
-             OIDCAuthenticationError *adError =
-             [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_DEVELOPER_AUTHORITY_VALIDATION
-                                                    protocolCode:oauthError
-                                                    errorDetails:response[@"error_details"]
-                                                   correlationId:requestParams.correlationId];
+    //      NSString *oauthError = response[@"error"];
+    //      if (![NSString adIsStringNilOrBlank:oauthError])
+    //      {
+    //          OIDCAuthenticationError *adError =
+    //          [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_DEVELOPER_AUTHORITY_VALIDATION
+    //                                                 protocolCode:oauthError
+    //                                                 errorDetails:response[@"error_details"]
+    //                                                correlationId:requestParams.correlationId];
              
-             // If the error is something other than invalid_instance then something wrong is happening
-             // on the server.
-             if ([oauthError isEqualToString:@"invalid_instance"])
-             {
-                 [_oidcCache addInvalidRecord:authority oauthError:adError context:requestParams];
-             }
+    //          // If the error is something other than invalid_instance then something wrong is happening
+    //          // on the server.
+    //          if ([oauthError isEqualToString:@"invalid_instance"])
+    //          {
+    //              [_oidcCache addInvalidRecord:authority oauthError:adError context:requestParams];
+    //          }
              
-             completionBlock(NO, adError);
-             return;
-         }
+    //          completionBlock(NO, adError);
+    //          return;
+    //      }
          
          
-         OIDCAuthenticationError *adError = nil;
-         if (![_oidcCache processMetadata:response[@"metadata"]
-                               authority:authority
-                                 context:requestParams
-                                   error:&adError])
-         {
-             completionBlock(NO, adError);
-             return;
-         }
+    //      OIDCAuthenticationError *adError = nil;
+    //      if (![_oidcCache processMetadata:response[@"metadata"]
+    //                            authority:authority
+    //                              context:requestParams
+    //                                error:&adError])
+    //      {
+    //          completionBlock(NO, adError);
+    //          return;
+    //      }
          
-         completionBlock(YES, nil);
-     }];
+    //      completionBlock(YES, nil);
+    //  }];
 }
 
 #pragma mark - OIDC Authority URL utilities
