@@ -146,7 +146,7 @@ static NSString* const s_kWebFingerError               = @"WebFinger request was
     NSString *upn = requestParams.identifier.userId;
     NSString *authority = requestParams.authority;
     
-    // OIDCAuthenticationError *error = [OIDCHelpers checkAuthority:authority correlationId:requestParams.correlationId];
+    OIDCAuthenticationError *error = [OIDCHelpers checkAuthority:authority correlationId:requestParams.correlationId];
     // if (error)
     // {
     //     completionBlock(NO, error);
