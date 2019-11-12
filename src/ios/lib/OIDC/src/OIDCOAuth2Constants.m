@@ -25,7 +25,7 @@
 
 NSString *const OAUTH2_ACCESS_TOKEN       = @"access_token";
 NSString *const OAUTH2_AUTHORIZATION      = @"authorization";
-NSString *const OAUTH2_AUTHORIZE_SUFFIX   = @"/oauth2/v1/authorize";
+NSString *const OIDC_OAUTH2_AUTHORIZE_SUFFIX   = @"/oauth2/v1/authorize";
 NSString *const OAUTH2_AUTHORITY           = @"authority";
 NSString *const OAUTH2_AUTHORIZATION_CODE = @"authorization_code";
 NSString *const OAUTH2_AUTHORIZATION_URI  = @"authorization_uri";
@@ -42,11 +42,12 @@ NSString *const OAUTH2_REALM              = @"realm";
 NSString *const OAUTH2_REDIRECT_URI       = @"redirect_uri";
 NSString *const OAUTH2_REFRESH_TOKEN      = @"refresh_token";
 NSString *const OAUTH2_RESOURCE           = @"resource";
+NSString *const OAUTH2_NONCE              = @"nonce";
 NSString *const OAUTH2_RESPONSE_TYPE      = @"response_type";
 NSString *const OAUTH2_SCOPE              = @"scope";
 NSString *const OAUTH2_STATE              = @"state";
 NSString *const OAUTH2_TOKEN              = @"token";
-NSString *const OAUTH2_TOKEN_SUFFIX       = @"/oauth2/v1/token";
+NSString *const OIDC_OAUTH2_TOKEN_SUFFIX       = @"/oauth2/v1/token";
 //NSString *const OAUTH2_INSTANCE_DISCOVERY_SUFFIX = @"common/discovery/instance";
 NSString *const OAUTH2_TOKEN_TYPE         = @"token_type";
 NSString *const OAUTH2_LOGIN_HINT         = @"login_hint";

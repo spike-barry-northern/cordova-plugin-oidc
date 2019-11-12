@@ -302,7 +302,6 @@ NSString* kOidcResumeDictionaryKey = @"oidc-broker-resume-dictionary";
     NSDictionary* queryDictionary =
     @{
       //@"authority"      : _requestParams.authority,
-      @"response_type"      : @"id_token",
       //@"resource"       : _requestParams.resource,
       @"client_id"      : _requestParams.clientId,
       @"redirect_uri"   : _requestParams.redirectUri,

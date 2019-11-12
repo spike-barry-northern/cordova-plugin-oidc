@@ -26,6 +26,8 @@
 #import "OIDCRequestContext.h"
 #import "OIDCUserIdentifier.h"
 #import "OIDCAuthenticationResult.h"
+#import "OIDCRequestParameters.h"
+
 
 @interface OIDCTokenCacheAccessor : NSObject
 {
@@ -88,4 +90,8 @@
                refreshToken:(NSString *)refreshToken
                     context:(id<OIDCRequestContext>)context;
 
+- (OIDCTokenCacheItem*)updateCacheToCode:(NSString *)code
+                                    type:(NSString *)type
+                            refreshToken:(NSString *)refreshToken
+                                 context:(OIDCRequestParameters*) _requestParams;
 @end

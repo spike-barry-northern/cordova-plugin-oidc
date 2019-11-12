@@ -45,7 +45,7 @@
 - (void)executeRequest:(NSDictionary *)request_data
             completion:(OIDCAuthenticationCallback)completionBlock
 {
-    NSString* urlString = [_context.authority stringByAppendingString:OAUTH2_TOKEN_SUFFIX];
+    NSString* urlString = [_context.authority stringByAppendingString:OIDC_OAUTH2_TOKEN_SUFFIX];
     OIDCWebAuthRequest* req = [[OIDCWebAuthRequest alloc] initWithURL:[NSURL URLWithString:urlString]
                                                           context:_requestParams];
     [req setRequestDictionary:request_data];
@@ -103,29 +103,32 @@
 {
     NSString* state = [self encodeProtocolState];
     NSString* queryParams = nil;
+    
+    NSString *udidString = [[NSUUID UUID] UUIDString];
+    
     // Start the web navigation process for the Implicit grant profile.
     NSMutableString* startUrl = [NSMutableString stringWithFormat:@"%@?%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
-                                 [_context.authority stringByAppendingString:OAUTH2_AUTHORIZE_SUFFIX],
+                                 [_context.authority stringByAppendingString:OIDC_OAUTH2_AUTHORIZE_SUFFIX],
                                  OAUTH2_RESPONSE_TYPE, requestType,
                                  OAUTH2_CLIENT_ID, [[_requestParams clientId] adUrlFormEncode],
-                                 OAUTH2_RESOURCE, [[_requestParams resource] adUrlFormEncode],
+                                 OAUTH2_NONCE, udidString,
                                  OAUTH2_REDIRECT_URI, [[_requestParams redirectUri] adUrlFormEncode],
                                  OAUTH2_STATE, state];
     
-    [startUrl appendFormat:@"&%@", [[OIDCLogger oidcId] adURLFormEncode]];
+    //[startUrl appendFormat:@"&%@", [[OIDCLogger oidcId] adURLFormEncode]];
     
-    if ([_requestParams identifier] && [[_requestParams identifier] isDisplayable] && ![NSString adIsStringNilOrBlank:[_requestParams identifier].userId])
-    {
-        [startUrl appendFormat:@"&%@=%@", OAUTH2_LOGIN_HINT, [[_requestParams identifier].userId adUrlFormEncode]];
-    }
-    NSString* promptParam = [OIDCAuthenticationContext getPromptParameter:_promptBehavior];
-    if (promptParam)
-    {
-        //Force the server to ignore cookies, by specifying explicitly the prompt behavior:
-        [startUrl appendString:[NSString stringWithFormat:@"&prompt=%@", promptParam]];
-    }
+//    if ([_requestParams identifier] && [[_requestParams identifier] isDisplayable] && ![NSString adIsStringNilOrBlank:[_requestParams identifier].userId])
+//    {
+//        [startUrl appendFormat:@"&%@=%@", OAUTH2_LOGIN_HINT, [[_requestParams identifier].userId adUrlFormEncode]];
+//    }
+//    NSString* promptParam = [OIDCAuthenticationContext getPromptParameter:_promptBehavior];
+//    if (promptParam)
+//    {
+//        //Force the server to ignore cookies, by specifying explicitly the prompt behavior:
+//        [startUrl appendString:[NSString stringWithFormat:@"&prompt=%@", promptParam]];
+//    }
     
-    [startUrl appendString:@"&haschrome=1"]; //to hide back button in UI
+    //[startUrl appendString:@"&haschrome=1"]; //to hide back button in UI
     
     if (![NSString adIsStringNilOrBlank:_queryParams])
     {//Append the additional query parameters if specified:
@@ -174,7 +177,7 @@
     
     OIDC_LOG_VERBOSE_F(@"Requesting authorization code.", _requestParams.correlationId, @"Requesting authorization code for resource: %@", _requestParams.resource);
     
-    NSString* startUrl = [self generateQueryStringForRequestType:OAUTH2_CODE];
+    NSString* startUrl = [self generateQueryStringForRequestType:OAUTH2_ID_TOKEN];
     
     void(^requestCompletion)(OIDCAuthenticationError *error, NSURL *end) = ^void(OIDCAuthenticationError *error, NSURL *end)
     {
@@ -222,7 +225,7 @@
                  {
                      //Note that we do not enforce the state, just log it:
                      [self verifyStateFromDictionary:parameters];
-                     code = [parameters objectForKey:OAUTH2_CODE];
+                     code = [parameters objectForKey:OAUTH2_ID_TOKEN];
                      if ([NSString adIsStringNilOrBlank:code])
                      {
                          error = [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_SERVER_AUTHORIZATION_CODE
@@ -265,7 +268,7 @@
             [requestData setObject:_requestParams.identifier.userId forKey:OAUTH2_LOGIN_HINT];
         }
         
-        NSURL* reqURL = [NSURL URLWithString:[_context.authority stringByAppendingString:OAUTH2_AUTHORIZE_SUFFIX]];
+        NSURL* reqURL = [NSURL URLWithString:[_context.authority stringByAppendingString:OIDC_OAUTH2_AUTHORIZE_SUFFIX]];
         OIDCWebAuthRequest* req = [[OIDCWebAuthRequest alloc] initWithURL:reqURL
                                                               context:_requestParams];
         [req setIsGetRequest:YES];

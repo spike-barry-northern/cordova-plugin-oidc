@@ -44,15 +44,9 @@ NSString* const OIDCRedirectUriInvalidError = @"Your AuthenticationContext is co
     if (!(self = [super init]))
     {
         return nil;
-    }
-    
-    NSString* extractedAuthority = [OIDCHelpers canonicalizeAuthority:authority];
-    if (!extractedAuthority)
-    {
-        RETURN_ON_INVALID_ARGUMENT(!extractedAuthority, authority, nil);
-    }
-    
-    _authority = extractedAuthority;
+    }    
+   
+    _authority = authority;
     _validateAuthority = validateAuthority;
     _credentialsType = OIDC_CREDENTIALS_EMBEDDED;
     _extendedLifetimeEnabled = NO;

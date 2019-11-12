@@ -272,6 +272,36 @@
                         error:result.error];
 }
 
+- (OIDCTokenCacheItem*)updateCacheToCode:(NSString *)code
+                                    type:(NSString *)type
+                           refreshToken:(NSString *)refreshToken
+                                context:(OIDCRequestParameters*) _requestParams
+{
+    
+    if ([NSString adIsStringNilOrBlank:code])
+    {
+        return nil;
+    }
+    
+    OIDCTokenCacheItem* item = [OIDCTokenCacheItem new];
+    item.resource = [_requestParams resource];
+    item.clientId = [_requestParams clientId];
+    item.authority = [_requestParams authority];
+    
+    item.accessToken = code;
+    item.accessTokenType = @"id_token";
+    
+    [self updateCacheToItem:item
+                       MRRT:false
+                    context:_requestParams];
+    return item;
+
+//    [self removeItemFromCache:cacheItem
+//                 refreshToken:refreshToken
+//                      context:context
+//                        error:result.error];
+}
+
 - (void)updateCacheToItem:(OIDCTokenCacheItem *)cacheItem
                      MRRT:(BOOL)isMRRT
                   context:(id<OIDCRequestContext>)context
