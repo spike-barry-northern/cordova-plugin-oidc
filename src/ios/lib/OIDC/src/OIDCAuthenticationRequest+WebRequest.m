@@ -45,7 +45,12 @@
 - (void)executeRequest:(NSDictionary *)request_data
             completion:(OIDCAuthenticationCallback)completionBlock
 {
-    NSString* urlString = [_context.authority stringByAppendingString:OIDC_OAUTH2_TOKEN_SUFFIX];
+    NSString* tokenEndpoint = _context.tokenEndpoint ? _context.tokenEndpoint : OIDC_OAUTH2_TOKEN_SUFFIX;
+    NSString* urlString = [_context.authority stringByAppendingString:tokenEndpoint];
+    
+    NSLog(@"OIDCAuthenticationRequest, executeRequest - token endpoint: %@", tokenEndpoint);
+    NSLog(@"url: %@", urlString);
+    
     OIDCWebAuthRequest* req = [[OIDCWebAuthRequest alloc] initWithURL:[NSURL URLWithString:urlString]
                                                           context:_requestParams];
     [req setRequestDictionary:request_data];
@@ -106,9 +111,11 @@
     
     NSString *udidString = [[NSUUID UUID] UUIDString];
     
+    NSString *tokenEndpoint = _context.tokenEndpoint ? _context.tokenEndpoint : OIDC_OAUTH2_AUTHORIZE_SUFFIX;
+    
     // Start the web navigation process for the Implicit grant profile.
     NSMutableString* startUrl = [NSMutableString stringWithFormat:@"%@?%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
-                                 [_context.authority stringByAppendingString:OIDC_OAUTH2_AUTHORIZE_SUFFIX],
+                                 [_context.authority stringByAppendingString:tokenEndpoint],
                                  OAUTH2_RESPONSE_TYPE, requestType,
                                  OAUTH2_CLIENT_ID, [[_requestParams clientId] adUrlFormEncode],
                                  OAUTH2_NONCE, udidString,
@@ -177,7 +184,8 @@
     
     OIDC_LOG_VERBOSE_F(@"Requesting authorization code.", _requestParams.correlationId, @"Requesting authorization code for resource: %@", _requestParams.resource);
     
-    NSString* startUrl = [self generateQueryStringForRequestType:OAUTH2_ID_TOKEN];
+    NSString* responseType = _context.responseType ? _context.responseType : OAUTH2_ID_TOKEN;
+    NSString* startUrl = [self generateQueryStringForRequestType:responseType]; // Looks like this method is incorrectly named??
     
     void(^requestCompletion)(OIDCAuthenticationError *error, NSURL *end) = ^void(OIDCAuthenticationError *error, NSURL *end)
     {
@@ -268,7 +276,8 @@
             [requestData setObject:_requestParams.identifier.userId forKey:OAUTH2_LOGIN_HINT];
         }
         
-        NSURL* reqURL = [NSURL URLWithString:[_context.authority stringByAppendingString:OIDC_OAUTH2_AUTHORIZE_SUFFIX]];
+        NSString *tokenEndpoint = _context.tokenEndpoint ? _context.tokenEndpoint : OIDC_OAUTH2_AUTHORIZE_SUFFIX;
+        NSURL* reqURL = [NSURL URLWithString:[_context.authority stringByAppendingString:tokenEndpoint]];
         OIDCWebAuthRequest* req = [[OIDCWebAuthRequest alloc] initWithURL:reqURL
                                                               context:_requestParams];
         [req setIsGetRequest:YES];

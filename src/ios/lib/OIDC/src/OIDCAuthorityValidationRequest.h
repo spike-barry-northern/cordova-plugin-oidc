@@ -43,12 +43,15 @@
  
  */
 + (void)requestMetadataWithAuthority:(NSString *)authority
+                       tokenEndpoint:(NSString *)tokenEndpoint
                          trustedHost:(NSString *)trustedHost
                              context:(id<OIDCRequestContext>)context
                      completionBlock:(void (^)(NSDictionary *response, OIDCAuthenticationError *error))completionBlock;
 
 // Fetches the corresponding URL for the request
-+ (NSURL *)urlForAuthorityValidation:(NSString *)authority trustedHost:(NSString *)trustedHost;
++ (NSURL *)urlForAuthorityValidation:(NSString *)authority
+                       tokenEndpoint:(NSString *)tokenEndpoint
+                         trustedHost:(NSString *)trustedHost;
 
 
 @end

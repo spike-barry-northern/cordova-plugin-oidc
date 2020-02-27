@@ -36,6 +36,8 @@ NSString* const OIDCRedirectUriInvalidError = @"Your AuthenticationContext is co
 @implementation OIDCAuthenticationContext (Internal)
 
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)validateAuthority
              tokenCache:(id<OIDCTokenCacheDataSource>)tokenCache
                   error:(OIDCAuthenticationError *__autoreleasing *)error
@@ -47,6 +49,8 @@ NSString* const OIDCRedirectUriInvalidError = @"Your AuthenticationContext is co
     }    
    
     _authority = authority;
+    _tokenEndpoint = tokenEndpoint;
+    _responseType = responseType;
     _validateAuthority = validateAuthority;
     _credentialsType = OIDC_CREDENTIALS_EMBEDDED;
     _extendedLifetimeEnabled = NO;

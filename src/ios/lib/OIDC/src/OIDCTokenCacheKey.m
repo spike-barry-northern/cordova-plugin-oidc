@@ -31,6 +31,7 @@
 @implementation OIDCTokenCacheKey
 
 @synthesize authority = _authority;
+@synthesize tokenEndpoint = _tokenEndpoint;
 @synthesize resource = _resource;
 @synthesize clientId = _clientId;
 
@@ -41,6 +42,8 @@
 }
 
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
                resource:(NSString *)resource
                clientId:(NSString *)clientId
 {
@@ -50,6 +53,8 @@
     }
     
     _authority = authority;
+    _tokenEndpoint = tokenEndpoint;
+    _responseType = responseType;
     _resource = resource;
     _clientId = clientId;
     
@@ -59,6 +64,8 @@
 }
 
 + (id)keyWithAuthority:(NSString *)authority
+         tokenEndpoint:(NSString *)tokenEndpoint
+          responseType:(NSString *)responseType
               resource:(NSString *)resource
               clientId:(NSString *)clientId
                  error:(OIDCAuthenticationError * __autoreleasing *)error
@@ -68,12 +75,18 @@
     // needed to ensure that the cache handles correctly same items with different
     // character case:
     authority = [OIDCHelpers canonicalizeAuthority:authority];
+    tokenEndpoint = tokenEndpoint.adTrimmedString;
+    responseType = responseType.adTrimmedString;
     resource = resource.adTrimmedString.lowercaseString;
     clientId = clientId.adTrimmedString.lowercaseString;
     RETURN_NIL_ON_NIL_ARGUMENT(authority);
     RETURN_NIL_ON_NIL_EMPTY_ARGUMENT(clientId);
     
-    OIDCTokenCacheKey* key = [[OIDCTokenCacheKey alloc] initWithAuthority:authority resource:resource clientId:clientId];
+    OIDCTokenCacheKey* key = [[OIDCTokenCacheKey alloc] initWithAuthority:authority
+                                                            tokenEndpoint:tokenEndpoint
+                                                             responseType:responseType
+                                                                 resource:resource
+                                                                 clientId:clientId];
     return key;
 }
 
@@ -157,7 +170,12 @@
 
 - (OIDCTokenCacheKey *)mrrtKey
 {
-    return [[self class] keyWithAuthority:_authority resource:nil clientId:_clientId error:nil];
+    return [[self class] keyWithAuthority:_authority
+                            tokenEndpoint:_tokenEndpoint
+                             responseType:_responseType
+                                 resource:nil
+                                 clientId:_clientId
+                                    error:nil];
 }
 
 @end

@@ -65,8 +65,13 @@ static dispatch_semaphore_t s_interactionLock = nil;
 }
 
 + (OIDCAuthenticationRequest *)requestWithAuthority:(NSString *)authority
+                                      tokenEndpoint:(NSString *)tokenEndpoint
+                                       responseType:(NSString *)responseType
 {
-    OIDCAuthenticationContext* context = [[OIDCAuthenticationContext alloc] initWithAuthority:authority validateAuthority:NO error:nil];
+    OIDCAuthenticationContext* context = [[OIDCAuthenticationContext alloc] initWithAuthority:authority
+                                                                                tokenEndpoint:tokenEndpoint
+                                                                                 responseType:responseType
+                                                                            validateAuthority:NO error:nil];
     
     return [self requestWithContext:context];
 }

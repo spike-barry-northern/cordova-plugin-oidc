@@ -120,6 +120,8 @@ typedef enum
 {
     OIDCTokenCacheAccessor* _tokenCacheStore;
     NSString* _authority;
+    NSString* _tokenEndpoint;
+    NSString* _responseType;
     BOOL _validateAuthority;
     OIDCCredentialsType _credentialsType;
     BOOL _extendedLifetimeEnabled;
@@ -137,6 +139,7 @@ typedef enum
     Initializes an instance of OIDCAuthenticationContext with the provided parameters.
  
     @param authority            The OIDC or OAUTH authority. Example: @"https://login.microsoftonline.com/contoso.com"
+    @param tokenEndpoint   URL suffix. Example: @"/oauth2/v1" or @"/connect"
     @param validateAuthority    Specifies if the authority should be validated.
     @param sharedGroup          The keychain sharing group to use for the OIDC token cache (iOS Only)
     @param error                (Optional) Any extra error details, if the method fails
@@ -144,6 +147,8 @@ typedef enum
     @return An instance of OIDCAuthenticationContext, nil if it fails.
  */
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)validateAuthority
             sharedGroup:(NSString *)sharedGroup
                   error:(OIDCAuthenticationError * __autoreleasing *)error;
@@ -154,6 +159,7 @@ typedef enum
     Initializes an instance of OIDCAuthenticationContext with the provided parameters.
  
     @param authority            The OIDC or OAUTH authority. Example: @"https://login.microsoftonline.com/contoso.com"
+    @param tokenEndpoint   URL suffix. Example: @"/oauth2/v1" or @"/connect"
     @param validateAuthority    Specifies if the authority should be validated.
     @param delegate             An object conforming to the OIDCTokenCacheDelegate protocol, this is mandatory
                                 if you wish to persist tokens on OS X.
@@ -162,6 +168,8 @@ typedef enum
     @return An instance of OIDCAuthenticationContext, nil if it fails.
  */
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)validateAuthority
           cacheDelegate:(id<OIDCTokenCacheDelegate>)delegate
                   error:(OIDCAuthenticationError * __autoreleasing *)error;
@@ -171,12 +179,15 @@ typedef enum
     Initializes an instance of OIDCAuthenticationContext with the provided parameters.
  
     @param authority            The OIDC or OAUTH authority. Example: @"https://login.microsoftonline.com/contoso.com"
+    @param tokenEndpoint   URL suffix. Example: @"/oauth2/v1" or @"/connect"
     @param validateAuthority    Specifies if the authority should be validated.
     @param error                (Optional) Any extra error details, if the method fails
  
     @return An instance of OIDCAuthenticationContext, nil if it fails.
  */
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)validateAuthority
                   error:(OIDCAuthenticationError * __autoreleasing *)error;
 
@@ -185,44 +196,54 @@ typedef enum
     Creates an instance of OIDCAuthenticationContext with the provided parameters.
  
     @param authority            The OIDC or OAUTH authority. Example: @"https://login.microsoftonline.com/contoso.com"
+    @param tokenEndpoint   URL suffix. Example: @"/oauth2/v1" or @"/connect"
     @param error                (Optional) Any extra error details, if the method fails
  
     @return An instance of OIDCAuthenticationContext, nil if it fails.
  */
 + (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error;
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error;
 
 /*!
     Creates an instance of OIDCAuthenticationContext with the provided parameters.
  
     @param authority            The OIDC or OAUTH authority. Example: @"https://login.microsoftonline.com/contoso.com"
+    @param tokenEndpoint   URL suffix. Example: @"/oauth2/v1" or @"/connect"
     @param validate             Specifies if the authority should be validated.
     @param error                (Optional) Any extra error details, if the method fails
  
     @return An instance of OIDCAuthenticationContext, nil if it fails.
  */
 + (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                             validateAuthority:(BOOL)validate
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error;
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                               validateAuthority:(BOOL)validate
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error;
 
 #if TARGET_OS_IPHONE
 /*!
     Creates an instance of OIDCAuthenticationContext with the provided parameters.
  
     @param authority            The OIDC or OAUTH authority. Example: @"https://login.microsoftonline.com/contoso.com"
+    @param tokenEndpoint   URL suffix. Example: @"/oauth2/v1" or @"/connect"
     @param sharedGroup          The keychain sharing group to use for the OIDC token cache (iOS Only)
     @param error                (Optional) Any extra error details, if the method fails
  
     @return An instance of OIDCAuthenticationContext, nil if it fails.
  */
 + (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                                   sharedGroup:(NSString*)sharedGroup
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error;
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                                     sharedGroup:(NSString*)sharedGroup
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error;
 
 /*!
     Creates an instance of OIDCAuthenticationContext with the provided parameters.
  
     @param authority            The OIDC or OAUTH authority. Example: @"https://login.microsoftonline.com/contoso.com"
+    @param tokenEndpoint   URL suffix. Example: @"/oauth2/v1" or @"/connect"
     @param validate             Specifies if the authority should be validated.
     @param sharedGroup          The keychain sharing group to use for the OIDC token cache (iOS Only)
     @param error                (Optional) Any extra error details, if the method fails
@@ -230,9 +251,11 @@ typedef enum
     @return An instance of OIDCAuthenticationContext, nil if it fails.
  */
 + (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                             validateAuthority:(BOOL)validate
-                                                   sharedGroup:(NSString*)sharedGroup
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error;
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                               validateAuthority:(BOOL)validate
+                                                     sharedGroup:(NSString*)sharedGroup
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error;
 #endif
 
 /*!
@@ -246,6 +269,10 @@ typedef enum
 
 /*! Represents the authority used by the context. */
 @property (readonly) NSString* authority;
+
+@property (readonly) NSString* tokenEndpoint;
+
+@property (readonly) NSString* responseType;
 
 /*! Controls authority validation in acquire token calls. */
 @property BOOL validateAuthority;

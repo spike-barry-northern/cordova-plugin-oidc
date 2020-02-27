@@ -18,8 +18,15 @@
         {
             NSString *authority = ObjectOrNil([command.arguments objectAtIndex:0]);
             BOOL validateAuthority = [[command.arguments objectAtIndex:1] boolValue];
+//            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:2]);
+//            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
+            
+            NSString *tokenEndpoint = @"/connect/authorize";
+            NSString *responseType = @"code";
 
             [CordovaOidcPlugin getOrCreateAuthContext:authority
+                                        tokenEndpoint:tokenEndpoint
+                                         responseType:responseType
                                     validateAuthority:validateAuthority];
 
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -47,9 +54,16 @@
             NSURL *redirectUri = [NSURL URLWithString:[command.arguments objectAtIndex:4]];
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:5]);
             NSString *extraQueryParameters = ObjectOrNil([command.arguments objectAtIndex:6]);
+//            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:7]);
+//            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
+            
+            NSString *tokenEndpoint = @"/connect/authorize";
+            NSString *responseType = @"token";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
-                                                                           validateAuthority:validateAuthority];
+                                                                                 tokenEndpoint:tokenEndpoint
+                                                                                  responseType:responseType
+                                                                             validateAuthority:validateAuthority];
             // `x-msauth-` redirect url prefix means we should use brokered authentication
             // https://github.com/AzureOIDC/azure-activedirectory-library-for-objc#brokered-authentication
             authContext.credentialsType = (redirectUri.scheme && [redirectUri.scheme hasPrefix: @"x-msauth-"]) ?
@@ -94,9 +108,16 @@
             NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:2]);
             NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:3]);
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:4]);
+//            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:5]);
+//            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
+            
+            NSString *tokenEndpoint = @"/connect/authorize";
+            NSString *responseType = @"code";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
-                                                                           validateAuthority:validateAuthority];
+                                                                                 tokenEndpoint:tokenEndpoint
+                                                                                  responseType:responseType
+                                                                             validateAuthority:validateAuthority];
 
             // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
             userId = [CordovaOidcUtils mapUserIdToUserName:authContext
@@ -206,9 +227,16 @@
             NSString *resourceId = ObjectOrNil([command.arguments objectAtIndex:3]);
             NSString *clientId = ObjectOrNil([command.arguments objectAtIndex:4]);
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:5]);
+//            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:6]);
+//            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
+            
+            NSString *tokenEndpoint = @"/connect/authorize";
+            NSString *responseType = @"code";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
-                                                                           validateAuthority:validateAuthority];
+                                                                                 tokenEndpoint:tokenEndpoint
+                                                                                   responseType:responseType
+                                                                             validateAuthority:validateAuthority];
 
             // TODO iOS sdk requires user name instead of guid so we should map provided id to a known user name
             userId = [CordovaOidcUtils mapUserIdToUserName:authContext
@@ -301,7 +329,9 @@
 static NSMutableDictionary *existingContexts = nil;
 
 + (OIDCAuthenticationContext *)getOrCreateAuthContext:(NSString *)authority
-                                  validateAuthority:(BOOL)validate
+                                        tokenEndpoint:(NSString *)tokenEndpoint
+                                         responseType:(NSString *)responseType
+                                    validateAuthority:(BOOL)validate
 {
     if (!existingContexts)
     {
@@ -313,10 +343,12 @@ static NSMutableDictionary *existingContexts = nil;
     if (!authContext)
     {
         OIDCAuthenticationError *error;
-
+        
         authContext = [OIDCAuthenticationContext authenticationContextWithAuthority:authority
-                                                                validateAuthority:validate
-                                                                            error:&error];
+                                                                      tokenEndpoint:tokenEndpoint
+                                                                       responseType:responseType
+                                                                  validateAuthority:validate
+                                                                              error:&error];
         if (error != nil)
         {
             @throw(error);

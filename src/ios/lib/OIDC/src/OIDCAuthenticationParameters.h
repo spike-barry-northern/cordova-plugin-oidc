@@ -32,6 +32,8 @@
     @protected
     NSDictionary* _extractedParameters;
     NSString* _authority;
+    NSString* _tokenEndpoint;
+    NSString* _grantType;
     NSString* _resource;
 }
 

@@ -34,11 +34,12 @@ static NSString* const s_kAuthorizationEndPointKey = @"authorization_endpoint";
 @implementation OIDCAuthorityValidationRequest
 
 + (void)requestMetadataWithAuthority:(NSString *)authority
+                       tokenEndpoint:(NSString *)tokenEndpoint
                          trustedHost:(NSString *)trustedHost
                              context:(id<OIDCRequestContext>)context
                      completionBlock:(void (^)(NSDictionary *response, OIDCAuthenticationError *error))completionBlock
 {
-    NSURL *endpoint = [self urlForAuthorityValidation:authority trustedHost:trustedHost];
+    NSURL *endpoint = [self urlForAuthorityValidation:authority tokenEndpoint:tokenEndpoint trustedHost:trustedHost];
     OIDCWebAuthRequest *webRequest = [[OIDCWebAuthRequest alloc] initWithURL:endpoint
                                                                  context:context];
     
@@ -58,11 +59,16 @@ static NSString* const s_kAuthorizationEndPointKey = @"authorization_endpoint";
     }];
 }
 
-+ (NSURL *)urlForAuthorityValidation:(NSString *)authority trustedHost:(NSString *)trustedHost
++ (NSURL *)urlForAuthorityValidation:(NSString *)authority
+                       tokenEndpoint:(NSString *)tokenEndpoint
+                         trustedHost:(NSString *)trustedHost
 {
-    NSString *authorizationEndpoint = [authority.lowercaseString stringByAppendingString:OIDC_OAUTH2_AUTHORIZE_SUFFIX];
+    NSString *tokenEndpointAuth = tokenEndpoint ? tokenEndpoint : OIDC_OAUTH2_AUTHORIZE_SUFFIX;
+    NSString *authorizationEndpoint = [authority.lowercaseString stringByAppendingString:tokenEndpointAuth];
     NSDictionary *request_data = @{s_kApiVersionKey:s_kApiVersion,
                                    s_kAuthorizationEndPointKey: authorizationEndpoint};
+    
+    // TODO: DB REVIEW - OAUTH2_INSTANCE_DISCOVERY_SUFFIX is commented
     NSString *endpoint = [NSString stringWithFormat:@"https://%@/%@?%@",
                           trustedHost, OAUTH2_INSTANCE_DISCOVERY_SUFFIX, [request_data adURLFormEncode]];
     

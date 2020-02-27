@@ -69,6 +69,8 @@ extern NSString* const OIDCRedirectUriInvalidError;
 
 
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)validateAuthority
              tokenCache:(id<OIDCTokenCacheDataSource>)tokenCache
                   error:(OIDCAuthenticationError *__autoreleasing *)error;

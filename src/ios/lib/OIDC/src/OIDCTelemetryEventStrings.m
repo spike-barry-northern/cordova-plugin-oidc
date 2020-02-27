@@ -89,6 +89,7 @@ NSString *const OIDC_TELEMETRY_KEY_REQUEST_QUERY_PARAMS         = @"CordovaPlugi
 NSString *const OIDC_TELEMETRY_KEY_USER_AGENT                   = @"CordovaPlugin.OIDC.user_agent";
 NSString *const OIDC_TELEMETRY_KEY_HTTP_ERROR_DOMAIN            = @"CordovaPlugin.OIDC.http_error_domain";
 NSString *const OIDC_TELEMETRY_KEY_AUTHORITY                    = @"CordovaPlugin.OIDC.authority";
+NSString *const OIDC_TELEMETRY_KEY_TOKEN_ENDPOINT               = @"CordovaPlugin.OIDC.token_endpoint";
 NSString *const OIDC_TELEMETRY_KEY_GRANT_TYPE                   = @"CordovaPlugin.OIDC.grant_type";
 NSString *const OIDC_TELEMETRY_KEY_API_STATUS                   = @"CordovaPlugin.OIDC.api_status";
 NSString *const OIDC_TELEMETRY_KEY_REQUEST_ID                   = @"CordovaPlugin.OIDC.request_id";

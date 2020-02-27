@@ -29,6 +29,7 @@
 @implementation OIDCRequestParameters
 
 @synthesize authority = _authority;
+@synthesize tokenEndpoint = _tokenEndpoint;
 @synthesize resource = _resource;
 @synthesize clientId = _clientId;
 @synthesize redirectUri = _redirectUri;
@@ -39,6 +40,7 @@
 @synthesize telemetryRequestId = _telemetryRequestId;
 
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
                resource:(NSString *)resource
                clientId:(NSString *)clientId
             redirectUri:(NSString *)redirectUri
@@ -55,6 +57,7 @@
     }
     
     [self setAuthority:authority];
+    [self setTokenEndpoint:tokenEndpoint];
     [self setResource:resource];
     [self setClientId:clientId];
     [self setRedirectUri:redirectUri];

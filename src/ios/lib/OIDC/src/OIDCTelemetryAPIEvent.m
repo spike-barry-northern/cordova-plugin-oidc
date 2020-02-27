@@ -126,6 +126,11 @@
     [self setProperty:OIDC_TELEMETRY_KEY_AUTHORITY_TYPE value:authorityType];
 }
 
+- (void)setTokenEndpoint:(NSString *)tokenEndpoint
+{
+    [self setProperty:OIDC_TELEMETRY_KEY_TOKEN_ENDPOINT value:tokenEndpoint];
+}
+
 - (void)setGrantType:(NSString *)grantType
 {
     [self setProperty:OIDC_TELEMETRY_KEY_GRANT_TYPE value:grantType];

@@ -30,6 +30,7 @@
 @interface OIDCRequestParameters : NSObject <OIDCRequestContext>
 {
     NSString* _authority;
+    NSString* _tokenEndpoint;
     NSString* _resource;
     NSString* _clientId;
     NSString* _redirectUri;
@@ -41,6 +42,7 @@
 }
 
 @property (retain, nonatomic) NSString* authority;
+@property (retain, nonatomic) NSString* tokenEndpoint;
 @property (retain, nonatomic) NSString* resource;
 @property (retain, nonatomic) NSString* clientId;
 @property (retain, nonatomic) NSString* redirectUri;
@@ -51,6 +53,7 @@
 @property (retain, nonatomic) NSString* telemetryRequestId;
 
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
                resource:(NSString *)resource
                clientId:(NSString *)clientId
             redirectUri:(NSString *)redirectUri

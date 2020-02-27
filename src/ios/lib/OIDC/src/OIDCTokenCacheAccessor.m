@@ -74,9 +74,11 @@
     for (NSURL *alias in aliases)
     {
         OIDCTokenCacheKey* key = [OIDCTokenCacheKey keyWithAuthority:[alias absoluteString]
-                                                        resource:resource
-                                                        clientId:clientId
-                                                           error:error];
+                                                       tokenEndpoint:nil
+                                                        responseType:nil
+                                                            resource:resource
+                                                            clientId:clientId
+                                                               error:error];
         if (!key)
         {
             return nil;
@@ -197,6 +199,8 @@
     // (@"").
     
     OIDCTokenCacheKey* key = [OIDCTokenCacheKey keyWithAuthority:_authority
+                                                   tokenEndpoint:nil
+                                                    responseType:nil
                                                     resource:resource
                                                     clientId:clientId
                                                        error:error];
