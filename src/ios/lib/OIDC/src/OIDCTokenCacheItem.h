@@ -34,6 +34,8 @@
     NSUInteger _hash;
     NSString* _resource;
     NSString* _authority;
+    NSString* _tokenEndpoint;
+    NSString* _responseType;
     NSString* _clientId;
     NSString* _familyId;
     NSString* _accessToken;
@@ -61,6 +63,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy, nullable) NSString* resource;
 
 @property (copy) NSString* authority;
+
+@property (copy, nullable) NSString* tokenEndpoint;
+
+@property (copy, nullable) NSString* responseType;
 
 @property (copy, nullable) NSString* clientId;
 

@@ -48,6 +48,8 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
 @implementation OIDCAuthenticationContext
 
 @synthesize authority = _authority;
+@synthesize tokenEndpoint = _tokenEndpoint;
+@synthesize responseType = _responseType;
 @synthesize validateAuthority = _validateAuthority;
 @synthesize correlationId = _correlationId;
 @synthesize credentialsType = _credentialsType;
@@ -72,12 +74,14 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
 
 #if TARGET_OS_IPHONE
 - (id)initWithAuthority:(NSString*) authority
+          tokenEndpoint:(NSString*) tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)bValidate
             sharedGroup:(NSString*)sharedGroup
                   error:(OIDCAuthenticationError* __autoreleasing *) error
 {
     API_ENTRY;
-    if (!(self = [self initWithAuthority:authority validateAuthority:bValidate error:error]))
+    if (!(self = [self initWithAuthority:authority tokenEndpoint:tokenEndpoint responseType:responseType validateAuthority:bValidate error:error]))
     {
         return nil;
     }
@@ -89,12 +93,14 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
 #endif
 
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)validateAuthority
           cacheDelegate:(id<OIDCTokenCacheDelegate>) delegate
                   error:(OIDCAuthenticationError * __autoreleasing *)error
 {
     API_ENTRY;
-    if (!(self = [self initWithAuthority:authority validateAuthority:validateAuthority error:error]))
+    if (!(self = [self initWithAuthority:authority tokenEndpoint:tokenEndpoint responseType:responseType validateAuthority:validateAuthority error:error]))
     {
         return nil;
     }
@@ -107,6 +113,8 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
 }
 
 - (id)initWithAuthority:(NSString *)authority
+          tokenEndpoint:(NSString *)tokenEndpoint
+           responseType:(NSString *)responseType
       validateAuthority:(BOOL)validateAuthority
                   error:(OIDCAuthenticationError *__autoreleasing *)error
 {
@@ -128,6 +136,8 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
 #endif
     
     return [self initWithAuthority:authority
+                     tokenEndpoint:tokenEndpoint
+                      responseType:responseType
                  validateAuthority:validateAuthority
                         tokenCache:tokenCache
                              error:error];
@@ -143,6 +153,8 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
     
     OIDCRequestParameters* requestParams = [[OIDCRequestParameters alloc] init];
     [requestParams setAuthority:_authority];
+    [requestParams setTokenEndpoint:_tokenEndpoint];
+    
     [requestParams setResource:resource];
     [requestParams setClientId:clientId];
     [requestParams setRedirectUri:redirectUri];
@@ -172,25 +184,33 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
                            completionBlock:completionBlock];
 }
 
-+ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error
++ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString *)authority
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error
 {
     API_ENTRY;
     return [self authenticationContextWithAuthority:authority
+                                      tokenEndpoint:tokenEndpoint
+                                       responseType:responseType
                                   validateAuthority:YES
                                               error:error];
 }
 
-+ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                             validateAuthority:(BOOL)bValidate
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error
++ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString *)authority
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                               validateAuthority:(BOOL)bValidate
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error
 {
     API_ENTRY
     RETURN_NIL_ON_NIL_EMPTY_ARGUMENT(authority);
     
     OIDCAuthenticationContext* context = [[OIDCAuthenticationContext alloc] initWithAuthority:authority
-                                                                        validateAuthority:bValidate
-                                                                                    error:error];
+                                                                                tokenEndpoint:tokenEndpoint
+                                                                                 responseType:responseType
+                                                                            validateAuthority:bValidate
+                                                                                        error:error];
     if (!context)
     {
         
@@ -200,26 +220,34 @@ NSString* OIDC_VERSION_VAR = @OIDC_VERSION_STRING;
 }
 
 #if TARGET_OS_IPHONE
-+ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                                   sharedGroup:(NSString*)sharedGroup
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error
++ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString *)authority
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                                     sharedGroup:(NSString *)sharedGroup
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error
 {
     API_ENTRY;
     return [self authenticationContextWithAuthority:authority
+                                      tokenEndpoint:tokenEndpoint
+                                       responseType:responseType
                                   validateAuthority:YES
                                         sharedGroup:sharedGroup
                                               error:error];
 }
 
-+ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString*)authority
-                                             validateAuthority:(BOOL)bValidate
-                                                   sharedGroup:(NSString*)sharedGroup
-                                                         error:(OIDCAuthenticationError* __autoreleasing *)error
++ (OIDCAuthenticationContext*)authenticationContextWithAuthority:(NSString *)authority
+                                                   tokenEndpoint:(NSString *)tokenEndpoint
+                                                    responseType:(NSString *)responseType
+                                               validateAuthority:(BOOL)bValidate
+                                                     sharedGroup:(NSString *)sharedGroup
+                                                           error:(OIDCAuthenticationError* __autoreleasing *)error
 {
     API_ENTRY;
     RETURN_NIL_ON_NIL_EMPTY_ARGUMENT(authority);
     
     return [[self alloc] initWithAuthority:authority
+                             tokenEndpoint:tokenEndpoint
+                              responseType:responseType
                          validateAuthority:bValidate
                                sharedGroup:sharedGroup
                                      error:error];

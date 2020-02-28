@@ -122,9 +122,15 @@
         [request_data setObject:[_requestParams resource] forKey:OAUTH2_RESOURCE];
     }
     
+    NSString* tokenEndpoint = _requestParams.tokenEndpoint ? _requestParams.tokenEndpoint : OIDC_OAUTH2_TOKEN_SUFFIX;
+    NSString* urlString = [_requestParams.authority stringByAppendingString:tokenEndpoint];
+    
+    NSLog(@"acquireTokenByRefreshToken - token endpoint: %@", tokenEndpoint);
+    NSLog(@"url: %@", urlString);
+    
     OIDCWebAuthRequest* webReq =
-    [[OIDCWebAuthRequest alloc] initWithURL:[NSURL URLWithString:[[_requestParams authority] stringByAppendingString:OIDC_OAUTH2_TOKEN_SUFFIX]]
-                                  context:_requestParams];
+    [[OIDCWebAuthRequest alloc] initWithURL:[NSURL URLWithString:urlString]
+                                    context:_requestParams];
     [webReq setRequestDictionary:request_data];
     OIDC_LOG_INFO_F(@"Attempting to acquire an access token from refresh token", nil, @"clientId: '%@'; resource: '%@';", [_requestParams clientId], [_requestParams resource]);
     [webReq sendRequest:^(OIDCAuthenticationError *error, NSDictionary *response)

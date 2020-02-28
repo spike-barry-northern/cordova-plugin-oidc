@@ -75,6 +75,8 @@
     
     item->_resource = [_resource copyWithZone:zone];
     item->_authority = [_authority copyWithZone:zone];
+    item->_tokenEndpoint = [_tokenEndpoint copyWithZone:zone];
+    item->_responseType = [_responseType copyWithZone:zone];
     item->_clientId = [_clientId copyWithZone:zone];
 	item->_familyId = [_familyId copyWithZone:zone];
     item->_accessToken = [_accessToken copyWithZone:zone];
@@ -97,15 +99,19 @@
     if (_storageAuthority)
     {
         return [OIDCTokenCacheKey keyWithAuthority:_storageAuthority
-                                        resource:_resource
-                                        clientId:_clientId
-                                           error:error];
+                                     tokenEndpoint:_tokenEndpoint
+                                      responseType:_responseType
+                                          resource:_resource
+                                          clientId:_clientId
+                                             error:error];
     }
     
     return [OIDCTokenCacheKey keyWithAuthority:_authority
-                                    resource:_resource
-                                    clientId:_clientId
-                                       error:error];
+                                 tokenEndpoint:_tokenEndpoint
+                                     responseType:_responseType
+                                      resource:_resource
+                                      clientId:_clientId
+                                         error:error];
 }
 
 - (BOOL)isExpired

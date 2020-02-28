@@ -80,7 +80,10 @@
 
 // These constructors exists *solely* to be used when trying to use some of the caching logic.
 // You can't actually send requests with it. They will fail.
-+ (OIDCAuthenticationRequest *)requestWithAuthority:(NSString *)authority;
++ (OIDCAuthenticationRequest *)requestWithAuthority:(NSString *)authority
+                                      tokenEndpoint:(NSString *)tokenEndpoint
+                                       responseType:(NSString *)responseType;
+
 + (OIDCAuthenticationRequest *)requestWithContext:(OIDCAuthenticationContext *)context;
 
 // The default constructor. For requestParams, redirectUri, clientId and resource are mandatory

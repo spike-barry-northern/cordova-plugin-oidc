@@ -32,6 +32,8 @@
 {
     NSUInteger _hash;
     NSString* _authority;
+    NSString* _tokenEndpoint;
+    NSString* _responseType;
     NSString* _resource;
     NSString* _clientId;
 }
@@ -42,12 +44,18 @@
  @param clientId Optional, can be nil. The client identifier
  */
 + (OIDCTokenCacheKey *)keyWithAuthority:(NSString *)authority
-                             resource:(NSString *)resource
-                             clientId:(NSString *)clientId
-                                error:(OIDCAuthenticationError * __autoreleasing *)error;
+                          tokenEndpoint:(NSString *)tokenEndpoint
+                           responseType:(NSString *)responseType
+                               resource:(NSString *)resource
+                               clientId:(NSString *)clientId
+                                  error:(OIDCAuthenticationError * __autoreleasing *)error;
 
 /*! The authority that issues access tokens */
 @property (readonly) NSString* authority;
+
+@property (readonly) NSString* tokenEndpoint;
+
+@property (readonly) NSString* responseType;
 
 /*! The resouce to which the access tokens are issued. May be nil in case of multi-resource refresh token. */
 @property (readonly) NSString* resource;

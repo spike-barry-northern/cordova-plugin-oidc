@@ -23,7 +23,9 @@
 - (void)tokenCacheDeleteItem:(CDVInvokedUrlCommand *)command;
 
 + (OIDCAuthenticationContext *)getOrCreateAuthContext:(NSString *)authority
-                                  validateAuthority:(BOOL)validate;
+                                        tokenEndpoint:(NSString *)tokenEndpoint
+                                         responseType:(NSString *)responseType
+                                    validateAuthority:(BOOL)validate;
 
 - (void)setLogger:(CDVInvokedUrlCommand *)command;
 - (void)setLogLevel:(CDVInvokedUrlCommand *) command;
