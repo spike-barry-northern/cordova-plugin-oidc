@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 #import "OIDCAuthenticationError.h"
+#import <WebKit/WebKit.h>
 
 @protocol OIDCWebAuthDelegate;
 

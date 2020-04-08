@@ -51,7 +51,7 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
     // hijack the delegate on the webview.
     if (_webView)
     {
-        _webView.delegate = self;
+        _webView.navigationDelegate = self;
         return YES;
     }
     
@@ -81,7 +81,7 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
     [rootView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     WKWebView* webView = [[WKWebView alloc] initWithFrame:rootView.frame];
     [webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-    [webView setDelegate:self];
+    webView.navigationDelegate = self;
     [rootView addSubview:webView];
     _webView = webView;
     
@@ -104,7 +104,7 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
     is deallocated, or it might crash OIDC. */
 -(void)dealloc
 {
-    [_webView setDelegate:nil];
+    _webView.navigationDelegate = nil;
     _webView = nil;
 }
 
@@ -215,6 +215,7 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
 decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
 
     if (decisionHandler) {
+        NSURLRequest *request = navigationAction.request;
         if ([_delegate webAuthShouldStartLoadRequest:request]) {
             decisionHandler(WKNavigationActionPolicyCancel);
         }
@@ -230,7 +231,7 @@ decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionH
 // }
 - (void)webView:(WKWebView *)webView 
 didCommitNavigation:(WKNavigation *)navigation { 
-     [_delegate webAuthDidStartLoad:webView.url];
+     [_delegate webAuthDidStartLoad:webView.URL];
 }
 
 // - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -239,7 +240,7 @@ didCommitNavigation:(WKNavigation *)navigation {
 // }
 - (void)webView:(WKWebView *)webView 
 didFinishNavigation:(WKNavigation *)navigation {
-     [_delegate webAuthDidFinishLoad:webView.url]
+     [_delegate webAuthDidFinishLoad:webView.URL];
 }
 
 // - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
