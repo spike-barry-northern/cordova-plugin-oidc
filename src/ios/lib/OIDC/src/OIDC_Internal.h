@@ -58,13 +58,12 @@
 typedef void(^OIDCAuthenticationCallback)(OIDCAuthenticationResult* result);
 typedef void(^OIDCAuthorizationCodeCallback)(NSString*, OIDCAuthenticationError*);
 
+#include <WebKit/WebKit.h>
 #if TARGET_OS_IPHONE
 //iOS:
-#   include <UIKit/UIKit.h>
-typedef UIWebView WebViewType;
+typedef WKWebView WebViewType;
 #else
 //OS X:
-#   include <WebKit/WebKit.h>
 typedef WebView   WebViewType;
 #endif
 

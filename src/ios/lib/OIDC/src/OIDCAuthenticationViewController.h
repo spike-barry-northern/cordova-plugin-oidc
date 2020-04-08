@@ -34,7 +34,7 @@ NSWindowController
 
 @property (weak, nonatomic) id<OIDCWebAuthDelegate>     delegate;
 #if TARGET_OS_IPHONE
-@property (nonatomic) UIWebView * webView;
+@property (nonatomic) WKWebView * webView;
 @property (weak, nonatomic) UIViewController * parentController;
 @property BOOL fullScreen;
 #else

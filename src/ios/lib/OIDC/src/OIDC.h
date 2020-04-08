@@ -25,6 +25,7 @@
 
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 #endif
 
 //! Project version number for OIDCFramework.
@@ -35,10 +36,9 @@ FOUNDATION_EXPORT const unsigned char OIDCFrameworkVersionString[];
 
 #if TARGET_OS_IPHONE
 //iOS:
-typedef UIWebView WebViewType;
+typedef WKWebView WebViewType;
 #else
 //OS X:
-#   include <WebKit/WebKit.h>
 typedef WebView   WebViewType;
 #endif
 
