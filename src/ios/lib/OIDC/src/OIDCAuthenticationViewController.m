@@ -203,14 +203,6 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
 
 #pragma mark - WKNavigationDelegate Protocol
 
-// - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-// {
-//     (void)webView;
-//     (void)navigationType;
-    
-//     // Forward to the UIWebView controller
-//     return [_delegate webAuthShouldStartLoadRequest:request];
-// }
 - (void)webView:(WKWebView *)webView 
 decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
 
@@ -225,29 +217,16 @@ decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionH
     }
 }
 
-// - (void)webViewDidStartLoad:(UIWebView *)webView
-// {
-//     [_delegate webAuthDidStartLoad:webView.request.URL];
-// }
 - (void)webView:(WKWebView *)webView 
 didCommitNavigation:(WKNavigation *)navigation { 
      [_delegate webAuthDidStartLoad:webView.URL];
 }
 
-// - (void)webViewDidFinishLoad:(UIWebView *)webView
-// {
-//     [_delegate webAuthDidFinishLoad:webView.request.URL];
-// }
 - (void)webView:(WKWebView *)webView 
 didFinishNavigation:(WKNavigation *)navigation {
      [_delegate webAuthDidFinishLoad:webView.URL];
 }
 
-// - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-// {
-//     (void)webView;
-//     [_delegate webAuthDidFailWithError:error];
-// }
 - (void)webView:(WKWebView *)webView 
 didFailNavigation:(WKNavigation *)navigation 
       withError:(NSError *)error {
