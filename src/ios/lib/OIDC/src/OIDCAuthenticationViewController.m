@@ -209,10 +209,10 @@ decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionH
     if (decisionHandler) {
         NSURLRequest *request = navigationAction.request;
         if ([_delegate webAuthShouldStartLoadRequest:request]) {
-            decisionHandler(WKNavigationActionPolicyCancel);
+            decisionHandler(WKNavigationActionPolicyAllow);
         }
         else {
-            decisionHandler(WKNavigationActionPolicyAllow);
+            decisionHandler(WKNavigationActionPolicyCancel);
         } 
     }
 }
