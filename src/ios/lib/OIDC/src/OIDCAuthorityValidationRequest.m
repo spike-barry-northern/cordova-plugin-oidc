@@ -68,9 +68,12 @@ static NSString* const s_kAuthorizationEndPointKey = @"authorization_endpoint";
     NSDictionary *request_data = @{s_kApiVersionKey:s_kApiVersion,
                                    s_kAuthorizationEndPointKey: authorizationEndpoint};
     
-    // TODO: DB REVIEW - OAUTH2_INSTANCE_DISCOVERY_SUFFIX is commented
+    // TODO: DB REVIEW - OAUTH2_INSTANCE_DISCOVERY_SUFFIX 
+    // BARRY: extern declaration for above variable wasn't commented, only the internal definition, however,
+    // the ADAL.framework defines the value, which is now the same value with a different variable name "MSID_OAUTH2_INSTANCE_DISCOVERY_SUFFIX"
+    // I just removed the broken reference to fix the link error: needs review.
     NSString *endpoint = [NSString stringWithFormat:@"https://%@/%@?%@",
-                          trustedHost, OAUTH2_INSTANCE_DISCOVERY_SUFFIX, [request_data adURLFormEncode]];
+                          trustedHost, MSID_OAUTH2_INSTANCE_DISCOVERY_SUFFIX, [request_data adURLFormEncode]];
     
     return [NSURL URLWithString:endpoint];
 }

@@ -30,7 +30,7 @@
 
 NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a current ViewController";
 
-@interface OIDCAuthenticationViewController ( ) <UIWebViewDelegate>
+@interface OIDCAuthenticationViewController ( ) <WKNavigationDelegate>
 {
     UIActivityIndicatorView* _activityIndicator;
 }
@@ -51,7 +51,7 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
     // hijack the delegate on the webview.
     if (_webView)
     {
-        _webView.delegate = self;
+        _webView.navigationDelegate = self;
         return YES;
     }
     
@@ -79,9 +79,9 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
     UIView* rootView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [rootView setAutoresizesSubviews:YES];
     [rootView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-    UIWebView* webView = [[UIWebView alloc] initWithFrame:rootView.frame];
+    WKWebView* webView = [[WKWebView alloc] initWithFrame:rootView.frame];
     [webView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-    [webView setDelegate:self];
+    webView.navigationDelegate = self;
     [rootView addSubview:webView];
     _webView = webView;
     
@@ -104,7 +104,7 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
     is deallocated, or it might crash OIDC. */
 -(void)dealloc
 {
-    [_webView setDelegate:nil];
+    _webView.navigationDelegate = nil;
     _webView = nil;
 }
 
@@ -195,37 +195,42 @@ NSString *const OIDC_FAILED_NO_CONTROLLER = @"The Application does not have a cu
     [_activityIndicator startAnimating];
 }
 
-#pragma mark - UIWebViewDelegate Protocol
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
-    (void)webView;
-    (void)navigationType;
-    
-    // Forward to the UIWebView controller
-    return [_delegate webAuthShouldStartLoadRequest:request];
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    [_delegate webAuthDidStartLoad:webView.request.URL];
-}
-
 - (void)stopSpinner
 {
     [_activityIndicator setHidden:YES];
     [_activityIndicator stopAnimating];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    [_delegate webAuthDidFinishLoad:webView.request.URL];
+#pragma mark - WKNavigationDelegate Protocol
+
+- (void)webView:(WKWebView *)webView 
+decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+
+    if (decisionHandler) {
+        NSURLRequest *request = navigationAction.request;
+        if ([_delegate webAuthShouldStartLoadRequest:request]) {
+            decisionHandler(WKNavigationActionPolicyAllow);
+        }
+        else {
+            decisionHandler(WKNavigationActionPolicyCancel);
+        } 
+    }
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    (void)webView;
-    [_delegate webAuthDidFailWithError:error];
+- (void)webView:(WKWebView *)webView 
+didCommitNavigation:(WKNavigation *)navigation { 
+     [_delegate webAuthDidStartLoad:webView.URL];
+}
+
+- (void)webView:(WKWebView *)webView 
+didFinishNavigation:(WKNavigation *)navigation {
+     [_delegate webAuthDidFinishLoad:webView.URL];
+}
+
+- (void)webView:(WKWebView *)webView 
+didFailNavigation:(WKNavigation *)navigation 
+      withError:(NSError *)error {
+    [_delegate webAuthDidFailWithError:error];       
 }
 
 @end
