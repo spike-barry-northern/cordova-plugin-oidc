@@ -29,4 +29,8 @@
 
 - (void)setLogger:(CDVInvokedUrlCommand *)command;
 - (void)setLogLevel:(CDVInvokedUrlCommand *) command;
+
++ (id) objectOrNilFrom:(NSArray *)arguments
+              forIndex:(NSUInteger)index;
+
 @end

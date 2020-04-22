@@ -233,13 +233,13 @@
                  {
                      //Note that we do not enforce the state, just log it:
                      [self verifyStateFromDictionary:parameters];
-                     code = [parameters objectForKey:OAUTH2_ID_TOKEN];
+                     code = [parameters objectForKey:responseType]; // this may be an authorization code or access token depending on responseType
                      if ([NSString adIsStringNilOrBlank:code])
                      {
                          error = [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_SERVER_AUTHORIZATION_CODE
                                                                         protocolCode:nil
                                                                         errorDetails:@"The authorization server did not return a valid authorization code."
-                                                                       correlationId:[_requestParams correlationId]];
+                                                                       correlationId:[self->_requestParams correlationId]];
                      }
                  }
              }

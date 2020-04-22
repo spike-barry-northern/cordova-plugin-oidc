@@ -54,11 +54,12 @@
             NSURL *redirectUri = [NSURL URLWithString:[command.arguments objectAtIndex:4]];
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:5]);
             NSString *extraQueryParameters = ObjectOrNil([command.arguments objectAtIndex:6]);
-//            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:7]);
-//            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
+
+            NSString *endpointFragment = [CordovaOidcPlugin objectOrNilFrom:command.arguments forIndex:7];
+            NSString * tokenResponseType = [CordovaOidcPlugin objectOrNilFrom:command.arguments forIndex:8];
             
-            NSString *tokenEndpoint = @"/connect/authorize";
-            NSString *responseType = @"token";
+            NSString *tokenEndpoint = !endpointFragment ? @"/connect/authorize" : [NSString stringWithFormat:@"/%@/authorize", endpointFragment];
+            NSString *responseType = !tokenResponseType ? @"token" : tokenResponseType;
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
                                                                                  tokenEndpoint:tokenEndpoint
@@ -362,6 +363,16 @@ static NSMutableDictionary *existingContexts = nil;
 
 static id ObjectOrNil(id object)
 {
+    return [object isKindOfClass:[NSNull class]] ? nil : object;
+}
+
++ (id)objectOrNilFrom:(NSArray *)arguments
+             forIndex:(NSUInteger)index
+{
+    if (index >= arguments.count) {
+        return nil;
+    }
+    id object = [arguments objectAtIndex:index];
     return [object isKindOfClass:[NSNull class]] ? nil : object;
 }
 
