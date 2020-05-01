@@ -21,8 +21,8 @@
 //            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:2]);
 //            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
             
-            NSString *tokenEndpoint = @"/connect/authorize";
-            NSString *responseType = @"code";
+            NSString *tokenEndpoint = @"/oauth2/v1/authorize";
+            NSString *responseType = @"id_token";
 
             [CordovaOidcPlugin getOrCreateAuthContext:authority
                                         tokenEndpoint:tokenEndpoint
@@ -57,8 +57,8 @@
 //            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:7]);
 //            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
             
-            NSString *tokenEndpoint = @"/connect/authorize";
-            NSString *responseType = @"token";
+            NSString *tokenEndpoint = @"/oauth2/v1/authorize";
+            NSString *responseType = @"id_token";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
                                                                                  tokenEndpoint:tokenEndpoint
@@ -111,8 +111,8 @@
 //            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:5]);
 //            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
             
-            NSString *tokenEndpoint = @"/connect/authorize";
-            NSString *responseType = @"code";
+            NSString *tokenEndpoint = @"/oauth2/v1/authorize";
+            NSString *responseType = @"id_token";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
                                                                                  tokenEndpoint:tokenEndpoint
@@ -230,8 +230,8 @@
 //            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:6]);
 //            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
             
-            NSString *tokenEndpoint = @"/connect/authorize";
-            NSString *responseType = @"code";
+            NSString *tokenEndpoint = @"/oauth2/v1/authorize";
+            NSString *responseType = @"id_token";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
                                                                                  tokenEndpoint:tokenEndpoint
