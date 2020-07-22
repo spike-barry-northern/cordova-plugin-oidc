@@ -256,10 +256,10 @@ class Oauth2 {
 			UserInfo userinfo = null;
 			String tenantId = null;
 			String rawIdToken = null;
-			if (response.containsKey(this.getTokenResponseType())) {
+			if (response.containsKey(AuthenticationConstants.OAuth2.ID_TOKEN)) {
 				// IDtoken is related to Azure AD and returned with token
 				// response. ADFS does not return that.
-				rawIdToken = response.get(this.getTokenResponseType());
+				rawIdToken = response.get(AuthenticationConstants.OAuth2.ID_TOKEN);
 				if (!StringExtensions.isNullOrBlank(rawIdToken)) {
 					Logger.v(TAG, "Id token was returned, parsing id token.");
 					IdToken tokenParsed = new IdToken(rawIdToken);
@@ -289,7 +289,7 @@ class Oauth2 {
 
 			//Set family client id on authentication result for TokenCacheItem to pick up
 			result.setFamilyClientId(familyClientId);
-		} else if (response.containsKey(this.getTokenResponseType())) {
+		} else if (response.containsKey(AuthenticationConstants.OAuth2.ID_TOKEN)) {
 			// Token response
 
 			Calendar expires = new GregorianCalendar();
@@ -303,7 +303,7 @@ class Oauth2 {
 			String rawIdToken = null;
 			// IDtoken is related to Azure AD and returned with token
 			// response. ADFS does not return that.
-			rawIdToken = response.get(this.getTokenResponseType());
+			rawIdToken = response.get(AuthenticationConstants.OAuth2.ID_TOKEN);
 			if (!StringExtensions.isNullOrBlank(rawIdToken)) {
 				Logger.v(TAG, "Id token was returned, parsing id token.");
 				IdToken tokenParsed = new IdToken(rawIdToken);
@@ -323,7 +323,7 @@ class Oauth2 {
 			String familyClientId = null;
 
 			result = new AuthenticationResult(
-				response.get(this.getTokenResponseType()), null, expires.getTime(),
+				response.get(AuthenticationConstants.OAuth2.ID_TOKEN), null, expires.getTime(),
 				false, userinfo, tenantId, rawIdToken, null);
 
 			if (response.containsKey(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN)) {
