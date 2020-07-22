@@ -123,7 +123,7 @@ class Oauth2 {
     public String getAuthorizationEndpointQueryParameters() throws UnsupportedEncodingException {
         final Uri.Builder queryParameter = new Uri.Builder();
         queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE,
-                        getTokenResponseType())
+                        this.getTokenResponseType())
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
                         URLEncoder.encode(mRequest.getClientId(),
                                 AuthenticationConstants.ENCODING_UTF8))
@@ -256,10 +256,10 @@ class Oauth2 {
 			UserInfo userinfo = null;
 			String tenantId = null;
 			String rawIdToken = null;
-			if (response.containsKey(getTokenResponseType())) {
+			if (response.containsKey(this.getTokenResponseType())) {
 				// IDtoken is related to Azure AD and returned with token
 				// response. ADFS does not return that.
-				rawIdToken = response.get(getTokenResponseType());
+				rawIdToken = response.get(this.getTokenResponseType());
 				if (!StringExtensions.isNullOrBlank(rawIdToken)) {
 					Logger.v(TAG, "Id token was returned, parsing id token.");
 					IdToken tokenParsed = new IdToken(rawIdToken);
@@ -289,7 +289,7 @@ class Oauth2 {
 
 			//Set family client id on authentication result for TokenCacheItem to pick up
 			result.setFamilyClientId(familyClientId);
-		} else if (response.containsKey(getTokenResponseType())) {
+		} else if (response.containsKey(this.getTokenResponseType())) {
 			// Token response
 
 			Calendar expires = new GregorianCalendar();
@@ -303,7 +303,7 @@ class Oauth2 {
 			String rawIdToken = null;
 			// IDtoken is related to Azure AD and returned with token
 			// response. ADFS does not return that.
-			rawIdToken = response.get(getTokenResponseType());
+			rawIdToken = response.get(this.getTokenResponseType());
 			if (!StringExtensions.isNullOrBlank(rawIdToken)) {
 				Logger.v(TAG, "Id token was returned, parsing id token.");
 				IdToken tokenParsed = new IdToken(rawIdToken);
@@ -323,7 +323,7 @@ class Oauth2 {
 			String familyClientId = null;
 
 			result = new AuthenticationResult(
-				response.get(getTokenResponseType()), null, expires.getTime(),
+				response.get(this.getTokenResponseType()), null, expires.getTime(),
 				false, userinfo, tenantId, rawIdToken, null);
 
 			if (response.containsKey(AuthenticationConstants.OAuth2.EXT_EXPIRES_IN)) {

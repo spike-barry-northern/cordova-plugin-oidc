@@ -297,8 +297,10 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
 
     private boolean clearTokenCache(String authority) {
         final AuthenticationContext authContext;
+        final String tokenEndpoint = "/connect/authorize";
+        final String responseType = "code";
         try{
-            authContext = getOrCreateContext(authority);
+            authContext = getOrCreateContext(authority, tokenEndpoint, responseType);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
