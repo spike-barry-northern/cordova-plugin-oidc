@@ -421,13 +421,16 @@ class Oauth2 {
 
                 AuthenticationResult result = processUIResponseParams(parameters);
 
+                //SPIKE: the "token" we want for Salto at this point is the value that now resides in result.getCode() -> might not be right for future uses of this plugin, hence this comment. You're welcome.
                 // Check if we have code
-                if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
+                //if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
 
                     // Get token and use external callback to set result
-                    return getTokenForCode(result.getCode());
-                }
-
+                //    return getTokenForCode(result.getCode());
+                //}
+                //SPIKE: end of commenting out!
+				result.codeIsAccessToken(); // SPIKE: our new function to set the access token to the code!
+                
                 return result;
             } else {
                 throw new AuthenticationException(OIDCError.AUTH_FAILED_BAD_STATE);
