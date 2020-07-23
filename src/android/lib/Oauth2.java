@@ -113,10 +113,10 @@ class Oauth2 {
 
         final String responseType = mRequest.getResponseType();
         if (responseType == null || responseType.isEmpty()) {
-            return responseType;
+            return AuthenticationConstants.OAuth2.ID_TOKEN;
         }
         else {
-            return AuthenticationConstants.OAuth2.ID_TOKEN;
+            return responseType;
         }
     }
 
