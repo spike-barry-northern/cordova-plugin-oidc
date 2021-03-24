@@ -90,17 +90,40 @@ class Oauth2 {
     }
 
     public String getAuthorizationEndpoint() {
-        return mRequest.getAuthority() + DEFAULT_AUTHORIZE_ENDPOINT;
+        final String endpoint = mRequest.getTokenEndpoint();
+        if (endpoint == null || endpoint.isEmpty()) {
+            return mRequest.getAuthority() + DEFAULT_AUTHORIZE_ENDPOINT;
+        }
+        else {
+            return mRequest.getAuthority() + endpoint;
+        }
     }
 
     public String getTokenEndpoint() {
-        return mRequest.getAuthority() + DEFAULT_TOKEN_ENDPOINT;
+        final String endpoint = mRequest.getTokenEndpoint();
+        if (endpoint == null || endpoint.isEmpty()) {
+            return mRequest.getAuthority() + DEFAULT_TOKEN_ENDPOINT;
+        }
+        else {
+            return mRequest.getAuthority() + endpoint;
+        }
+    }
+
+    private String getTokenResponseType() {
+
+        final String responseType = mRequest.getResponseType();
+        if (responseType == null || responseType.isEmpty()) {
+            return AuthenticationConstants.OAuth2.ID_TOKEN;
+        }
+        else {
+            return responseType;
+        }
     }
 
     public String getAuthorizationEndpointQueryParameters() throws UnsupportedEncodingException {
         final Uri.Builder queryParameter = new Uri.Builder();
         queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE,
-                        AuthenticationConstants.OAuth2.ID_TOKEN)
+                        this.getTokenResponseType())
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
                         URLEncoder.encode(mRequest.getClientId(),
                                 AuthenticationConstants.ENCODING_UTF8))
@@ -398,13 +421,16 @@ class Oauth2 {
 
                 AuthenticationResult result = processUIResponseParams(parameters);
 
+                //SPIKE: the "token" we want for Salto at this point is the value that now resides in result.getCode() -> might not be right for future uses of this plugin, hence this comment. You're welcome.
                 // Check if we have code
-                if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
+                //if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
 
                     // Get token and use external callback to set result
-                    return getTokenForCode(result.getCode());
-                }
-
+                //    return getTokenForCode(result.getCode());
+                //}
+                //SPIKE: end of commenting out!
+				result.codeIsAccessToken(); // SPIKE: our new function to set the access token to the code!
+                
                 return result;
             } else {
                 throw new AuthenticationException(OIDCError.AUTH_FAILED_BAD_STATE);

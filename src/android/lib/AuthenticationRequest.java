@@ -43,6 +43,10 @@ class AuthenticationRequest implements Serializable {
 
     private String mAuthority = null;
 
+    private String mTokenEndpoint = null;
+
+    private String mResponseType = null;
+
     private String mRedirectUri = null;
 
     private String mResource = null;
@@ -87,8 +91,11 @@ class AuthenticationRequest implements Serializable {
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
                                  String loginhint, PromptBehavior prompt, String extraQueryParams, UUID correlationId,
-                                 boolean isExtendedLifetimeEnabled, final String claimsChallenge) {
+                                 boolean isExtendedLifetimeEnabled, final String claimsChallenge, 
+                                 String tokenEndpoint, String responseType) {
         mAuthority = authority;
+        mTokenEndpoint = tokenEndpoint;
+        mResponseType = responseType;
         mResource = resource;
         mClientId = client;
         mRedirectUri = redirect;
@@ -103,8 +110,11 @@ class AuthenticationRequest implements Serializable {
     }
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
-                                 String loginhint, UUID requestCorrelationId, boolean isExtendedLifetimeEnabled) {
+                                 String loginhint, UUID requestCorrelationId, boolean isExtendedLifetimeEnabled, 
+                                 String tokenEndpoint, String responseType) {
         mAuthority = authority;
+        mTokenEndpoint = tokenEndpoint;
+        mResponseType = responseType;
         mResource = resource;
         mClientId = client;
         mRedirectUri = redirect;
@@ -115,8 +125,11 @@ class AuthenticationRequest implements Serializable {
     }
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
-                                 String loginhint, boolean isExtendedLifetimeEnabled) {
+                                 String loginhint, boolean isExtendedLifetimeEnabled, 
+                                 String tokenEndpoint, String responseType) {
         mAuthority = authority;
+        mTokenEndpoint = tokenEndpoint;
+        mResponseType = responseType;
         mResource = resource;
         mClientId = client;
         mRedirectUri = redirect;
@@ -125,8 +138,11 @@ class AuthenticationRequest implements Serializable {
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
     }
 
-    public AuthenticationRequest(String authority, String resource, String clientid, boolean isExtendedLifetimeEnabled) {
+    public AuthenticationRequest(String authority, String resource, String clientid, boolean isExtendedLifetimeEnabled, 
+                                 String tokenEndpoint, String responseType) {
         mAuthority = authority;
+        mTokenEndpoint = tokenEndpoint;
+        mResponseType = responseType;
         mResource = resource;
         mClientId = clientid;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
@@ -142,8 +158,11 @@ class AuthenticationRequest implements Serializable {
      * @param correlationId for logging
      */
     public AuthenticationRequest(String authority, String resource, String clientid, String userid,
-                                 UUID correlationId, boolean isExtendedLifetimeEnabled) {
+                                 UUID correlationId, boolean isExtendedLifetimeEnabled, 
+                                 String tokenEndpoint, String responseType) {
         mAuthority = authority;
+        mTokenEndpoint = tokenEndpoint;
+        mResponseType = responseType;
         mResource = resource;
         mClientId = clientid;
         mUserId = userid;
@@ -152,8 +171,11 @@ class AuthenticationRequest implements Serializable {
     }
 
     public AuthenticationRequest(String authority, String resource, String clientId,
-                                 UUID correlationId, boolean isExtendedLifetimeEnabled) {
+                                 UUID correlationId, boolean isExtendedLifetimeEnabled, 
+                                 String tokenEndpoint, String responseType) {
         mAuthority = authority;
+        mTokenEndpoint = tokenEndpoint;
+        mResponseType = responseType;
         mClientId = clientId;
         mResource = resource;
         mCorrelationId = correlationId;
@@ -166,6 +188,14 @@ class AuthenticationRequest implements Serializable {
 
     public void setAuthority(String authority) {
         mAuthority = authority;
+    }
+
+    public String getTokenEndpoint() {
+        return mTokenEndpoint;
+    }
+
+    public String getResponseType() {
+        return mResponseType;
     }
 
     public String getRedirectUri() {

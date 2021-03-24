@@ -61,6 +61,10 @@ public class AuthenticationContext {
 
     private String mAuthority;
 
+    private String mTokenEndpoint;
+
+    private String mResponseType;
+
     private boolean mIsAuthorityValidated;
 
     private ITokenCacheStore mTokenCacheStore;
@@ -89,12 +93,13 @@ public class AuthenticationContext {
      *                          need to be activity.
      * @param authority         Authority url to send code and token requests
      */
-    public AuthenticationContext(Context appContext, String authority) {
+    public AuthenticationContext(Context appContext, String authority, 
+                                 String tokenEndpoint, String responseType) {
         // Fixes are required for SDK 16-18
         // The fixes need to be applied before any use of Java Cryptography
         // Architecture primitives. Default cache uses encryption
         PRNGFixes.apply();
-        initialize(appContext, authority, new DefaultTokenCacheStore(appContext), true);
+        initialize(appContext, authority, new DefaultTokenCacheStore(appContext), true, tokenEndpoint, responseType);
     }
 
     /**
@@ -107,11 +112,12 @@ public class AuthenticationContext {
      *                        tokens. Set to null if you don't want cache.
      */
     public AuthenticationContext(Context appContext, String authority,
-                                 ITokenCacheStore tokenCacheStore) {
-        initialize(appContext, authority, tokenCacheStore,false);
+                                 ITokenCacheStore tokenCacheStore, 
+                                 String tokenEndpoint, String responseType) {
+        initialize(appContext, authority, tokenCacheStore, false, tokenEndpoint, responseType);
     }
 
-    private void initialize(Context appContext, String authority, ITokenCacheStore tokenCacheStore, boolean defaultCache) {
+    private void initialize(Context appContext, String authority, ITokenCacheStore tokenCacheStore, boolean defaultCache, String tokenEndpoint, String responseType) {
         if (appContext == null) {
             throw new IllegalArgumentException("appContext");
         }
@@ -125,6 +131,8 @@ public class AuthenticationContext {
         mContext = appContext;
         checkInternetPermission();
         mAuthority = authority;
+        mTokenEndpoint = tokenEndpoint;
+        mResponseType = responseType;
         mTokenCacheStore = tokenCacheStore;
     }
 
@@ -240,7 +248,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, PromptBehavior.Auto, null,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
             createAcquireTokenRequest(apiEvent).acquireToken(wrapActivity(activity), false, request, callback);
@@ -280,7 +288,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, PromptBehavior.Auto, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
             createAcquireTokenRequest(apiEvent).acquireToken(wrapActivity(activity), false, request, callback);
@@ -316,7 +324,7 @@ public class AuthenticationContext {
             apiEvent.setPromptBehavior(prompt.toString());
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
-                    clientId, redirectUri, null, prompt, null, getRequestCorrelationId(), getExtendedLifetimeEnabled(), null);
+                    clientId, redirectUri, null, prompt, null, getRequestCorrelationId(), getExtendedLifetimeEnabled(), null, mTokenEndpoint, mResponseType);
 
             request.setTelemetryRequestId(requestId);
 
@@ -354,7 +362,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, null, prompt, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null, mTokenEndpoint, mResponseType);
 
             request.setTelemetryRequestId(requestId);
 
@@ -395,7 +403,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, prompt, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
             createAcquireTokenRequest(apiEvent).acquireToken(wrapActivity(activity), false, request, callback);
@@ -438,7 +446,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, prompt, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), claims);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), claims, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
             createAcquireTokenRequest(apiEvent).acquireToken(wrapActivity(activity), false, request, callback);
@@ -477,7 +485,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, prompt, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
             createAcquireTokenRequest(apiEvent).acquireToken(fragment, false, request, callback);
@@ -519,7 +527,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, prompt, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), claims);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), claims, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
             createAcquireTokenRequest(apiEvent).acquireToken(fragment, false, request, callback);
@@ -559,7 +567,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, prompt, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), null, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
 
@@ -603,7 +611,7 @@ public class AuthenticationContext {
 
             final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
                     clientId, redirectUri, loginHint, prompt, extraQueryParameters,
-                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), claims);
+                    getRequestCorrelationId(), getExtendedLifetimeEnabled(), claims, mTokenEndpoint, mResponseType);
             request.setUserIdentifierType(UserIdentifierType.LoginHint);
             request.setTelemetryRequestId(requestId);
             createAcquireTokenRequest(apiEvent).acquireToken(null, false, request, callback);
@@ -641,7 +649,7 @@ public class AuthenticationContext {
         apiEvent.setPromptBehavior(PromptBehavior.Auto.toString());
 
         final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
-                clientId, userId, getRequestCorrelationId(), getExtendedLifetimeEnabled());
+                clientId, userId, getRequestCorrelationId(), getExtendedLifetimeEnabled(), mTokenEndpoint, mResponseType);
         request.setSilent(true);
         request.setPrompt(PromptBehavior.Auto);
         request.setUserIdentifierType(UserIdentifierType.UniqueId);
@@ -731,7 +739,7 @@ public class AuthenticationContext {
         apiEvent.setIsDeprecated(true);
 
         final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
-                clientId, userId, getRequestCorrelationId(), getExtendedLifetimeEnabled());
+                clientId, userId, getRequestCorrelationId(), getExtendedLifetimeEnabled(), mTokenEndpoint, mResponseType);
         request.setSilent(true);
         request.setPrompt(PromptBehavior.Auto);
         request.setUserIdentifierType(UserIdentifierType.UniqueId);
@@ -801,7 +809,7 @@ public class AuthenticationContext {
         apiEvent.setPromptBehavior(PromptBehavior.Auto.toString());
 
         final AuthenticationRequest request = new AuthenticationRequest(mAuthority, resource,
-                clientId, userId, getRequestCorrelationId(), getExtendedLifetimeEnabled());
+                clientId, userId, getRequestCorrelationId(), getExtendedLifetimeEnabled(), mTokenEndpoint, mResponseType);
         request.setSilent(true);
         request.setPrompt(PromptBehavior.Auto);
         request.setUserIdentifierType(UserIdentifierType.UniqueId);
@@ -846,7 +854,7 @@ public class AuthenticationContext {
         apiEvent.setIsDeprecated(true);
 
         final AuthenticationRequest request = new AuthenticationRequest(mAuthority,
-                null, clientId, getRequestCorrelationId(), getExtendedLifetimeEnabled());
+                null, clientId, getRequestCorrelationId(), getExtendedLifetimeEnabled(), mTokenEndpoint, mResponseType);
 
         // It is not using cache and refresh is not expected to
         // show authentication activity.
@@ -895,7 +903,7 @@ public class AuthenticationContext {
 
         // Authenticator is not supported if user is managing the cache
         final AuthenticationRequest request = new AuthenticationRequest(mAuthority,
-                resource, clientId, getRequestCorrelationId(), getExtendedLifetimeEnabled());
+                resource, clientId, getRequestCorrelationId(), getExtendedLifetimeEnabled(), mTokenEndpoint, mResponseType);
 
         request.setTelemetryRequestId(requestId);
 
