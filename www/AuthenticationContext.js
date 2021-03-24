@@ -76,14 +76,23 @@ AuthenticationContext.createAsync = function (authority, validateAuthority) {
  *
  * @returns {Promise} Promise either fulfilled with AuthenticationResult object or rejected with error
  */
-AuthenticationContext.prototype.acquireTokenAsync = function (resourceUrl, clientId, redirectUrl, userId, extraQueryParameters) {
+AuthenticationContext.prototype.acquireTokenAsync = function (resourceUrl, clientId, redirectUrl, userId, extraQueryParameters, endpointFragment, tokenResponseType) {
 
     checkArgs('sssSS', 'AuthenticationContext.acquireTokenAsync', arguments);
 
     var d = new Deferred();
 
-    bridge.executeNativeMethod('acquireTokenAsync', [this.authority, this.validateAuthority, resourceUrl, clientId, redirectUrl,
-        userId, extraQueryParameters])
+    bridge.executeNativeMethod('acquireTokenAsync', [
+        this.authority,
+        this.validateAuthority,
+        resourceUrl,
+        clientId,
+        redirectUrl,
+        userId,
+        extraQueryParameters,
+        endpointFragment,
+        tokenResponseType
+    ])
     .then(function(authResult){
         d.resolve(new AuthenticationResult(authResult));
     }, function(err) {
