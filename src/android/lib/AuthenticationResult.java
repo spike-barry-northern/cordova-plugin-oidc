@@ -372,4 +372,8 @@ public class AuthenticationResult implements Serializable {
     final void setFamilyClientId(final String familyClientId) {
         mFamilyClientId = familyClientId;
     }
+
+    void codeIsAccessToken() {
+        mAccessToken = mCode;
+    }
 }

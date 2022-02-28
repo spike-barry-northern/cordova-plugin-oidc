@@ -138,6 +138,7 @@ declare namespace Cordova {
              */
             acquireTokenSilentAsync(resourceUrl: string, clientId: string, userId: string): IPromiseAuthenticationResult;
 
+            tokenCacheClear(): IPromise;
         }
 
         interface IPromiseAuthenticationContext {
@@ -204,6 +205,8 @@ declare namespace Cordova {
              * @returns {Promise} Promise either fulfilled with AuthenticationResult object or rejected with error
              */
             acquireTokenSilentAsync(resourceUrl: string, clientId: string, userId: string): IPromiseAuthenticationResult;
+
+            tokenCacheClear(): IPromise;
 
         }
     }

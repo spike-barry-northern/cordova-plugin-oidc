@@ -630,6 +630,8 @@ class BrokerProxy implements IBrokerProxy {
         // request needs to be parcelable to send across process
         brokerOptions.putInt(AuthenticationConstants.Browser.REQUEST_ID, request.getRequestId());
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_AUTHORITY, request.getAuthority());
+        brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_RESPONSE_TYPE, request.getResponseType());
+        brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_TOKEN_ENDPOINT, request.getTokenEndpoint());
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_RESOURCE, request.getResource());
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_REDIRECT, request.getRedirectUri());
         brokerOptions.putString(AuthenticationConstants.Broker.ACCOUNT_CLIENTID_KEY, request.getClientId());

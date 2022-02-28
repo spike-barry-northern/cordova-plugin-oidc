@@ -85,6 +85,8 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
             final String redirectUrl = args.getString(4);
             final String userId = args.optString(5, null).equals("null") ? null : args.optString(5, null);
             final String extraQueryParams = args.optString(6, null).equals("null") ? null : args.optString(6, null);
+            final String tokenEndpoint = args.optString(7, null).equals("null") ? null : args.optString(7, null);
+            final String responseType = args.optString(8, null).equals("null") ? null : args.optString(8, null);
 
             cordova.getThreadPool().execute(new Runnable() {
                 @Override
@@ -95,7 +97,9 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
                             clientId,
                             redirectUrl,
                             userId,
-                            extraQueryParams);
+                            extraQueryParams,
+                            tokenEndpoint,
+                            responseType);
                 }
             });
 
@@ -163,8 +167,10 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
 
     private boolean createAsync(String authority) {
 
+        final String tokenEndpoint = "connect";
+        final String responseType = "code";
         try {
-            getOrCreateContext(authority);
+            getOrCreateContext(authority, tokenEndpoint, responseType);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -174,11 +180,11 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         return true;
     }
 
-    private void acquireTokenAsync(String authority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams) {
+    private void acquireTokenAsync(String authority, String resourceUrl, String clientId, String redirectUrl, String userId, String extraQueryParams, String tokenEndpoint, String responseType) {
 
         final AuthenticationContext authContext;
         try{
-            authContext = getOrCreateContext(authority);
+            authContext = getOrCreateContext(authority, tokenEndpoint, responseType);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return;
@@ -210,8 +216,10 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
     private void acquireTokenSilentAsync(String authority, String resourceUrl, String clientId, String userId) {
 
         final AuthenticationContext authContext;
+        final String tokenEndpoint = "connect";
+        final String responseType = "code";
         try{
-            authContext = getOrCreateContext(authority);
+            authContext = getOrCreateContext(authority, tokenEndpoint, responseType);
 
             //  We should retrieve userId from broker cache since local is always empty
             boolean useBroker = AuthenticationSettings.INSTANCE.getUseBroker();
@@ -240,8 +248,10 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
     private boolean readTokenCacheItems(String authority) throws JSONException {
 
         final AuthenticationContext authContext;
+        final String tokenEndpoint = "connect";
+        final String responseType = "code";
         try{
-            authContext = getOrCreateContext(authority);
+            authContext = getOrCreateContext(authority, tokenEndpoint, responseType);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -268,8 +278,11 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
                                          String clientId, String userId, boolean isMultipleResourceRefreshToken) {
 
         final AuthenticationContext authContext;
+        final String tokenEndpoint = "connect";
+        final String responseType = "code";
+
         try{
-            authContext = getOrCreateContext(authority);
+            authContext = getOrCreateContext(authority, tokenEndpoint, responseType);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -284,8 +297,10 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
 
     private boolean clearTokenCache(String authority) {
         final AuthenticationContext authContext;
+        final String tokenEndpoint = "connect";
+        final String responseType = "code";
         try{
-            authContext = getOrCreateContext(authority);
+            authContext = getOrCreateContext(authority, tokenEndpoint, responseType);
         } catch (Exception e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, e.getMessage()));
             return true;
@@ -373,11 +388,11 @@ public class CordovaOIDCPlugin extends CordovaPlugin {
         callbackContext.success();
     }
 
-    private AuthenticationContext getOrCreateContext (String authority) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    private AuthenticationContext getOrCreateContext (String authority, String tokenEndpoint, String responseType) throws NoSuchPaddingException, NoSuchAlgorithmException {
 
         AuthenticationContext result;
         if (!contexts.containsKey(authority)) {
-            result = new AuthenticationContext(this.cordova.getActivity(), authority);
+            result = new AuthenticationContext(this.cordova.getActivity(), authority, tokenEndpoint, responseType);
             this.contexts.put(authority, result);
         } else {
             result = contexts.get(authority);

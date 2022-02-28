@@ -122,10 +122,8 @@
         [request_data setObject:[_requestParams resource] forKey:OAUTH2_RESOURCE];
     }
     
-    NSString* tokenEndpoint = _requestParams.tokenEndpoint ? _requestParams.tokenEndpoint : OIDC_OAUTH2_TOKEN_SUFFIX;
-    NSString* urlString = [_requestParams.authority stringByAppendingString:tokenEndpoint];
+    NSString* urlString = [_requestParams.tokenEndpoint stringByAppendingString:OIDC_OAUTH2_TOKEN_SUFFIX];
     
-    NSLog(@"acquireTokenByRefreshToken - token endpoint: %@", tokenEndpoint);
     NSLog(@"url: %@", urlString);
     
     OIDCWebAuthRequest* webReq =

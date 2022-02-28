@@ -45,10 +45,8 @@
 - (void)executeRequest:(NSDictionary *)request_data
             completion:(OIDCAuthenticationCallback)completionBlock
 {
-    NSString* tokenEndpoint = _context.tokenEndpoint ? _context.tokenEndpoint : OIDC_OAUTH2_TOKEN_SUFFIX;
-    NSString* urlString = [_context.authority stringByAppendingString:tokenEndpoint];
+    NSString* urlString = [_context.tokenEndpoint stringByAppendingString:OIDC_OAUTH2_TOKEN_SUFFIX];
     
-    NSLog(@"OIDCAuthenticationRequest, executeRequest - token endpoint: %@", tokenEndpoint);
     NSLog(@"url: %@", urlString);
     
     OIDCWebAuthRequest* req = [[OIDCWebAuthRequest alloc] initWithURL:[NSURL URLWithString:urlString]
@@ -110,12 +108,10 @@
     NSString* queryParams = nil;
     
     NSString *udidString = [[NSUUID UUID] UUIDString];
-    
-    NSString *tokenEndpoint = _context.tokenEndpoint ? _context.tokenEndpoint : OIDC_OAUTH2_AUTHORIZE_SUFFIX;
-    
+        
     // Start the web navigation process for the Implicit grant profile.
     NSMutableString* startUrl = [NSMutableString stringWithFormat:@"%@?%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
-                                 [_context.authority stringByAppendingString:tokenEndpoint],
+                                 [_context.tokenEndpoint stringByAppendingString:OIDC_OAUTH2_AUTHORIZE_SUFFIX],
                                  OAUTH2_RESPONSE_TYPE, requestType,
                                  OAUTH2_CLIENT_ID, [[_requestParams clientId] adUrlFormEncode],
                                  OAUTH2_NONCE, udidString,
@@ -232,14 +228,23 @@
                  if (!error)
                  {
                      //Note that we do not enforce the state, just log it:
-                     [self verifyStateFromDictionary:parameters];
-                     code = [parameters objectForKey:OAUTH2_ID_TOKEN];
+                     [self verifyStateFromDictionary:parameters]; 
+                     if ([responseType isEqualToString:@"token"] || [responseType isEqualToString:@"id_token"]) {
+                         code = [parameters objectForKey:@"id_token"];
+                         if ([NSString adIsStringNilOrBlank:code]){
+                             code = [parameters objectForKey:@"access_token"];
+                         }
+                     }
+                     else {
+                         code = [parameters objectForKey:responseType]; // this may be an authorization code or access token depending on responseType
+                     }
+                     
                      if ([NSString adIsStringNilOrBlank:code])
                      {
                          error = [OIDCAuthenticationError errorFromAuthenticationError:OIDC_ERROR_SERVER_AUTHORIZATION_CODE
                                                                         protocolCode:nil
                                                                         errorDetails:@"The authorization server did not return a valid authorization code."
-                                                                       correlationId:[_requestParams correlationId]];
+                                                                       correlationId:[self->_requestParams correlationId]];
                      }
                  }
              }
@@ -276,8 +281,7 @@
             [requestData setObject:_requestParams.identifier.userId forKey:OAUTH2_LOGIN_HINT];
         }
         
-        NSString *tokenEndpoint = _context.tokenEndpoint ? _context.tokenEndpoint : OIDC_OAUTH2_AUTHORIZE_SUFFIX;
-        NSURL* reqURL = [NSURL URLWithString:[_context.authority stringByAppendingString:tokenEndpoint]];
+        NSURL* reqURL = [NSURL URLWithString:[_context.tokenEndpoint stringByAppendingString:OIDC_OAUTH2_AUTHORIZE_SUFFIX]];
         OIDCWebAuthRequest* req = [[OIDCWebAuthRequest alloc] initWithURL:reqURL
                                                               context:_requestParams];
         [req setIsGetRequest:YES];

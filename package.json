@@ -1,7 +1,32 @@
 {
-  "name": "cordova-plugin-oidc",
-  "version": "0.10.2",
-  "description": "Provides OpenID Connect Authentication",
+  "_from": "git+https://github.com/spike-global/cordova-plugin-oidc.git#token_SDO-25_merge",
+  "_id": "cordova-plugin-oidc@0.11.0",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/cordova-plugin-oidc",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "https://github.com/spike-global/cordova-plugin-oidc.git#token_SDO-25_merge",
+    "rawSpec": "https://github.com/spike-global/cordova-plugin-oidc.git#token_SDO-25_merge",
+    "saveSpec": "git+https://github.com/spike-global/cordova-plugin-oidc.git#token_SDO-25_merge",
+    "fetchSpec": "https://github.com/spike-global/cordova-plugin-oidc.git",
+    "gitCommittish": "token_SDO-25_merge"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "git+https://github.com/spike-global/cordova-plugin-oidc.git#0e7a8122acfaf6563ae557819c0cdafb45c97e93",
+  "_spec": "https://github.com/spike-global/cordova-plugin-oidc.git#token_SDO-25_merge",
+  "_where": "C:\\spike\\unite-portal-app",
+  "author": {
+    "name": "DmitryA"
+  },
+  "bugs": {
+    "url": "https://github.com/spike-global/cordova-plugin-oidc/issues"
+  },
+  "bundleDependencies": false,
   "cordova": {
     "id": "cordova-plugin-oidc",
     "platforms": [
@@ -9,45 +34,45 @@
       "ios"
     ]
   },
+  "deprecated": false,
+  "description": "Provides OpenID Connect Authentication",
   "engines": {
     "cordovaDependencies": {
-      "0.8.0": {
-        "cordova-android": ">=4.1.0",
-        "cordova": ">=5.4.0"
-      },
-      "0.8.1": {
-        "cordova-android": ">=4.1.0",
-        "cordova": ">=5.4.0"
-      },
-      "0.9.0": {
-        "cordova-android": ">=4.1.0",
-        "cordova": ">=5.4.0"
-      },
       "0.10.0": {
-        "cordova-android": ">=4.1.0",
-        "cordova": ">=5.4.0"
+        "cordova": ">=5.4.0",
+        "cordova-android": ">=4.1.0"
       },
       "0.10.1": {
-        "cordova-android": ">=4.1.0",
-        "cordova": ">=5.4.0"
+        "cordova": ">=5.4.0",
+        "cordova-android": ">=4.1.0"
+      },
+      "0.8.0": {
+        "cordova": ">=5.4.0",
+        "cordova-android": ">=4.1.0"
+      },
+      "0.8.1": {
+        "cordova": ">=5.4.0",
+        "cordova-android": ">=4.1.0"
+      },
+      "0.9.0": {
+        "cordova": ">=5.4.0",
+        "cordova-android": ">=4.1.0"
       },
       "1.0.0": {
         "cordova": ">=100"
       }
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/spike-global/cordova-plugin-oidc.git"
-  },
+  "homepage": "https://github.com/spike-global/cordova-plugin-oidc#readme",
   "keywords": [
     "cordova",
     "oidc"
   ],
-  "author": "DmitryA",
   "license": "Apache 2.0",
-  "bugs": {
-    "url": "https://github.com/spike-global/cordova-plugin-oidc/issues"
+  "name": "cordova-plugin-oidc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spike-global/cordova-plugin-oidc.git"
   },
-  "homepage": "https://github.com/spike-global/cordova-plugin-oidc#readme"
+  "version": "0.11.0"
 }

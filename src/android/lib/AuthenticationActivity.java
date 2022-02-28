@@ -176,6 +176,18 @@ public class AuthenticationActivity extends Activity {
             return;
         }
 
+        if (mAuthRequest.getResponseType() == null || mAuthRequest.getResponseType().isEmpty()) {
+            returnError(OIDCError.ARGUMENT_EXCEPTION,
+                    AuthenticationConstants.Broker.ACCOUNT_RESPONSE_TYPE);
+            return;
+        }
+
+        if (mAuthRequest.getTokenEndpoint() == null || mAuthRequest.getTokenEndpoint().isEmpty()) {
+            returnError(OIDCError.ARGUMENT_EXCEPTION,
+                    AuthenticationConstants.Broker.ACCOUNT_TOKEN_ENDPOINT);
+            return;
+        }
+
         if (mAuthRequest.getResource() == null || mAuthRequest.getResource().isEmpty()) {
             returnError(OIDCError.ARGUMENT_EXCEPTION,
                     AuthenticationConstants.Broker.ACCOUNT_RESOURCE);
@@ -382,7 +394,11 @@ public class AuthenticationActivity extends Activity {
         if (isBrokerRequest(callingIntent)) {
             Logger.v(TAG, "It is a broker request. Get request info from bundle extras.");
             String authority = callingIntent
-                    .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_AUTHORITY);
+                    .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_AUTHORITY);                    
+            String responseType = callingIntent
+                    .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_RESPONSE_TYPE);                  
+            String tokenEndpoint = callingIntent
+                    .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_TOKEN_ENDPOINT);
             String resource = callingIntent
                     .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_RESOURCE);
             String redirect = callingIntent
@@ -415,7 +431,7 @@ public class AuthenticationActivity extends Activity {
                 }
             }
             authRequest = new AuthenticationRequest(authority, resource, clientidKey, redirect,
-                    loginhint, correlationIdParsed, false);
+                    loginhint, correlationIdParsed, false, tokenEndpoint, responseType);
             authRequest.setBrokerAccountName(accountName);
             authRequest.setPrompt(promptBehavior);
             authRequest.setRequestId(mWaitingRequestId);

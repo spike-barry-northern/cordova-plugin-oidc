@@ -21,7 +21,7 @@
 //            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:2]);
 //            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
             
-            NSString *tokenEndpoint = @"/connect/authorize";
+            NSString *tokenEndpoint = [authority stringByAppendingString: @"/connect"];
             NSString *responseType = @"code";
 
             [CordovaOidcPlugin getOrCreateAuthContext:authority
@@ -54,11 +54,21 @@
             NSURL *redirectUri = [NSURL URLWithString:[command.arguments objectAtIndex:4]];
             NSString *userId = ObjectOrNil([command.arguments objectAtIndex:5]);
             NSString *extraQueryParameters = ObjectOrNil([command.arguments objectAtIndex:6]);
-//            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:7]);
-//            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
+
+            NSString *endpointFragment = [CordovaOidcPlugin objectOrNilFrom:command.arguments forIndex:7];
+            NSString * tokenResponseType = [CordovaOidcPlugin objectOrNilFrom:command.arguments forIndex:8];
             
-            NSString *tokenEndpoint = @"/connect/authorize";
-            NSString *responseType = @"token";
+            NSString *tokenEndpoint = [authority stringByAppendingString: @"/connect"]; 
+            if (!!endpointFragment) {
+                if ([endpointFragment hasPrefix:@"http"]) {
+                    tokenEndpoint = endpointFragment;
+                }
+                else {
+                    tokenEndpoint = [authority stringByAppendingString: [NSString stringWithFormat:@"/%@", endpointFragment]];
+                }
+            }
+
+            NSString *responseType = !tokenResponseType ? @"id_token" : tokenResponseType;
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
                                                                                  tokenEndpoint:tokenEndpoint
@@ -111,7 +121,7 @@
 //            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:5]);
 //            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
             
-            NSString *tokenEndpoint = @"/connect/authorize";
+            NSString *tokenEndpoint = [authority stringByAppendingString: @"/connect"];
             NSString *responseType = @"code";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
@@ -230,7 +240,7 @@
 //            NSString *tokenEndpoint = ObjectOrNil([command.arguments objectAtIndex:6]);
 //            NSString *responseType = ObjectOrNil([command.arguments objectAtIndex:3]);
             
-            NSString *tokenEndpoint = @"/connect/authorize";
+            NSString *tokenEndpoint = [authority stringByAppendingString: @"/connect"];
             NSString *responseType = @"code";
 
             OIDCAuthenticationContext *authContext = [CordovaOidcPlugin getOrCreateAuthContext:authority
@@ -362,6 +372,16 @@ static NSMutableDictionary *existingContexts = nil;
 
 static id ObjectOrNil(id object)
 {
+    return [object isKindOfClass:[NSNull class]] ? nil : object;
+}
+
++ (id)objectOrNilFrom:(NSArray *)arguments
+             forIndex:(NSUInteger)index
+{
+    if (index >= arguments.count) {
+        return nil;
+    }
+    id object = [arguments objectAtIndex:index];
     return [object isKindOfClass:[NSNull class]] ? nil : object;
 }
 

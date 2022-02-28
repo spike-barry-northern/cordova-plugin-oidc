@@ -363,6 +363,10 @@ public final class AuthenticationConstants {
         /** String of account authority. */
         public static final String ACCOUNT_AUTHORITY = "account.authority";
 
+        public static final String ACCOUNT_RESPONSE_TYPE = "account.response.type";
+        /** String of account authority. */
+        public static final String ACCOUNT_TOKEN_ENDPOINT = "account.token.endpoint";
+
         /** String of account refresh token. */
         public static final String ACCOUNT_REFRESH_TOKEN = "account.refresh.token";
 

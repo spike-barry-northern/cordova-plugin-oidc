@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Locale;
 
 /**
  * Base Oauth class.
@@ -65,10 +66,12 @@ class Oauth2 {
     private static final int DELAY_TIME_PERIOD = 1000;
 
     private static final int MAX_RESILIENCY_ERROR_CODE = 599;
+    
+    private static final String DEFAULT_FRAGMENT = "/connect";
 
-    private static final String DEFAULT_AUTHORIZE_ENDPOINT = "/oauth2/v1/authorize";
+    private static final String DEFAULT_AUTHORIZE_ENDPOINT = "/authorize";
 
-    private static final String DEFAULT_TOKEN_ENDPOINT = "/oauth2/v1/token";
+    private static final String DEFAULT_TOKEN_ENDPOINT = "/token";
 
     Oauth2(AuthenticationRequest request) {
         mRequest = request;
@@ -90,17 +93,46 @@ class Oauth2 {
     }
 
     public String getAuthorizationEndpoint() {
-        return mRequest.getAuthority() + DEFAULT_AUTHORIZE_ENDPOINT;
+        final String endpoint = mRequest.getTokenEndpoint();
+        if (endpoint == null || endpoint.isEmpty()) {
+            return mRequest.getAuthority() + DEFAULT_FRAGMENT + DEFAULT_AUTHORIZE_ENDPOINT;
+        }
+        else if (endpoint.toLowerCase(Locale.US).startsWith(AuthenticationConstants.Broker.REDIRECT_SSL_PREFIX)) {
+            return endpoint + DEFAULT_AUTHORIZE_ENDPOINT;
+        }
+        else {
+            return mRequest.getAuthority() + "/" + endpoint + DEFAULT_AUTHORIZE_ENDPOINT;
+        }
     }
 
     public String getTokenEndpoint() {
-        return mRequest.getAuthority() + DEFAULT_TOKEN_ENDPOINT;
+        final String endpoint = mRequest.getTokenEndpoint();
+        if (endpoint == null || endpoint.isEmpty()) {
+            return mRequest.getAuthority() + DEFAULT_FRAGMENT + DEFAULT_TOKEN_ENDPOINT;
+        }
+        else if (endpoint.toLowerCase(Locale.US).startsWith(AuthenticationConstants.Broker.REDIRECT_SSL_PREFIX)) {
+            return endpoint + DEFAULT_TOKEN_ENDPOINT;
+        }
+        else {
+            return mRequest.getAuthority() + "/" + endpoint + DEFAULT_TOKEN_ENDPOINT;
+        }
+    }
+
+    private String getTokenResponseType() {
+
+        final String responseType = mRequest.getResponseType();
+        if (responseType == null || responseType.isEmpty()) {
+            return AuthenticationConstants.OAuth2.ID_TOKEN;
+        }
+        else {
+            return responseType;
+        }
     }
 
     public String getAuthorizationEndpointQueryParameters() throws UnsupportedEncodingException {
         final Uri.Builder queryParameter = new Uri.Builder();
         queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE,
-                        AuthenticationConstants.OAuth2.ID_TOKEN)
+                        this.getTokenResponseType())
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
                         URLEncoder.encode(mRequest.getClientId(),
                                 AuthenticationConstants.ENCODING_UTF8))
@@ -398,13 +430,16 @@ class Oauth2 {
 
                 AuthenticationResult result = processUIResponseParams(parameters);
 
+                //SPIKE: the "token" we want for Salto at this point is the value that now resides in result.getCode() -> might not be right for future uses of this plugin, hence this comment. You're welcome.
                 // Check if we have code
-                if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
+                //if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
 
                     // Get token and use external callback to set result
-                    return getTokenForCode(result.getCode());
-                }
-
+                //    return getTokenForCode(result.getCode());
+                //}
+                //SPIKE: end of commenting out!
+				result.codeIsAccessToken(); // SPIKE: our new function to set the access token to the code!
+                
                 return result;
             } else {
                 throw new AuthenticationException(OIDCError.AUTH_FAILED_BAD_STATE);

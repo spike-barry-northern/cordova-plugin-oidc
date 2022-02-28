@@ -101,18 +101,18 @@ const int sTokenWorkflowTimeout     = 20;
 //Attempts to find an active webview among all of the application windows.
 //The method is not very efficient, but is robust and should suffice for the
 //relatively small test app.
--(UIWebView*) findWebView: (UIWindow*) parent
+-(WKWebView*) findWebView: (UIWindow*) parent
 {
     NSArray* windows = (parent) ? [parent subviews] : [[UIApplication sharedApplication] windows];
     for(UIWindow* window in windows)
     {
-        if ([window isKindOfClass:[UIWebView class]])
+        if ([window isKindOfClass:[WKWebView class]])
         {
-            return (UIWebView*)window;
+            return (WKWebView*)window;
         }
         else
         {
-            UIWebView* result = [self findWebView:window];
+            WKWebView* result = [self findWebView:window];
             if (result)
             {
                 return result;
@@ -184,7 +184,7 @@ const int sTokenWorkflowTimeout     = 20;
                                          line:sourceLine];
 }
 
--(void) setElementWithWebView: (UIWebView*) webView
+-(void) setElementWithWebView: (WKWebView*) webView
                       element: (NSString*) elementName
                         value: (NSString*) value
 {
@@ -193,7 +193,7 @@ const int sTokenWorkflowTimeout     = 20;
       elementName, value]];
 }
 
--(NSString*) getElementWithWebView: (UIWebView*) webView
+-(NSString*) getElementWithWebView: (WKWebView*) webView
                            element: (NSString*) elementName
 {
     return [webView stringByEvaluatingJavaScriptFromString:
@@ -231,7 +231,7 @@ const int sTokenWorkflowTimeout     = 20;
     if (interactive)
     {
         //Automated the webview:
-        __block UIWebView* webView;
+        __block WKWebView* webView;
         [self runLoopWithTimeOut:sWebViewDisplayTimeout operation:@"Wait for web view" line:sourceLine condition:^{
             webView = [self findWebView:nil];
             return (BOOL)(webView != nil);

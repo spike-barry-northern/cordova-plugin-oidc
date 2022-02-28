@@ -76,14 +76,23 @@ AuthenticationContext.createAsync = function (authority, validateAuthority) {
  *
  * @returns {Promise} Promise either fulfilled with AuthenticationResult object or rejected with error
  */
-AuthenticationContext.prototype.acquireTokenAsync = function (resourceUrl, clientId, redirectUrl, userId, extraQueryParameters) {
+AuthenticationContext.prototype.acquireTokenAsync = function (resourceUrl, clientId, redirectUrl, userId, extraQueryParameters, endpointFragment, tokenResponseType) {
 
     checkArgs('sssSS', 'AuthenticationContext.acquireTokenAsync', arguments);
 
     var d = new Deferred();
 
-    bridge.executeNativeMethod('acquireTokenAsync', [this.authority, this.validateAuthority, resourceUrl, clientId, redirectUrl,
-        userId, extraQueryParameters])
+    bridge.executeNativeMethod('acquireTokenAsync', [
+        this.authority,
+        this.validateAuthority,
+        resourceUrl,
+        clientId,
+        redirectUrl,
+        userId,
+        extraQueryParameters,
+        endpointFragment,
+        tokenResponseType
+    ])
     .then(function(authResult){
         d.resolve(new AuthenticationResult(authResult));
     }, function(err) {
@@ -111,6 +120,20 @@ AuthenticationContext.prototype.acquireTokenSilentAsync = function (resourceUrl,
     var d = new Deferred();
 
     bridge.executeNativeMethod('acquireTokenSilentAsync', [this.authority, this.validateAuthority, resourceUrl, clientId, userId])
+    .then(function(authResult){
+        d.resolve(new AuthenticationResult(authResult));
+    }, function(err) {
+        d.reject(err);
+    });
+
+    return d;
+};
+
+AuthenticationContext.prototype.tokenCacheClear = function () {
+
+    var d = new Deferred();
+
+    bridge.executeNativeMethod('tokenCacheClear', [this.authority])
     .then(function(authResult){
         d.resolve(new AuthenticationResult(authResult));
     }, function(err) {
