@@ -182,9 +182,9 @@ public class AuthenticationActivity extends Activity {
             return;
         }
 
-        if (mAuthRequest.getTokenEndpoint() == null || mAuthRequest.getTokenEndpoint().isEmpty()) {
+        if (mAuthRequest.getEndpointFragment() == null || mAuthRequest.getEndpointFragment().isEmpty()) {
             returnError(OIDCError.ARGUMENT_EXCEPTION,
-                    AuthenticationConstants.Broker.ACCOUNT_TOKEN_ENDPOINT);
+                    AuthenticationConstants.Broker.ACCOUNT_ENDPOINT_FRAGMENT);
             return;
         }
 
@@ -397,8 +397,8 @@ public class AuthenticationActivity extends Activity {
                     .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_AUTHORITY);                    
             String responseType = callingIntent
                     .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_RESPONSE_TYPE);                  
-            String tokenEndpoint = callingIntent
-                    .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_TOKEN_ENDPOINT);
+            String endpointFragment = callingIntent
+                    .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_ENDPOINT_FRAGMENT);
             String resource = callingIntent
                     .getStringExtra(AuthenticationConstants.Broker.ACCOUNT_RESOURCE);
             String redirect = callingIntent
@@ -431,7 +431,7 @@ public class AuthenticationActivity extends Activity {
                 }
             }
             authRequest = new AuthenticationRequest(authority, resource, clientidKey, redirect,
-                    loginhint, correlationIdParsed, false, tokenEndpoint, responseType);
+                    loginhint, correlationIdParsed, false, endpointFragment, responseType);
             authRequest.setBrokerAccountName(accountName);
             authRequest.setPrompt(promptBehavior);
             authRequest.setRequestId(mWaitingRequestId);

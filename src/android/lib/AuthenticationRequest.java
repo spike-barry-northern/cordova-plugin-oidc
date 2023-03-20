@@ -43,7 +43,7 @@ class AuthenticationRequest implements Serializable {
 
     private String mAuthority = null;
 
-    private String mTokenEndpoint = null;
+    private String mEndpointFragment = null;
 
     private String mResponseType = null;
 
@@ -92,9 +92,9 @@ class AuthenticationRequest implements Serializable {
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
                                  String loginhint, PromptBehavior prompt, String extraQueryParams, UUID correlationId,
                                  boolean isExtendedLifetimeEnabled, final String claimsChallenge, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = client;
@@ -111,9 +111,9 @@ class AuthenticationRequest implements Serializable {
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
                                  String loginhint, UUID requestCorrelationId, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = client;
@@ -126,9 +126,9 @@ class AuthenticationRequest implements Serializable {
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
                                  String loginhint, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = client;
@@ -139,9 +139,9 @@ class AuthenticationRequest implements Serializable {
     }
 
     public AuthenticationRequest(String authority, String resource, String clientid, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = clientid;
@@ -159,9 +159,9 @@ class AuthenticationRequest implements Serializable {
      */
     public AuthenticationRequest(String authority, String resource, String clientid, String userid,
                                  UUID correlationId, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = clientid;
@@ -172,9 +172,9 @@ class AuthenticationRequest implements Serializable {
 
     public AuthenticationRequest(String authority, String resource, String clientId,
                                  UUID correlationId, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mClientId = clientId;
         mResource = resource;
@@ -190,8 +190,8 @@ class AuthenticationRequest implements Serializable {
         mAuthority = authority;
     }
 
-    public String getTokenEndpoint() {
-        return mTokenEndpoint;
+    public String getEndpointFragment() {
+        return mEndpointFragment;
     }
 
     public String getResponseType() {

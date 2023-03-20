@@ -168,6 +168,9 @@ public final class AuthenticationConstants {
         
         /** String of response type. */
         public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
+        
+        /** String of response type. */
+        public static final String CODE_VARIFIER = "code_verifier";
 
         /** String of scope. */
         public static final String SCOPE = "scope";
@@ -371,7 +374,7 @@ public final class AuthenticationConstants {
 
         public static final String ACCOUNT_RESPONSE_TYPE = "account.response.type";
         /** String of account authority. */
-        public static final String ACCOUNT_TOKEN_ENDPOINT = "account.token.endpoint";
+        public static final String ACCOUNT_ENDPOINT_FRAGMENT = "account.token.endpoint";
 
         /** String of account refresh token. */
         public static final String ACCOUNT_REFRESH_TOKEN = "account.refresh.token";
