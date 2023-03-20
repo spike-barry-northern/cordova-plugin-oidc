@@ -39,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -142,10 +143,15 @@ class Oauth2 {
                 .appendQueryParameter(AuthenticationConstants.OAuth2.STATE, encodeProtocolState())
 			    .appendQueryParameter(AuthenticationConstants.OAuth2.NONCE, UUID.randomUUID().toString());
 
-        if (this.getTokenResponseType().indexOf("code") > -1) {
+        //if (this.getTokenResponseType().indexOf("code") > -1) {
+            // String code_verifier = UUID.randomUUID().toString();
+
+            // MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            // byte[] hash = digest.digest(code_verifier.getBytes(StandardCharsets.UTF_8));
+
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE, "elU6u5zyqQT2f92GRQUq6PautAeNDf4DQPayyR0ek_c");
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE_METHOD, "S256");
-        }
+        //}
 
         // reading extra qp supplied by developer
         final String extraQP = mRequest.getExtraQueryParamsAuthentication();
