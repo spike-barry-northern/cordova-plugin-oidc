@@ -163,6 +163,12 @@ public final class AuthenticationConstants {
         /** String of response type. */
         public static final String RESPONSE_TYPE = "response_type";
 
+        /** String of response type. */
+        public static final String CODE_CHALLENGE = "code_challenge";
+        
+        /** String of response type. */
+        public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
+
         /** String of scope. */
         public static final String SCOPE = "scope";
 
