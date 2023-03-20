@@ -131,7 +131,6 @@ class Oauth2 {
 
     public String getAuthorizationEndpointQueryParameters() throws UnsupportedEncodingException {
         final Uri.Builder queryParameter = new Uri.Builder();
-        final String responseType = this.getTokenResponseType();
 
         queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE, this.getTokenResponseType())
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
@@ -143,7 +142,7 @@ class Oauth2 {
                 .appendQueryParameter(AuthenticationConstants.OAuth2.STATE, encodeProtocolState())
 			    .appendQueryParameter(AuthenticationConstants.OAuth2.NONCE, UUID.randomUUID().toString());
 
-        if (responseType.indexOf("code") > -1) {
+        if (this.getTokenResponseType().indexOf("code") > -1) {
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE, "elU6u5zyqQT2f92GRQUq6PautAeNDf4DQPayyR0ek_c");
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE_METHOD, "S256");
         }
