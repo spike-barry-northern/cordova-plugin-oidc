@@ -758,6 +758,7 @@ class Oauth2 {
         if (this.codeVarifier == null) {
             this.codeVarifier = "7073d688b6dcb02b9a2332e0792be265b9168fda7a6";// UUID.randomUUID().toString();
         }
+        return this.codeVarifier;
     }    
 
     private String GetCodeChallenge() {
