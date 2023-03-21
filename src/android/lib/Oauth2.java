@@ -756,12 +756,12 @@ class Oauth2 {
 
     private String GetCodeVarifier() {
         if (this.codeVarifier == null) {
-            this.codeVarifier = "7073d688b6dcb02b9a2332e0792be265b9168fda7a6";// UUID.randomUUID().toString();
+            this.codeVarifier = "3a95b913-e8f7-4189-97c6-e58ce0785d4d";// UUID.randomUUID().toString();
         }
         return this.codeVarifier;
     }    
 
     private String GetCodeChallenge() {
-        return "elU6u5zyqQT2f92GRQUq6PautAeNDf4DQPayyR0ek_c";       
+        return "8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";       
     }  
 }
