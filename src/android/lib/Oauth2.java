@@ -756,12 +756,17 @@ class Oauth2 {
 
     private String GetCodeVarifier() {
         if (this.codeVarifier == null) {
-            this.codeVarifier = "3a95b913-e8f7-4189-97c6-e58ce0785d4d";// UUID.randomUUID().toString();
+            this.codeVarifier = "086aec20df173f036b9735790d93159ed97adbddebb1335d28a7f60a";// UUID.randomUUID().toString();
         }
         return this.codeVarifier;
     }    
 
     private String GetCodeChallenge() {
-        return "8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";       
+        return "G0fIWequCjH9_4ludzFR3a0afoWhJg3fEGmMDJLFfjM";       
     }  
+
+    // dependencies {
+    //     implementation('org.bouncycastle:bcpkix-jdk15on:1.56')
+    //     implementation 'org.bouncycastle:bcprov-jdk15to18:1.68'
+    // }
 }
