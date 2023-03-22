@@ -39,7 +39,9 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-//import java.security;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -135,7 +137,8 @@ class Oauth2 {
     public String getAuthorizationEndpointQueryParameters() throws UnsupportedEncodingException {
         final Uri.Builder queryParameter = new Uri.Builder();
 
-        queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE, this.getTokenResponseType())
+        final String tokenRespType = this.getTokenResponseType();
+        queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE, tokenRespType)
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
                         URLEncoder.encode(mRequest.getClientId(),
                                 AuthenticationConstants.ENCODING_UTF8))
@@ -145,15 +148,10 @@ class Oauth2 {
                 .appendQueryParameter(AuthenticationConstants.OAuth2.STATE, encodeProtocolState())
 			    .appendQueryParameter(AuthenticationConstants.OAuth2.NONCE, UUID.randomUUID().toString());
 
-        //if (this.getTokenResponseType().indexOf("code") > -1) {
-            // String code_verifier = UUID.randomUUID().toString();
-
-            // MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            // byte[] hash = digest.digest(code_verifier.getBytes(StandardCharsets.UTF_8));
-
+        if (tokenRespType.startsWith("code")) {
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE, this.GetCodeChallenge());
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE_METHOD, "S256");
-        //}
+        }
 
         // reading extra qp supplied by developer
         final String extraQP = mRequest.getExtraQueryParamsAuthentication();
@@ -756,17 +754,34 @@ class Oauth2 {
 
     private String GetCodeVarifier() {
         if (this.codeVarifier == null) {
-            this.codeVarifier = "086aec20df173f036b9735790d93159ed97adbddebb1335d28a7f60a";// UUID.randomUUID().toString();
+            SecureRandom sr = new SecureRandom();
+            byte[] code = new byte[32];
+            sr.nextBytes(code);
+            String verifier = Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+
+            this.codeVarifier = verifier; //"3a95b913-e8f7-4189-97c6-e58ce0785d4d";
         }
         return this.codeVarifier;
     }    
 
     private String GetCodeChallenge() {
-        return "G0fIWequCjH9_4ludzFR3a0afoWhJg3fEGmMDJLFfjM";       
-    }  
 
-    // dependencies {
-    //     implementation('org.bouncycastle:bcpkix-jdk15on:1.56')
-    //     implementation 'org.bouncycastle:bcprov-jdk15to18:1.68'
-    // }
+        try {
+            byte[] bytes = this.GetCodeVarifier().getBytes("US-ASCII");
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(bytes, 0, bytes.length);
+            byte[] digest = md.digest();
+            String challenge = Base64.encodeToString(digest, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+            return challenge; //"8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";
+        } catch (final UnsupportedEncodingException e) {
+            ClientMetrics.INSTANCE.setLastError(null);
+            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+            return null;
+        } catch (final NoSuchAlgorithmException e) {
+            ClientMetrics.INSTANCE.setLastError(null);
+            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+            return null;
+        }
+    }
 }
