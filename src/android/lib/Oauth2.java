@@ -475,7 +475,7 @@ class Oauth2 {
 
         // Token request message
         try {
-            requestMessage = buildTokenRequestMessage(code, mRequest.GetCodeVarifier());
+            requestMessage = buildTokenRequestMessage(code, mRequest.GetCodeVerifier());
         } catch (UnsupportedEncodingException encoding) {
             Logger.e(TAG, encoding.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, encoding);
             return null;

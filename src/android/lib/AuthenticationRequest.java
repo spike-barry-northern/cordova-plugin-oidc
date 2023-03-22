@@ -83,7 +83,7 @@ class AuthenticationRequest implements Serializable {
 
     private String mClaimsChallenge;
 
-    private String codeVarifier = null;
+    private String codeVerifier = null;
 
     private static final String TAG = "AuthenticationRequest";
 
@@ -117,6 +117,7 @@ class AuthenticationRequest implements Serializable {
         mIdentifierType = UserIdentifierType.NoUser;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
         mClaimsChallenge = claimsChallenge;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
@@ -132,6 +133,7 @@ class AuthenticationRequest implements Serializable {
         mBrokerAccountName = mLoginHint;
         mCorrelationId = requestCorrelationId;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
@@ -146,6 +148,7 @@ class AuthenticationRequest implements Serializable {
         mLoginHint = loginhint;
         mBrokerAccountName = mLoginHint;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String clientid, boolean isExtendedLifetimeEnabled, 
@@ -156,6 +159,7 @@ class AuthenticationRequest implements Serializable {
         mResource = resource;
         mClientId = clientid;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     /**
@@ -178,6 +182,7 @@ class AuthenticationRequest implements Serializable {
         mUserId = userid;
         mCorrelationId = correlationId;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String clientId,
@@ -190,6 +195,7 @@ class AuthenticationRequest implements Serializable {
         mResource = resource;
         mCorrelationId = correlationId;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public String getAuthority() {
@@ -352,36 +358,41 @@ class AuthenticationRequest implements Serializable {
         return mTelemetryRequestId;
     }
 
-    public String GetCodeVarifier() {
-        if (this.codeVarifier == null) {
+    private void CreateCodeVerifier() {
+        if (this.mResponseType.startsWith("code")) {
             SecureRandom sr = new SecureRandom();
             byte[] code = new byte[32];
             sr.nextBytes(code);
             String verifier = Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
 
-            this.codeVarifier = verifier; //"3a95b913-e8f7-4189-97c6-e58ce0785d4d";
+            this.codeVerifier = verifier; //"3a95b913-e8f7-4189-97c6-e58ce0785d4d";
         }
-        return this.codeVarifier;
+    }
+
+    public String GetCodeVerifier() {
+        return this.codeVerifier;
     }
 
     public String GetCodeChallenge() {
+        if (this.codeVerifier != null) {
+            try {
+                byte[] bytes = this.codeVerifier.getBytes("US-ASCII");
 
-        try {
-            byte[] bytes = this.GetCodeVarifier().getBytes("US-ASCII");
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(bytes, 0, bytes.length);
-            byte[] digest = md.digest();
-            String challenge = Base64.encodeToString(digest, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-            return challenge; //"8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";
-        } catch (final UnsupportedEncodingException e) {
-            ClientMetrics.INSTANCE.setLastError(null);
-            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
-            return null;
-        } catch (final NoSuchAlgorithmException e) {
-            ClientMetrics.INSTANCE.setLastError(null);
-            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
-            return null;
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(bytes, 0, bytes.length);
+                byte[] digest = md.digest();
+                String challenge = Base64.encodeToString(digest, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+                return challenge; //"8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";
+            } catch (final UnsupportedEncodingException e) {
+                ClientMetrics.INSTANCE.setLastError(null);
+                Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+                return null;
+            } catch (final NoSuchAlgorithmException e) {
+                ClientMetrics.INSTANCE.setLastError(null);
+                Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+                return null;
+            }
         }
+        return null;
     }
 }
