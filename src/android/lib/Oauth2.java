@@ -39,9 +39,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -56,9 +53,7 @@ import java.util.Locale;
  */
 class Oauth2 {
 
-    private AuthenticationRequest mRequest;    
-    
-    private String codeVarifier = null;
+    private AuthenticationRequest mRequest;
 
     private IWebRequestHandler mWebRequestHandler;
 
@@ -149,7 +144,7 @@ class Oauth2 {
 			    .appendQueryParameter(AuthenticationConstants.OAuth2.NONCE, UUID.randomUUID().toString());
 
         if (tokenRespType.startsWith("code")) {
-            queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE, this.GetCodeChallenge());
+            queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE, mRequest.GetCodeChallenge());
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE_METHOD, "S256");
         }
 
@@ -480,7 +475,7 @@ class Oauth2 {
 
         // Token request message
         try {
-            requestMessage = buildTokenRequestMessage(code, this.GetCodeVarifier());
+            requestMessage = buildTokenRequestMessage(code, mRequest.GetCodeVarifier());
         } catch (UnsupportedEncodingException encoding) {
             Logger.e(TAG, encoding.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, encoding);
             return null;
@@ -750,38 +745,5 @@ class Oauth2 {
     private void stopHttpEvent(final HttpEvent httpEvent) {
         Telemetry.getInstance().stopEvent(mRequest.getTelemetryRequestId(), httpEvent,
                 EventStrings.HTTP_EVENT);
-    }
-
-    private String GetCodeVarifier() {
-        if (this.codeVarifier == null) {
-            SecureRandom sr = new SecureRandom();
-            byte[] code = new byte[32];
-            sr.nextBytes(code);
-            String verifier = Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-
-            this.codeVarifier = verifier; //"3a95b913-e8f7-4189-97c6-e58ce0785d4d";
-        }
-        return this.codeVarifier;
-    }    
-
-    private String GetCodeChallenge() {
-
-        try {
-            byte[] bytes = this.GetCodeVarifier().getBytes("US-ASCII");
-
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(bytes, 0, bytes.length);
-            byte[] digest = md.digest();
-            String challenge = Base64.encodeToString(digest, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-            return challenge; //"8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";
-        } catch (final UnsupportedEncodingException e) {
-            ClientMetrics.INSTANCE.setLastError(null);
-            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
-            return null;
-        } catch (final NoSuchAlgorithmException e) {
-            ClientMetrics.INSTANCE.setLastError(null);
-            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
-            return null;
-        }
     }
 }

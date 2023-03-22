@@ -23,9 +23,15 @@
 
 package com.cordova.plugin.oidc;
 
-import android.support.annotation.Nullable;
+import android.util.Base64;
+
+import androidx.annotation.Nullable;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 /**
@@ -76,6 +82,10 @@ class AuthenticationRequest implements Serializable {
     private String mTelemetryRequestId;
 
     private String mClaimsChallenge;
+
+    private String codeVarifier = null;
+
+    private static final String TAG = "AuthenticationRequest";
 
     /**
      * Developer can use acquireToken(with loginhint) or acquireTokenSilent(with
@@ -340,5 +350,38 @@ class AuthenticationRequest implements Serializable {
 
     String getTelemetryRequestId() {
         return mTelemetryRequestId;
+    }
+
+    public String GetCodeVarifier() {
+        if (this.codeVarifier == null) {
+            SecureRandom sr = new SecureRandom();
+            byte[] code = new byte[32];
+            sr.nextBytes(code);
+            String verifier = Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+
+            this.codeVarifier = verifier; //"3a95b913-e8f7-4189-97c6-e58ce0785d4d";
+        }
+        return this.codeVarifier;
+    }
+
+    public String GetCodeChallenge() {
+
+        try {
+            byte[] bytes = this.GetCodeVarifier().getBytes("US-ASCII");
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(bytes, 0, bytes.length);
+            byte[] digest = md.digest();
+            String challenge = Base64.encodeToString(digest, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+            return challenge; //"8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";
+        } catch (final UnsupportedEncodingException e) {
+            ClientMetrics.INSTANCE.setLastError(null);
+            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+            return null;
+        } catch (final NoSuchAlgorithmException e) {
+            ClientMetrics.INSTANCE.setLastError(null);
+            Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+            return null;
+        }
     }
 }
