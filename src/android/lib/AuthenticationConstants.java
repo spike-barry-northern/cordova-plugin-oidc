@@ -170,7 +170,7 @@ public final class AuthenticationConstants {
         public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
         
         /** String of response type. */
-        public static final String CODE_VARIFIER = "code_verifier";
+        public static final String CODE_VERIFIER = "code_verifier";
 
         /** String of scope. */
         public static final String SCOPE = "scope";

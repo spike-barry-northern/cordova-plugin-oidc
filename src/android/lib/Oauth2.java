@@ -191,7 +191,7 @@ class Oauth2 {
                 AuthenticationConstants.OAuth2.CLIENT_ID,
                 StringExtensions.urlFormEncode(mRequest.getClientId()),
 
-                AuthenticationConstants.OAuth2.CODE_VARIFIER,
+                AuthenticationConstants.OAuth2.CODE_VERIFIER,
                 StringExtensions.urlFormEncode(codeVerifier),
 
                 AuthenticationConstants.OAuth2.REDIRECT_URI,

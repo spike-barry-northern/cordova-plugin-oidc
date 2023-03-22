@@ -423,31 +423,12 @@
              }
              else
 #endif
-             {
-                 [event setAPIStatus:OIDC_TELEMETRY_VALUE_SUCCEEDED];
-                 [[OIDCTelemetry sharedInstance] stopEvent:_requestParams.telemetryRequestId event:event];
-                 
-                 
-                
-                 if (![NSString adIsStringNilOrBlank:code])
-                 {
-                     //[_requestParams authority]
-                     OIDCTokenCacheItem *cacheItem = [[_requestParams tokenCache] updateCacheToCode:code type:@"id_token" refreshToken:nil context:_requestParams];
-                     
-                     OIDCAuthenticationResult *result = [OIDCAuthenticationResult resultFromTokenCacheItem:cacheItem multiResourceRefreshToken:false correlationId:[_requestParams correlationId]];
-                     completionBlock(result);
-                 }
-                 else {
-                     completionBlock(nil);
-                 }                
-                 
-             }
-             else 
+            
              {
                  [event setAPIStatus:OIDC_TELEMETRY_VALUE_SUCCEEDED];
                  [[OIDCTelemetry sharedInstance] stopEvent:_requestParams.telemetryRequestId event:event];
 
-                 if (_context.responseType.startsWith('code')) 
+                 if ([_context.responseType hasPrefix:@"code"])
                  {
                     [[OIDCTelemetry sharedInstance] startEvent:_requestParams.telemetryRequestId eventName:OIDC_TELEMETRY_EVENT_TOKEN_GRANT];
                     [self requestTokenByCode:code
@@ -492,10 +473,14 @@
     [self ensureRequest];
     OIDC_LOG_VERBOSE_F(@"Requesting token from authorization code.", [_requestParams correlationId], @"Requesting token by authorization code for resource: %@", [_requestParams resource]);
     
+    NSString *codeVerifier = [self getCodeVerifier];
+    
+    
     //Fill the data for the token refreshing:
     NSMutableDictionary *request_data = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          OAUTH2_AUTHORIZATION_CODE, OAUTH2_GRANT_TYPE,
                                          code, OAUTH2_CODE,
+                                         codeVerifier, OAUTH2_CODE_VERIFIER,
                                          [_requestParams clientId], OAUTH2_CLIENT_ID,
                                          [_requestParams redirectUri], OAUTH2_REDIRECT_URI,
                                          nil];

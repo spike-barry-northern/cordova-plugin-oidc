@@ -30,5 +30,7 @@
 - (void)requestCode:(OIDCAuthorizationCodeCallback)completionBlock;
 
 - (NSString*)generateQueryStringForRequestType:(NSString*)requestType;
+- (NSString*)getCodeVerifier;
+- (NSString*)getCodeChallenge;
 
 @end
