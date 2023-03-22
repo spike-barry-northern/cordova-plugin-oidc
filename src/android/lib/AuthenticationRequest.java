@@ -365,7 +365,7 @@ class AuthenticationRequest implements Serializable {
             sr.nextBytes(code);
             String verifier = Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
 
-            this.codeVerifier = verifier; //"3a95b913-e8f7-4189-97c6-e58ce0785d4d";
+            this.codeVerifier = verifier;
         }
     }
 
@@ -382,7 +382,7 @@ class AuthenticationRequest implements Serializable {
                 md.update(bytes, 0, bytes.length);
                 byte[] digest = md.digest();
                 String challenge = Base64.encodeToString(digest, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-                return challenge; //"8108ab1612e3041d66af6da85db54c3226679126d89b3f3225784b741cf4fc18";
+                return challenge;
             } catch (final UnsupportedEncodingException e) {
                 ClientMetrics.INSTANCE.setLastError(null);
                 Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);

@@ -442,6 +442,44 @@
                  }                
                  
              }
+             else 
+             {
+                 [event setAPIStatus:OIDC_TELEMETRY_VALUE_SUCCEEDED];
+                 [[OIDCTelemetry sharedInstance] stopEvent:_requestParams.telemetryRequestId event:event];
+
+                 if (_context.responseType.startsWith('code')) 
+                 {
+                    [[OIDCTelemetry sharedInstance] startEvent:_requestParams.telemetryRequestId eventName:OIDC_TELEMETRY_EVENT_TOKEN_GRANT];
+                    [self requestTokenByCode:code
+                            completionBlock:^(OIDCAuthenticationResult *result)
+                    {
+                        OIDCTelemetryAPIEvent* event = [[OIDCTelemetryAPIEvent alloc] initWithName:OIDC_TELEMETRY_EVENT_TOKEN_GRANT
+                                                                                        context:_requestParams];
+                        [event setGrantType:OIDC_TELEMETRY_VALUE_BY_CODE];
+                        [event setResultStatus:[result status]];
+                        [[OIDCTelemetry sharedInstance] stopEvent:_requestParams.telemetryRequestId event:event];
+                        if (OIDC_SUCCEEDED == result.status)
+                        {
+                            [[_requestParams tokenCache] updateCacheToResult:result
+                                                                    cacheItem:nil
+                                                                refreshToken:nil
+                                                                    context:_requestParams];
+                            result = [OIDCAuthenticationContext updateResult:result toUser:[_requestParams identifier]];
+                        }
+                        completionBlock(result);
+                    }];
+
+                    //https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-authorization-code-flow-with-pkce#create-code-challenge
+                 }
+                 else 
+                 {
+                    OIDCTokenCacheItem *cacheItem = [[_requestParams tokenCache] updateCacheToCode:code type:OAUTH2_ID_TOKEN refreshToken:nil context:_requestParams];
+                     
+                    OIDCAuthenticationResult *result = [OIDCAuthenticationResult resultFromTokenCacheItem:cacheItem multiResourceRefreshToken:false correlationId:[_requestParams correlationId]];
+                    completionBlock(result);
+                 }                
+                
+             }
          }
      }];
 }
