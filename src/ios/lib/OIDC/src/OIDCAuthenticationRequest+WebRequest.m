@@ -181,7 +181,9 @@
 
 - (NSString*)getCodeVerifier
 {
-    if (![NSString adIsStringNilOrBlank:_code_verifier])
+    
+    //https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-authorization-code-flow-with-pkce#create-code-challenge
+    if ([NSString adIsStringNilOrBlank:_code_verifier])
     {
         NSMutableData *data = [NSMutableData dataWithLength:32];
         int result __attribute__((unused)) = SecRandomCopyBytes(kSecRandomDefault, 32, data.mutableBytes);
