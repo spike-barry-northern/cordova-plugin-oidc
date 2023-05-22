@@ -423,24 +423,41 @@
              }
              else
 #endif
+            
              {
                  [event setAPIStatus:OIDC_TELEMETRY_VALUE_SUCCEEDED];
                  [[OIDCTelemetry sharedInstance] stopEvent:_requestParams.telemetryRequestId event:event];
-                 
-                 
-                
-                 if (![NSString adIsStringNilOrBlank:code])
+
+                 if ([_context.responseType hasPrefix:@"code"])
                  {
-                     //[_requestParams authority]
-                     OIDCTokenCacheItem *cacheItem = [[_requestParams tokenCache] updateCacheToCode:code type:@"id_token" refreshToken:nil context:_requestParams];
-                     
-                     OIDCAuthenticationResult *result = [OIDCAuthenticationResult resultFromTokenCacheItem:cacheItem multiResourceRefreshToken:false correlationId:[_requestParams correlationId]];
-                     completionBlock(result);
+                    [[OIDCTelemetry sharedInstance] startEvent:_requestParams.telemetryRequestId eventName:OIDC_TELEMETRY_EVENT_TOKEN_GRANT];
+                    [self requestTokenByCode:code
+                            completionBlock:^(OIDCAuthenticationResult *result)
+                    {
+                        OIDCTelemetryAPIEvent* event = [[OIDCTelemetryAPIEvent alloc] initWithName:OIDC_TELEMETRY_EVENT_TOKEN_GRANT
+                                                                                        context:_requestParams];
+                        [event setGrantType:OIDC_TELEMETRY_VALUE_BY_CODE];
+                        [event setResultStatus:[result status]];
+                        [[OIDCTelemetry sharedInstance] stopEvent:_requestParams.telemetryRequestId event:event];
+                        if (OIDC_SUCCEEDED == result.status)
+                        {
+                            [[_requestParams tokenCache] updateCacheToResult:result
+                                                                    cacheItem:nil
+                                                                refreshToken:nil
+                                                                    context:_requestParams];
+                            result = [OIDCAuthenticationContext updateResult:result toUser:[_requestParams identifier]];
+                        }
+                        completionBlock(result);
+                    }];
                  }
-                 else {
-                     completionBlock(nil);
+                 else 
+                 {
+                    OIDCTokenCacheItem *cacheItem = [[_requestParams tokenCache] updateCacheToCode:code type:OAUTH2_ID_TOKEN refreshToken:nil context:_requestParams];
+                     
+                    OIDCAuthenticationResult *result = [OIDCAuthenticationResult resultFromTokenCacheItem:cacheItem multiResourceRefreshToken:false correlationId:[_requestParams correlationId]];
+                    completionBlock(result);
                  }                
-                 
+                
              }
          }
      }];
@@ -454,10 +471,14 @@
     [self ensureRequest];
     OIDC_LOG_VERBOSE_F(@"Requesting token from authorization code.", [_requestParams correlationId], @"Requesting token by authorization code for resource: %@", [_requestParams resource]);
     
+    NSString *codeVerifier = [self getCodeVerifier];
+    
+    
     //Fill the data for the token refreshing:
     NSMutableDictionary *request_data = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          OAUTH2_AUTHORIZATION_CODE, OAUTH2_GRANT_TYPE,
                                          code, OAUTH2_CODE,
+                                         codeVerifier, OAUTH2_CODE_VERIFIER,
                                          [_requestParams clientId], OAUTH2_CLIENT_ID,
                                          [_requestParams redirectUri], OAUTH2_REDIRECT_URI,
                                          nil];

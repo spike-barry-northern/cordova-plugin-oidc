@@ -373,7 +373,7 @@ public class AuthenticationResult implements Serializable {
         mFamilyClientId = familyClientId;
     }
 
-    void codeIsAccessToken() {
-        mAccessToken = mCode;
-    }
+    // void codeIsAccessToken() {
+    //     mAccessToken = mCode;
+    // }
 }

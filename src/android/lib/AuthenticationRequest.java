@@ -23,9 +23,15 @@
 
 package com.cordova.plugin.oidc;
 
-import android.support.annotation.Nullable;
+import android.util.Base64;
+
+import androidx.annotation.Nullable;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 /**
@@ -43,7 +49,7 @@ class AuthenticationRequest implements Serializable {
 
     private String mAuthority = null;
 
-    private String mTokenEndpoint = null;
+    private String mEndpointFragment = null;
 
     private String mResponseType = null;
 
@@ -77,6 +83,10 @@ class AuthenticationRequest implements Serializable {
 
     private String mClaimsChallenge;
 
+    private String codeVerifier = null;
+
+    private static final String TAG = "AuthenticationRequest";
+
     /**
      * Developer can use acquireToken(with loginhint) or acquireTokenSilent(with
      * userid), so this sets the type of the request.
@@ -92,9 +102,9 @@ class AuthenticationRequest implements Serializable {
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
                                  String loginhint, PromptBehavior prompt, String extraQueryParams, UUID correlationId,
                                  boolean isExtendedLifetimeEnabled, final String claimsChallenge, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = client;
@@ -107,13 +117,14 @@ class AuthenticationRequest implements Serializable {
         mIdentifierType = UserIdentifierType.NoUser;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
         mClaimsChallenge = claimsChallenge;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
                                  String loginhint, UUID requestCorrelationId, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = client;
@@ -122,13 +133,14 @@ class AuthenticationRequest implements Serializable {
         mBrokerAccountName = mLoginHint;
         mCorrelationId = requestCorrelationId;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String client, String redirect,
                                  String loginhint, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = client;
@@ -136,16 +148,18 @@ class AuthenticationRequest implements Serializable {
         mLoginHint = loginhint;
         mBrokerAccountName = mLoginHint;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String clientid, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = clientid;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     /**
@@ -159,27 +173,29 @@ class AuthenticationRequest implements Serializable {
      */
     public AuthenticationRequest(String authority, String resource, String clientid, String userid,
                                  UUID correlationId, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mResource = resource;
         mClientId = clientid;
         mUserId = userid;
         mCorrelationId = correlationId;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public AuthenticationRequest(String authority, String resource, String clientId,
                                  UUID correlationId, boolean isExtendedLifetimeEnabled, 
-                                 String tokenEndpoint, String responseType) {
+                                 String endpointFragment, String responseType) {
         mAuthority = authority;
-        mTokenEndpoint = tokenEndpoint;
+        mEndpointFragment = endpointFragment;
         mResponseType = responseType;
         mClientId = clientId;
         mResource = resource;
         mCorrelationId = correlationId;
         mIsExtendedLifetimeEnabled = isExtendedLifetimeEnabled;
+        CreateCodeVerifier();
     }
 
     public String getAuthority() {
@@ -190,8 +206,8 @@ class AuthenticationRequest implements Serializable {
         mAuthority = authority;
     }
 
-    public String getTokenEndpoint() {
-        return mTokenEndpoint;
+    public String getEndpointFragment() {
+        return mEndpointFragment;
     }
 
     public String getResponseType() {
@@ -340,5 +356,43 @@ class AuthenticationRequest implements Serializable {
 
     String getTelemetryRequestId() {
         return mTelemetryRequestId;
+    }
+
+    private void CreateCodeVerifier() {
+        if (this.mResponseType.startsWith("code")) {
+            SecureRandom sr = new SecureRandom();
+            byte[] code = new byte[32];
+            sr.nextBytes(code);
+            String verifier = Base64.encodeToString(code, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+
+            this.codeVerifier = verifier;
+        }
+    }
+
+    public String GetCodeVerifier() {
+        return this.codeVerifier;
+    }
+
+    public String GetCodeChallenge() {
+        if (this.codeVerifier != null) {
+            try {
+                byte[] bytes = this.codeVerifier.getBytes("US-ASCII");
+
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(bytes, 0, bytes.length);
+                byte[] digest = md.digest();
+                String challenge = Base64.encodeToString(digest, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+                return challenge;
+            } catch (final UnsupportedEncodingException e) {
+                ClientMetrics.INSTANCE.setLastError(null);
+                Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+                return null;
+            } catch (final NoSuchAlgorithmException e) {
+                ClientMetrics.INSTANCE.setLastError(null);
+                Logger.e(TAG, e.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, e);
+                return null;
+            }
+        }
+        return null;
     }
 }

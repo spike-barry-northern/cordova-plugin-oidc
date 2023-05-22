@@ -38,6 +38,7 @@
 #import "OIDCTokenCacheItem+Internal.h"
 #import "OIDCWebAuthRequest.h"
 
+#import <CommonCrypto/CommonCrypto.h>
 #import <libkern/OSAtomic.h>
 
 @implementation OIDCAuthenticationRequest (WebRequest)
@@ -154,6 +155,12 @@
         [startUrl appendFormat:@"&claims=%@", claimsParam];
     }
     
+    if ([_context.responseType hasPrefix:@"code"])
+    {
+        [startUrl appendFormat:@"&%@=%@", OAUTH2_CODE_CHALLENGE, [self getCodeChallenge]];
+        [startUrl appendFormat:@"&%@=%@", OAUTH2_CODE_CHALLENGE_METHOD, @"S256"];
+    }
+    
     return startUrl;
 }
 
@@ -170,6 +177,42 @@
                                         webView:_context.webView
                                         context:_requestParams
                                      completion:completionBlock];
+}
+
+- (NSString*)getCodeVerifier
+{
+    
+    //https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-authorization-code-flow-with-pkce#create-code-challenge
+    if ([NSString adIsStringNilOrBlank:_code_verifier])
+    {
+        NSMutableData *data = [NSMutableData dataWithLength:32];
+        int result __attribute__((unused)) = SecRandomCopyBytes(kSecRandomDefault, 32, data.mutableBytes);
+        _code_verifier = [[[[data base64EncodedStringWithOptions:0]
+                                stringByReplacingOccurrencesOfString:@"+" withString:@"-"]
+                                stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
+                                stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"="]];
+    }
+    return _code_verifier;
+}
+
+- (NSString*)getCodeChallenge
+{
+    NSString *codeVerifier = [self getCodeVerifier];
+    
+    // Dependency: Apple Common Crypto library
+    // http://opensource.apple.com//source/CommonCrypto
+    
+    u_int8_t buffer[CC_SHA256_DIGEST_LENGTH * sizeof(u_int8_t)];
+    memset(buffer, 0x0, CC_SHA256_DIGEST_LENGTH);
+    NSData *data = [codeVerifier dataUsingEncoding:NSUTF8StringEncoding];
+    CC_SHA256([data bytes], (CC_LONG)[data length], buffer);
+    NSData *hash = [NSData dataWithBytes:buffer length:CC_SHA256_DIGEST_LENGTH];
+    NSString *challenge = [[[[hash base64EncodedStringWithOptions:0]
+                             stringByReplacingOccurrencesOfString:@"+" withString:@"-"]
+                             stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
+                             stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"="]];
+    
+    return challenge;
 }
 
 //Requests an OAuth2 code to be used for obtaining a token:

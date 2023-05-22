@@ -74,6 +74,8 @@
     OIDCTokenCacheItem* _mrrtItem;
     
     OIDCAuthenticationError* _underlyingError;
+    
+    NSString* _code_verifier;
 }
 
 @property (retain) NSString* logComponent;
@@ -116,6 +118,7 @@
 #endif
 - (void)setSamlAssertion:(NSString*)samlAssertion;
 - (void)setAssertionType:(OIDCAssertionType)assertionType;
+
 
 /*!
     Takes the UI interaction lock for the current request, will send an error

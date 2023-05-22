@@ -93,7 +93,7 @@ class Oauth2 {
     }
 
     public String getAuthorizationEndpoint() {
-        final String endpoint = mRequest.getTokenEndpoint();
+        final String endpoint = mRequest.getEndpointFragment();
         if (endpoint == null || endpoint.isEmpty()) {
             return mRequest.getAuthority() + DEFAULT_FRAGMENT + DEFAULT_AUTHORIZE_ENDPOINT;
         }
@@ -106,7 +106,7 @@ class Oauth2 {
     }
 
     public String getTokenEndpoint() {
-        final String endpoint = mRequest.getTokenEndpoint();
+        final String endpoint = mRequest.getEndpointFragment();
         if (endpoint == null || endpoint.isEmpty()) {
             return mRequest.getAuthority() + DEFAULT_FRAGMENT + DEFAULT_TOKEN_ENDPOINT;
         }
@@ -131,8 +131,9 @@ class Oauth2 {
 
     public String getAuthorizationEndpointQueryParameters() throws UnsupportedEncodingException {
         final Uri.Builder queryParameter = new Uri.Builder();
-        queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE,
-                        this.getTokenResponseType())
+
+        final String tokenRespType = this.getTokenResponseType();
+        queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.RESPONSE_TYPE, tokenRespType)
                 .appendQueryParameter(AuthenticationConstants.OAuth2.CLIENT_ID,
                         URLEncoder.encode(mRequest.getClientId(),
                                 AuthenticationConstants.ENCODING_UTF8))
@@ -140,8 +141,12 @@ class Oauth2 {
                         URLEncoder.encode(mRequest.getRedirectUri(),
                                 AuthenticationConstants.ENCODING_UTF8))
                 .appendQueryParameter(AuthenticationConstants.OAuth2.STATE, encodeProtocolState())
-			.appendQueryParameter(AuthenticationConstants.OAuth2.NONCE, UUID.randomUUID().toString());
+			    .appendQueryParameter(AuthenticationConstants.OAuth2.NONCE, UUID.randomUUID().toString());
 
+        if (tokenRespType.startsWith("code")) {
+            queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE, mRequest.GetCodeChallenge());
+            queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CODE_CHALLENGE_METHOD, "S256");
+        }
 
         // reading extra qp supplied by developer
         final String extraQP = mRequest.getExtraQueryParamsAuthentication();
@@ -174,10 +179,10 @@ class Oauth2 {
                 getAuthorizationEndpointQueryParameters());
     }
 
-    public String buildTokenRequestMessage(String code) throws UnsupportedEncodingException {
+    public String buildTokenRequestMessage(String code, String codeVerifier) throws UnsupportedEncodingException {
         Logger.v(TAG, "Building request message for redeeming token with auth code.");
         
-        return String.format("%s=%s&%s=%s&%s=%s&%s=%s",
+        return String.format("%s=%s&%s=%s&%s=%s&%s=%s&%s=%s",
                 AuthenticationConstants.OAuth2.GRANT_TYPE,
                 StringExtensions.urlFormEncode(AuthenticationConstants.OAuth2.AUTHORIZATION_CODE),
 
@@ -185,6 +190,9 @@ class Oauth2 {
 
                 AuthenticationConstants.OAuth2.CLIENT_ID,
                 StringExtensions.urlFormEncode(mRequest.getClientId()),
+
+                AuthenticationConstants.OAuth2.CODE_VERIFIER,
+                StringExtensions.urlFormEncode(codeVerifier),
 
                 AuthenticationConstants.OAuth2.REDIRECT_URI,
                 StringExtensions.urlFormEncode(mRequest.getRedirectUri()));
@@ -430,15 +438,15 @@ class Oauth2 {
 
                 AuthenticationResult result = processUIResponseParams(parameters);
 
-                //SPIKE: the "token" we want for Salto at this point is the value that now resides in result.getCode() -> might not be right for future uses of this plugin, hence this comment. You're welcome.
+                
                 // Check if we have code
-                //if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
+                if (result != null && result.getCode() != null && !result.getCode().isEmpty()) {
 
-                    // Get token and use external callback to set result
-                //    return getTokenForCode(result.getCode());
-                //}
+                    //Get token and use external callback to set result
+                    return getTokenForCode(result.getCode());
+                }
                 //SPIKE: end of commenting out!
-				result.codeIsAccessToken(); // SPIKE: our new function to set the access token to the code!
+				//result.codeIsAccessToken(); // SPIKE: our new function to set the access token to the code!
                 
                 return result;
             } else {
@@ -467,7 +475,7 @@ class Oauth2 {
 
         // Token request message
         try {
-            requestMessage = buildTokenRequestMessage(code);
+            requestMessage = buildTokenRequestMessage(code, mRequest.GetCodeVerifier());
         } catch (UnsupportedEncodingException encoding) {
             Logger.e(TAG, encoding.getMessage(), "", OIDCError.ENCODING_IS_NOT_SUPPORTED, encoding);
             return null;
