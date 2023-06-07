@@ -340,7 +340,7 @@ NSString* OIDCWebAuthWillSwitchToBrokerApp = @"OIDCWebAuthWillSwitchToBrokerApp"
     }
     
     // redirecting to non-https url is not allowed
-    if (![[[request.URL scheme] lowercaseString] isEqualToString:@"https"])
+    if ([[[request.URL scheme] lowercaseString] isEqualToString:@"http"])
     {
         OIDC_LOG_ERROR(@"Server is redirecting to a non-https url", OIDC_ERROR_SERVER_NON_HTTPS_REDIRECT, nil, nil);
         _complete = YES;
