@@ -387,7 +387,7 @@ public class AuthenticationActivity extends Activity {
         //mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 
         //DA: trying to disable cache alltogether
-        mWebView.getSettings().setAppCacheEnabled(false);
+        //mWebView.getSettings().setAppCacheEnabled(false);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         mWebView.setWebViewClient(new CustomWebViewClient());
