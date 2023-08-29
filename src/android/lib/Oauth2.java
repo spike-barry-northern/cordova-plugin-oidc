@@ -158,7 +158,7 @@ class Oauth2 {
                 final String[] qpSplit = qp.split("=");                
                 //queryParameter.appendQueryParameter(qpSplit[0],  URLEncoder.encode(URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8), AuthenticationConstants.ENCODING_UTF8));
                 queryParameter.appendQueryParameter(qpSplit[0],  URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8), AuthenticationConstants.ENCODING_UTF8);
-                queryParameter.appendQueryParameter(qpSplit[0],  qpSplit[1]);
+                //queryParameter.appendQueryParameter(qpSplit[0],  qpSplit[1]);
             }            
         }
         // append haschrome=1 if developer does not pass as extra qp
