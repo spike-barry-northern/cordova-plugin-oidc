@@ -150,6 +150,14 @@ class Oauth2 {
 
         // reading extra qp supplied by developer
         final String extraQP = mRequest.getExtraQueryParamsAuthentication();
+
+        if (!StringExtensions.isNullOrBlank(extraQP)) {
+            final String[] qSplit = extraQP("&");
+            for (String qp : qSplit) {
+                final String[] qpSplit = qp.split("=");                
+                queryParameter.appendQueryParameter(qpSplit[0], URLEncoder.encode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8));
+            }            
+        }
         // append haschrome=1 if developer does not pass as extra qp
 //        if (StringExtensions.isNullOrBlank(extraQP)
 //                || !extraQP.contains(AuthenticationConstants.OAuth2.HAS_CHROME)) {
@@ -162,16 +170,7 @@ class Oauth2 {
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CLAIMS, mRequest.getClaimsChallenge());
         }
 
-        String requestUrl = queryParameter.build().getQuery();
-        if (!StringExtensions.isNullOrBlank(extraQP)) {
-            String parsedQP = extraQP;
-            if (!extraQP.startsWith("&")) {
-                parsedQP = "&" + parsedQP;
-            }
-            requestUrl += parsedQP;
-        }
-
-        return requestUrl;
+        return queryParameter.build().getQuery();
     }
 
     public String getCodeRequestUrl() throws UnsupportedEncodingException {
