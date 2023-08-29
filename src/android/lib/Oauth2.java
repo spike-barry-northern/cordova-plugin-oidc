@@ -157,6 +157,7 @@ class Oauth2 {
             for (String qp : qSplit) {
                 final String[] qpSplit = qp.split("=");                
                 //queryParameter.appendQueryParameter(qpSplit[0],  URLEncoder.encode(URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8), AuthenticationConstants.ENCODING_UTF8));
+                queryParameter.appendQueryParameter(qpSplit[0],  URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8), AuthenticationConstants.ENCODING_UTF8);
                 queryParameter.appendQueryParameter(qpSplit[0],  qpSplit[1]);
             }            
         }
