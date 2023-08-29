@@ -39,7 +39,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.URLDecoder ;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -151,16 +150,16 @@ class Oauth2 {
 
         // reading extra qp supplied by developer
         final String extraQP = mRequest.getExtraQueryParamsAuthentication();
-
-        if (!StringExtensions.isNullOrBlank(extraQP)) {
-            final String[] qSplit = extraQP.split("&");
-            for (String qp : qSplit) {
-                final String[] qpSplit = qp.split("=");                
-                //queryParameter.appendQueryParameter(qpSplit[0],  URLEncoder.encode(URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8), AuthenticationConstants.ENCODING_UTF8));
-                queryParameter.appendQueryParameter(qpSplit[0],  URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8));
-                //queryParameter.appendQueryParameter(qpSplit[0],  qpSplit[1]);
-            }            
-        }
+        // as another method, we can do it this way.
+        // if (!StringExtensions.isNullOrBlank(extraQP)) {
+        //     final String[] qSplit = extraQP.split("&");
+        //     for (String qp : qSplit) {
+        //         final String[] qpSplit = qp.split("=");                
+        //         //queryParameter.appendQueryParameter(qpSplit[0],  URLEncoder.encode(URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8), AuthenticationConstants.ENCODING_UTF8));
+        //         queryParameter.appendQueryParameter(qpSplit[0],  URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8));
+        //         //queryParameter.appendQueryParameter(qpSplit[0],  qpSplit[1]);
+        //     }            
+        // }
         // append haschrome=1 if developer does not pass as extra qp
 //        if (StringExtensions.isNullOrBlank(extraQP)
 //                || !extraQP.contains(AuthenticationConstants.OAuth2.HAS_CHROME)) {
@@ -173,7 +172,16 @@ class Oauth2 {
             queryParameter.appendQueryParameter(AuthenticationConstants.OAuth2.CLAIMS, mRequest.getClaimsChallenge());
         }
 
-        return queryParameter.build().getQuery();
+        String requestUrl = queryParameter.build().getQuery();
+        if (!StringExtensions.isNullOrBlank(extraQP)) {
+            String parsedQP = extraQP;
+            if (!extraQP.startsWith("&")) {
+                parsedQP = "&" + parsedQP;
+            }
+            requestUrl += parsedQP;
+        }
+
+        return requestUrl;
     }
 
     public String getCodeRequestUrl() throws UnsupportedEncodingException {
