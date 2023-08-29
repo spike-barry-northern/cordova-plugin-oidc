@@ -39,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.URLDecoder ;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -155,7 +156,7 @@ class Oauth2 {
             final String[] qSplit = extraQP.split("&");
             for (String qp : qSplit) {
                 final String[] qpSplit = qp.split("=");                
-                queryParameter.appendQueryParameter(qpSplit[0], URLEncoder.encode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8));
+                queryParameter.appendQueryParameter(qpSplit[0],  URLEncoder.encode(URLDecoder.decode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8), AuthenticationConstants.ENCODING_UTF8));
             }            
         }
         // append haschrome=1 if developer does not pass as extra qp
