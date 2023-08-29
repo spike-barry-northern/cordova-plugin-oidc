@@ -152,7 +152,7 @@ class Oauth2 {
         final String extraQP = mRequest.getExtraQueryParamsAuthentication();
 
         if (!StringExtensions.isNullOrBlank(extraQP)) {
-            final String[] qSplit = extraQP("&");
+            final String[] qSplit = extraQP.split("&");
             for (String qp : qSplit) {
                 final String[] qpSplit = qp.split("=");                
                 queryParameter.appendQueryParameter(qpSplit[0], URLEncoder.encode(qpSplit[1], AuthenticationConstants.ENCODING_UTF8));
