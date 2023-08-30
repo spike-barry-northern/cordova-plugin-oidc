@@ -386,7 +386,8 @@ public class AuthenticationActivity extends Activity {
 
         // WebSettings.LOAD_CACHE_ELSE_NETWORK makes the webview go to the server if the cached resource has
         // expired. This should prevent err_cach_miss errors when hitting back from an page marked no_cache
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mWebView.getSettings().setAppCacheEnabled(false);
+        //mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         mWebView.setWebViewClient(new CustomWebViewClient());
         mWebView.setVisibility(View.INVISIBLE);
     }
