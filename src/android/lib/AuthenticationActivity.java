@@ -35,8 +35,6 @@ import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.w3c.dom.events.UIEvent;
-
 import com.google.gson.Gson;
 
 import com.cordova.plugin.oidc.AuthenticationResult.AuthenticationStatus;
@@ -386,8 +384,7 @@ public class AuthenticationActivity extends Activity {
 
         // WebSettings.LOAD_CACHE_ELSE_NETWORK makes the webview go to the server if the cached resource has
         // expired. This should prevent err_cach_miss errors when hitting back from an page marked no_cache
-        mWebView.getSettings().setAppCacheEnabled(false);
-        //mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         mWebView.setWebViewClient(new CustomWebViewClient());
         mWebView.setVisibility(View.INVISIBLE);
     }
