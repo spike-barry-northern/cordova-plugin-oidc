@@ -1,7 +1,4 @@
 package com.cordova.plugin.oidc;
-import android.os.Bundle;
-import android.content.Intent;
-import java.util.Map;
 
 /**
  * Broker Account service APIs provided by the broker app. Those APIs will be responsible for interacting with the
