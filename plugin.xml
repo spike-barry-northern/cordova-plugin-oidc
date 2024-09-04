@@ -66,7 +66,7 @@
         <source-file src="src/android/DefaultAuthenticationCallback.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/SimpleSerialization.java" target-dir="src/com/cordova/plugin/oidc" />
 
-        <source-file src="src/android/lib/IBrokerAccountService.java" target-dir="src/com/cordova/plugin/oidc" />
+        <source-file src="src/android/lib/IBrokerAccountService.aidl" target-dir="src/com/cordova/plugin/oidc" />
         
         <source-file src="src/android/lib/AbstractMetadataRequestor.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/AcquireTokenInteractiveRequest.java" target-dir="src/com/cordova/plugin/oidc" />
