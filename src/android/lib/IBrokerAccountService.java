@@ -9,7 +9,7 @@ interface IBrokerAccountService {
 
     Bundle getBrokerUsers();
     
-    Bundle acquireTokenSilently(in Map requestParameters);
+    Bundle acquireTokenSilently(Map<String, String> requestParameters);
     
     Intent getIntentForInteractiveRequest();
 
