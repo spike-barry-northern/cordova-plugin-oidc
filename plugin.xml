@@ -66,7 +66,7 @@
         <source-file src="src/android/DefaultAuthenticationCallback.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/SimpleSerialization.java" target-dir="src/com/cordova/plugin/oidc" />
 
-        <source-file src="src/android/lib/IBrokerAccountService.aidl" target-dir="src/com/cordova/plugin/oidc" />
+        <!-- <source-file src="src/android/lib/IBrokerAccountService.aidl" target-dir="src/com/cordova/plugin/oidc" /> -->
         
         <source-file src="src/android/lib/AbstractMetadataRequestor.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/AcquireTokenInteractiveRequest.java" target-dir="src/com/cordova/plugin/oidc" />
@@ -90,7 +90,7 @@
         <source-file src="src/android/lib/AuthenticationServerProtocolException.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/AuthenticationSettings.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/BasicWebViewClient.java" target-dir="src/com/cordova/plugin/oidc" />
-        <source-file src="src/android/lib/BrokerAccountServiceHandler.java" target-dir="src/com/cordova/plugin/oidc" />
+        <!-- <source-file src="src/android/lib/BrokerAccountServiceHandler.java" target-dir="src/com/cordova/plugin/oidc" /> -->
         <source-file src="src/android/lib/BrokerEvent.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/BrokerProxy.java" target-dir="src/com/cordova/plugin/oidc" />
         <source-file src="src/android/lib/CacheEvent.java" target-dir="src/com/cordova/plugin/oidc" />
