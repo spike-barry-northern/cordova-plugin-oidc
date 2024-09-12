@@ -147,19 +147,17 @@ class BrokerProxy implements IBrokerProxy {
             return SwitchToBroker.CANNOT_SWITCH_TO_BROKER;
         }
 
-        if (!isBrokerAccountServiceSupported()) {
-            canSwitchToBroker = canSwitchToBroker && checkAccount(mAcctManager, "", "");
-            if (!canSwitchToBroker) {
-                Logger.v(TAG, "No valid account existed in broker, cannot switch to broker for auth.");
-                return SwitchToBroker.CANNOT_SWITCH_TO_BROKER;
-            }
+        canSwitchToBroker = canSwitchToBroker && checkAccount(mAcctManager, "", "");
+        if (!canSwitchToBroker) {
+            Logger.v(TAG, "No valid account existed in broker, cannot switch to broker for auth.");
+            return SwitchToBroker.CANNOT_SWITCH_TO_BROKER;
+        }
 
-            try {
-                verifyBrokerPermissionsAPI23AndHigher();
-            } catch (final UsageAuthenticationException exception) {
-                Logger.v(TAG, "Missing GET_ACCOUNTS permission, cannot switch to broker.");
-                return SwitchToBroker.NEED_PERMISSIONS_TO_SWITCH_TO_BROKER;
-            }
+        try {
+            verifyBrokerPermissionsAPI23AndHigher();
+        } catch (final UsageAuthenticationException exception) {
+            Logger.v(TAG, "Missing GET_ACCOUNTS permission, cannot switch to broker.");
+            return SwitchToBroker.NEED_PERMISSIONS_TO_SWITCH_TO_BROKER;
         }
 
         return SwitchToBroker.CAN_SWITCH_TO_BROKER;
@@ -169,12 +167,7 @@ class BrokerProxy implements IBrokerProxy {
      * Do this check after other checks.
      */
     public boolean verifyUser(String username, String uniqueid) {
-        if (!isBrokerAccountServiceSupported()) {
-            return checkAccount(mAcctManager, username, uniqueid);
-        }
-
-        // VerifyUser is to check the user existence in broker if AccountChooser is not supported.
-        return true;
+        return checkAccount(mAcctManager, username, uniqueid);
     }
 
     @Override
@@ -312,12 +305,7 @@ class BrokerProxy implements IBrokerProxy {
         final Bundle requestBundle = getBrokerOptions(request);
 
         // check if broker supports the new service, if it does not we need to switch back to the old way
-        final Bundle bundleResult;
-        if (isBrokerAccountServiceSupported()) {
-            bundleResult = BrokerAccountServiceHandler.getInstance().getAuthToken(mContext, requestBundle);
-        } else {
-            bundleResult = getAuthTokenFromAccountManager(request, requestBundle);
-        }
+        final Bundle bundleResult = getAuthTokenFromAccountManager(request, requestBundle);       
         if (bundleResult == null) {
             Logger.v(TAG, "No bundle result returned from broker for silent request.");
             return null;
@@ -369,11 +357,6 @@ class BrokerProxy implements IBrokerProxy {
         }
 
         return null;
-    }
-
-    private boolean isBrokerAccountServiceSupported() {
-        final Intent brokerAccountServiceIntent = BrokerAccountServiceHandler.getIntentForBrokerAccountService(mContext);
-        return isServiceSupported(mContext, brokerAccountServiceIntent);
     }
 
     private boolean isServiceSupported(final Context context, final Intent intent) {
@@ -501,11 +484,7 @@ class BrokerProxy implements IBrokerProxy {
 
             @Override
             public void run() {
-                if (isBrokerAccountServiceSupported()) {
-                    BrokerAccountServiceHandler.getInstance().removeAccounts(mContext);
-                } else {
-                    removeAccountFromAccountManager();
-                }
+                removeAccountFromAccountManager();
             }
         }).start();
     }
@@ -544,14 +523,8 @@ class BrokerProxy implements IBrokerProxy {
     @Override
     public Intent getIntentForBrokerActivity(final AuthenticationRequest request) {
         final Bundle requestBundle = getBrokerOptions(request);
-        final Intent intent;
-        if (isBrokerAccountServiceSupported()) {
-            intent = BrokerAccountServiceHandler.getInstance().getIntentForInteractiveRequest(mContext);
-            intent.putExtras(requestBundle);
-        } else {
-            intent = getIntentForBrokerActivityFromAccountManager(requestBundle);
-        }
-
+        final Intent intent = getIntentForBrokerActivityFromAccountManager(requestBundle);
+        
         if (intent != null) {
             intent.putExtra(AuthenticationConstants.Broker.BROKER_REQUEST,
                     AuthenticationConstants.Broker.BROKER_REQUEST);
@@ -686,25 +659,10 @@ class BrokerProxy implements IBrokerProxy {
      */
     public String getCurrentUser() {
         // authenticator is not used if there is not any user
-        if (isBrokerAccountServiceSupported()) {
-            verifyNotOnMainThread();
-
-            final UserInfo[] users;
-            try {
-                users = BrokerAccountServiceHandler.getInstance().getBrokerUsers(mContext);
-            } catch (final IOException e) {
-                Logger.e(TAG, "No current user could be retrieved.", "", null, e);
-                return null;
-            }
-
-            return users.length == 0 ? null : users[0].getDisplayableId();
-        } else {
-            Account[] accountList = mAcctManager.getAccountsByType(AuthenticationConstants.Broker.BROKER_ACCOUNT_TYPE);
-            if (accountList.length > 0) {
-                return accountList[0].name;
-            }
+        Account[] accountList = mAcctManager.getAccountsByType(AuthenticationConstants.Broker.BROKER_ACCOUNT_TYPE);
+        if (accountList.length > 0) {
+            return accountList[0].name;
         }
-
         return null;
     }
 
@@ -928,10 +886,6 @@ class BrokerProxy implements IBrokerProxy {
         // waiting on AccountManagerFuture
         if (Looper.myLooper() == Looper.getMainLooper()) {
             throw new IllegalArgumentException("Calling getBrokerUsers on main thread");
-        }
-
-        if (isBrokerAccountServiceSupported()) {
-            return BrokerAccountServiceHandler.getInstance().getBrokerUsers(mContext);
         }
 
         return getUserInfoFromAccountManager();
