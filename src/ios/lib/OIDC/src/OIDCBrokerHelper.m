@@ -32,7 +32,7 @@
 #import "OIDCAppExtensionUtil.h"
 
 typedef BOOL (*applicationHandleOpenURLPtr)(id, SEL, UIApplication*, NSURL*);
-IMP __original_ApplicationHandleOpenURL = NULL;
+IMP __oidc_original_ApplicationHandleOpenURL = NULL;
 
 typedef BOOL (*applicationOpenURLPtr)(id, SEL, UIApplication*, NSURL*, NSString*, id);
 IMP __oidc_original_ApplicationOpenURL = NULL;
@@ -56,9 +56,9 @@ BOOL __oidc_swizzle_ApplicationOpenURL(id self, SEL _cmd, UIApplication* applica
     {
         return ((applicationOpenURLPtr)__oidc_original_ApplicationOpenURL)(self, _cmd, application, url, sourceApplication, annotation);
     }
-    else if (__original_ApplicationHandleOpenURL)
+    else if (__oidc_original_ApplicationHandleOpenURL)
     {
-        return ((applicationHandleOpenURLPtr)__original_ApplicationHandleOpenURL)(self, @selector(application:handleOpenURL:), application, url);
+        return ((applicationHandleOpenURLPtr)__oidc_original_ApplicationHandleOpenURL)(self, @selector(application:handleOpenURL:), application, url);
     }
     else
     {
@@ -91,9 +91,9 @@ BOOL __oidc_swizzle_ApplicationOpenURLiOS9(id self, SEL _cmd, UIApplication* app
     {
         return ((applicationOpenURLiOS9Ptr)__oidc_original_ApplicationOpenURLiOS9)(self, _cmd, application, url, options);
     }
-    else if (__original_ApplicationHandleOpenURL)
+    else if (__oidc_original_ApplicationHandleOpenURL)
     {
-        return ((applicationHandleOpenURLPtr)__original_ApplicationHandleOpenURL)(self, @selector(application:handleOpenURL:), application, url);
+        return ((applicationHandleOpenURLPtr)__oidc_original_ApplicationHandleOpenURL)(self, @selector(application:handleOpenURL:), application, url);
     }
     else
     {
@@ -143,7 +143,7 @@ BOOL __oidc_swizzle_ApplicationOpenURLiOS9(id self, SEL _cmd, UIApplication* app
          if ([appDelegate respondsToSelector:handleOpenURLSel])
          {
              Method m = class_getInstanceMethod([appDelegate class], handleOpenURLSel);
-             __original_ApplicationHandleOpenURL = method_getImplementation(m);
+             __oidc_original_ApplicationHandleOpenURL = method_getImplementation(m);
          }
          
          BOOL iOS9OrGreater = [[[UIDevice currentDevice] systemVersion] intValue] >= 9;
